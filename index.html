@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrepSaathi — UPSC Mock Test Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Noto+Sans+Devanagari:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root {
+  --saffron:   #E8531A;
+  --saffron2:  #F97316;
+  --saffron-pale: #FFF4ED;
+  --navy:      #0F2044;
+  --navy2:     #1A3260;
+  --navy-pale: #EEF2FA;
+  --green:     #16763A;
+  --green2:    #22A855;
+  --green-pale:#E8F7EE;
+  --gold:      #C99B2A;
+  --gold2:     #F0C040;
+  --gold-pale: #FFFBEB;
+  --ink:       #1A1A2E;
+  --ink2:      #3D3D5C;
+  --muted:     #6B7280;
+  --white:     #FFFFFF;
+  --offwhite:  #FAFAF8;
+  --border:    #E5E0D8;
+  --shadow-sm: 0 2px 8px rgba(15,32,68,0.08);
+  --shadow-md: 0 8px 32px rgba(15,32,68,0.12);
+  --shadow-lg: 0 20px 60px rgba(15,32,68,0.16);
+  --radius:    12px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--offwhite);
+  color: var(--ink);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Hindi font override */
+[lang="hi"] body,
+.lang-hi { font-family: 'Noto Sans Devanagari', sans-serif; }
+
+img { max-width: 100%; }
+a  { text-decoration: none; color: inherit; }
+
+/* ── LANGUAGE TOGGLE ── */
+.lang-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: var(--navy);
+  padding: 0 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.lang-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gold2);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.lang-brand span { font-size: 20px; }
+.lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 24px;
+  padding: 4px 6px;
+}
+.lang-btn {
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.lang-btn.active {
+  background: var(--saffron);
+  color: white;
+}
+.lang-btn:not(.active) {
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+}
+.lang-btn:not(.active):hover {
+  color: white;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed;
+  top: 48px; left: 0; right: 0;
+  z-index: 999;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 max(24px, 4vw);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(232,83,26,0.3);
+}
+.nav-logo-text strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1;
+  letter-spacing: -0.3px;
+}
+.nav-logo-text small {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-link {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink2);
+  transition: all 0.15s;
+}
+.nav-link:hover { background: var(--navy-pale); color: var(--navy); }
+.nav-cta {
+  padding: 9px 20px;
+  background: var(--saffron);
+  color: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.2s;
+  box-shadow: 0 3px 10px rgba(232,83,26,0.3);
+}
+.nav-cta:hover { background: var(--saffron2); transform: translateY(-1px); }
+
+/* ── PAGE WRAPPER ── */
+.page { padding-top: 112px; }
+
+/* ── HERO ── */
+.hero {
+  min-height: calc(100vh - 112px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy2) 60%, #0A3060 100%);
+  padding: clamp(40px, 6vw, 80px) clamp(32px, 5vw, 72px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ashoka chakra watermark */
+.hero-left::before {
+  content: '☸';
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  font-size: 320px;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(240,192,64,0.15);
+  border: 1px solid rgba(240,192,64,0.3);
+  border-radius: 24px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold2);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  width: fit-content;
+  animation: fadeSlideUp 0.6s ease both;
+}
+.hero-eyebrow-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold2);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.hero-heading {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(36px, 4.5vw, 60px);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.12;
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+  animation: fadeSlideUp 0.6s 0.1s ease both;
+}
+.hero-heading .accent {
+  color: var(--gold2);
+  font-style: italic;
+}
+.hero-heading-hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  margin-bottom: 20px;
+  animation: fadeSlideUp 0.6s 0.1s ease both;
+}
+.hero-heading-hi .accent { color: var(--gold2); }
+
+.hero-subtext {
+  font-size: clamp(15px, 1.6vw, 18px);
+  color: rgba(255,255,255,0.72);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 480px;
+  animation: fadeSlideUp 0.6s 0.2s ease both;
+}
+.hero-subtext-hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: clamp(14px, 1.4vw, 16px);
+  color: rgba(255,255,255,0.72);
+  line-height: 1.9;
+  margin-bottom: 36px;
+  max-width: 480px;
+  animation: fadeSlideUp 0.6s 0.2s ease both;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+  animation: fadeSlideUp 0.6s 0.3s ease both;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  color: white;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 6px 20px rgba(232,83,26,0.4);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(232,83,26,0.5); }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.18); }
+
+.hero-trust {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  animation: fadeSlideUp 0.6s 0.4s ease both;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+}
+.trust-item strong { color: rgba(255,255,255,0.9); }
+.trust-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+
+/* Hero Right */
+.hero-right {
+  background: var(--offwhite);
+  padding: clamp(32px, 4vw, 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+}
+
+/* Mock test preview card */
+.mock-preview {
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  animation: fadeSlideUp 0.7s 0.2s ease both;
+}
+.mock-preview-header {
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.mock-preview-header span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold2);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.mock-progress-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+.mock-progress-bar {
+  width: 80px;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.mock-progress-fill {
+  height: 100%;
+  width: 35%;
+  background: var(--saffron2);
+  border-radius: 2px;
+  animation: growBar 1.5s 1s ease both;
+}
+@keyframes growBar {
+  from { width: 0; }
+  to { width: 35%; }
+}
+.mock-preview-body { padding: 20px; }
+.mock-q-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.mock-q-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.mock-options { display: flex; flex-direction: column; gap: 8px; }
+.mock-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  background: var(--offwhite);
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  font-size: 13px;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mock-opt:hover { border-color: var(--saffron); background: var(--saffron-pale); }
+.mock-opt.selected { border-color: #5a7bd0; background: #eef2ff; color: var(--navy); font-weight: 600; }
+.mock-opt-letter { font-weight: 800; color: var(--saffron); font-size: 12px; min-width: 16px; }
+.mock-opt.selected .mock-opt-letter { color: #2c4cc0; }
+
+/* Stats strip */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  animation: fadeSlideUp 0.7s 0.35s ease both;
+}
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.stat-card .sc-icon { font-size: 22px; margin-bottom: 4px; }
+.stat-card .sc-val {
+  font-family: 'Crimson Pro', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+  display: block;
+}
+.stat-card .sc-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Founder note card */
+.founder-note {
+  background: linear-gradient(135deg, #FFF8F0, #FFFBF5);
+  border: 1.5px solid #F4D4A0;
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  animation: fadeSlideUp 0.7s 0.45s ease both;
+}
+.founder-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(232,83,26,0.25);
+}
+.founder-text p {
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.6;
+  font-style: italic;
+}
+.founder-text p.hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; }
+.founder-sig {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--saffron);
+}
+
+/* ── SECTION COMMONS ── */
+section { padding: clamp(60px, 8vw, 100px) max(24px, 4vw); }
+.section-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--saffron);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.section-title-hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+.section-sub {
+  font-size: clamp(15px, 1.6vw, 17px);
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 52px;
+}
+.section-sub-hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: clamp(13px, 1.4vw, 15px);
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.9;
+  margin-bottom: 52px;
+}
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  background: white;
+}
+.how-section .inner { max-width: 1100px; margin: 0 auto; }
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
+  position: relative;
+}
+.step-card {
+  position: relative;
+  padding: 28px 24px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--offwhite);
+  transition: all 0.25s;
+}
+.step-card:hover {
+  border-color: var(--saffron);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.step-num {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(232,83,26,0.25);
+}
+.step-icon { font-size: 28px; margin-bottom: 14px; }
+.step-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.step-title-hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.step-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.step-desc-hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+/* ── FEATURES ── */
+.features-section { background: var(--navy); }
+.features-section .inner { max-width: 1100px; margin: 0 auto; }
+.features-section .section-label { color: var(--gold2); }
+.features-section .section-title { color: white; }
+.features-section .section-sub { color: rgba(255,255,255,0.55); }
+.features-section .section-title-hi { color: white; }
+.features-section .section-sub-hi { color: rgba(255,255,255,0.55); }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.feat-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: all 0.25s;
+}
+.feat-card:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(240,192,64,0.4);
+  transform: translateY(-3px);
+}
+.feat-icon-wrap {
+  width: 50px; height: 50px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+.feat-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+}
+.feat-card h3.hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 15px;
+}
+.feat-card p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.65;
+}
+.feat-card p.hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: 13px;
+  line-height: 1.85;
+}
+.feat-tag {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.tag-free { background: rgba(22,118,58,0.25); color: #6EE09A; border: 1px solid rgba(22,118,58,0.4); }
+.tag-soon { background: rgba(201,155,42,0.2); color: var(--gold2); border: 1px solid rgba(201,155,42,0.3); }
+
+/* ── PRICING ── */
+.pricing-section { background: var(--offwhite); }
+.pricing-section .inner { max-width: 900px; margin: 0 auto; text-align: center; }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  text-align: left;
+  margin-top: 0;
+}
+.price-card {
+  background: white;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  padding: 32px 28px;
+  transition: all 0.25s;
+  position: relative;
+}
+.price-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+.price-card.featured {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 4px rgba(232,83,26,0.08), var(--shadow-md);
+}
+.price-badge {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--saffron);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 16px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.price-tier {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.price-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.price-amount .amt {
+  font-family: 'Crimson Pro', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+}
+.price-amount .curr { font-size: 22px; color: var(--navy); font-weight: 600; }
+.price-amount .per { font-size: 14px; color: var(--muted); }
+.price-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+  font-style: italic;
+  line-height: 1.5;
+}
+.price-tagline.hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; }
+.price-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.price-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.4;
+}
+.price-list li.hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 13px; }
+.check { color: var(--green2); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.price-btn {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+.price-btn-outline {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--navy);
+}
+.price-btn-outline:hover { border-color: var(--navy); }
+.price-btn-fill {
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  color: white;
+  box-shadow: 0 4px 14px rgba(232,83,26,0.3);
+}
+.price-btn-fill:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,83,26,0.4); }
+
+/* ── TESTIMONIALS ── */
+.testi-section { background: white; }
+.testi-section .inner { max-width: 1100px; margin: 0 auto; }
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.testi-card {
+  background: var(--offwhite);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: relative;
+  transition: all 0.2s;
+}
+.testi-card:hover { box-shadow: var(--shadow-md); }
+.testi-quote {
+  font-size: 40px;
+  color: var(--saffron);
+  line-height: 1;
+  margin-bottom: 12px;
+  font-family: Georgia, serif;
+  opacity: 0.4;
+}
+.testi-text {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.7;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+.testi-text.hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 13px; line-height: 1.9; }
+.testi-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.testi-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.testi-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+.testi-from { font-size: 11px; color: var(--muted); }
+.testi-from.hi { font-family: 'Noto Sans Devanagari', sans-serif; }
+.testi-state {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green2);
+  background: var(--green-pale);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+/* ── CTA BAND ── */
+.cta-band {
+  background: linear-gradient(135deg, var(--saffron) 0%, #C0391A 100%);
+  padding: clamp(48px, 6vw, 80px) max(24px, 4vw);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-band::before {
+  content: '🏛️';
+  position: absolute;
+  font-size: 260px;
+  opacity: 0.05;
+  left: -40px;
+  top: -40px;
+  pointer-events: none;
+}
+.cta-band::after {
+  content: '📜';
+  position: absolute;
+  font-size: 200px;
+  opacity: 0.05;
+  right: -20px;
+  bottom: -40px;
+  pointer-events: none;
+}
+.cta-band h2 {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.cta-band h2.hi {
+  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-size: clamp(22px, 3.5vw, 40px);
+  font-weight: 900;
+}
+.cta-band p {
+  font-size: clamp(14px, 1.5vw, 17px);
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 32px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.65;
+}
+.cta-band p.hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: clamp(13px, 1.3vw, 15px); }
+.cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.cta-btn-white {
+  padding: 14px 32px;
+  background: white;
+  color: var(--saffron);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+.cta-btn-white:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.25); }
+.cta-btn-ghost {
+  padding: 14px 32px;
+  background: transparent;
+  color: white;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 2px solid rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cta-btn-ghost:hover { border-color: white; background: rgba(255,255,255,0.1); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--navy);
+  padding: 48px max(24px, 4vw) 28px;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 24px;
+}
+.footer-brand p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.7;
+  margin-top: 12px;
+  max-width: 280px;
+}
+.footer-brand p.hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; }
+.footer-col h4 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 16px;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  transition: color 0.15s;
+}
+.footer-col ul li a:hover { color: white; }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-bottom p {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+}
+.footer-bottom p.hi { font-family: 'Noto Sans Devanagari', sans-serif; }
+.footer-mission {
+  font-size: 12px;
+  color: var(--gold2);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* ── TRICOLOR ACCENT BAR ── */
+.tricolor-bar {
+  height: 5px;
+  background: linear-gradient(to right,
+    #FF9933 0%, #FF9933 33.3%,
+    #FFFFFF 33.3%, #FFFFFF 66.6%,
+    #138808 66.6%, #138808 100%
+  );
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── LANGUAGE SWITCHING ── */
+.en-content { display: block; }
+.hi-content { display: none; }
+body.lang-hindi .en-content { display: none; }
+body.lang-hindi .hi-content { display: block; }
+/* inline elements */
+span.en-content { display: inline; }
+span.hi-content { display: none; }
+body.lang-hindi span.en-content { display: none; }
+body.lang-hindi span.hi-content { display: inline; }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .nav-links .nav-link { display: none; }
+}
+@media (max-width: 600px) {
+  .footer-top { grid-template-columns: 1fr; }
+  .stats-strip { grid-template-columns: repeat(3,1fr); }
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas .btn-primary, .hero-ctas .btn-secondary { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- TRICOLOR TOP BAR -->
+<div class="tricolor-bar"></div>
+
+<!-- LANGUAGE TOGGLE BAR -->
+<div class="lang-bar">
+  <div class="lang-brand">
+    <span>🏛️</span>
+    <span>PrepSaathi</span>
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" id="btnEn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btnHi" onclick="setLang('hi')">हिंदी</button>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🏛️</div>
+    <div class="nav-logo-text">
+      <strong>PrepSaathi</strong>
+      <small>UPSC · IAS · IPS</small>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link en-content" href="#how">How it Works</a>
+    <a class="nav-link hi-content" href="#how">कैसे काम करता है</a>
+    <a class="nav-link en-content" href="#features">Features</a>
+    <a class="nav-link hi-content" href="#features">विशेषताएं</a>
+    <a class="nav-link en-content" href="#pricing">Pricing</a>
+    <a class="nav-link hi-content" href="#pricing">मूल्य</a>
+    <a class="nav-cta en-content" href="#">Start Free Test</a>
+    <a class="nav-cta hi-content" href="#">निःशुल्क परीक्षा शुरू करें</a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero-left">
+
+      <!-- EN -->
+      <div class="en-content">
+        <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>India's Free UPSC Practice Platform</div>
+        <h1 class="hero-heading">Your Dream of <span class="accent">IAS / IPS</span><br>Deserves a Fair Chance.</h1>
+        <p class="hero-subtext">Top-quality UPSC mock tests — completely free for your first 5 attempts. No coaching fees. No registration required. Built by an aspirant, for aspirants.</p>
+        <div class="hero-ctas">
+          <button class="btn-primary">🚀 Start Free Mock Test</button>
+          <button class="btn-secondary">📋 View Syllabus</button>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item">✅ <strong>100% Free</strong> first 5 tests</div>
+          <div class="trust-dot"></div>
+          <div class="trust-item">🇮🇳 <strong>Hindi + English</strong></div>
+          <div class="trust-dot"></div>
+          <div class="trust-item">📱 <strong>Mobile-first</strong></div>
+        </div>
+      </div>
+
+      <!-- HI -->
+      <div class="hi-content">
+        <div class="hero-eyebrow"><div class="hero-eyebrow-dot"></div>भारत का निःशुल्क UPSC अभ्यास मंच</div>
+        <h1 class="hero-heading-hi">आपका <span class="accent">IAS / IPS</span> का सपना<br>एक उचित मौके का हकदार है।</h1>
+        <p class="hero-subtext-hi">उच्च-गुणवत्ता के UPSC मॉक टेस्ट — पहले 5 प्रयासों के लिए बिल्कुल निःशुल्क। कोई कोचिंग फीस नहीं। कोई पंजीकरण आवश्यक नहीं। एक अभ्यर्थी द्वारा, अभ्यर्थियों के लिए बनाया गया।</p>
+        <div class="hero-ctas">
+          <button class="btn-primary">🚀 निःशुल्क मॉक टेस्ट शुरू करें</button>
+          <button class="btn-secondary">📋 पाठ्यक्रम देखें</button>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item">✅ पहले 5 परीक्षण <strong>निःशुल्क</strong></div>
+          <div class="trust-dot"></div>
+          <div class="trust-item">🇮🇳 <strong>हिंदी + अंग्रेजी</strong></div>
+          <div class="trust-dot"></div>
+          <div class="trust-item">📱 <strong>मोबाइल-फर्स्ट</strong></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="hero-right">
+      <!-- Mock preview -->
+      <div class="mock-preview">
+        <div class="mock-preview-header">
+          <span class="en-content">UPSC GS Paper I — Mock Test 1</span>
+          <span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;font-size:12px;">UPSC GS पेपर I — मॉक टेस्ट 1</span>
+          <div class="mock-progress-mini">
+            <div class="mock-progress-bar"><div class="mock-progress-fill"></div></div>
+            <span class="en-content">Q7/20</span>
+            <span class="hi-content">प्र.7/20</span>
+          </div>
+        </div>
+        <div class="mock-preview-body">
+          <div class="mock-q-label">
+            <span class="en-content">Indian Polity · Medium</span>
+            <span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">भारतीय राजनीति · मध्यम</span>
+          </div>
+          <div class="mock-q-text">
+            <span class="en-content">Which Article of the Constitution empowers Parliament to form new States or alter boundaries?</span>
+            <span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;line-height:1.7;">संविधान का कौन सा अनुच्छेद संसद को नए राज्य बनाने या सीमाएं बदलने का अधिकार देता है?</span>
+          </div>
+          <div class="mock-options">
+            <div class="mock-opt">
+              <span class="mock-opt-letter">A.</span>
+              <span class="en-content">Article 1</span>
+              <span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">अनुच्छेद 1</span>
+            </div>
+            <div class="mock-opt selected">
+              <span class="mock-opt-letter">B.</span>
+              <span class="en-content">Article 3</span>
+              <span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">अनुच्छेद 3</span>
+            </div>
+            <div class="mock-opt">
+              <span class="mock-opt-letter">C.</span>
+              <span class="en-content">Article 368</span>
+              <span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">अनुच्छेद 368</span>
+            </div>
+            <div class="mock-opt">
+              <span class="mock-opt-letter">D.</span>
+              <span class="en-content">Article 249</span>
+              <span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">अनुच्छेद 249</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-strip">
+        <div class="stat-card">
+          <div class="sc-icon">📋</div>
+          <span class="sc-val">500+</span>
+          <div class="sc-lbl"><span class="en-content">Questions</span><span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">प्रश्न</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-icon">📅</div>
+          <span class="sc-val">2011–24</span>
+          <div class="sc-lbl"><span class="en-content">PYQ Years</span><span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">PYQ वर्ष</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-icon">🆓</div>
+          <span class="sc-val">₹0</span>
+          <div class="sc-lbl"><span class="en-content">First 5 Tests</span><span class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif;">पहले 5 टेस्ट</span></div>
+        </div>
+      </div>
+
+      <!-- Founder note -->
+      <div class="founder-note">
+        <div class="founder-avatar">🙏</div>
+        <div class="founder-text">
+          <p class="en-content">"I attempted UPSC myself. I know how expensive and isolating the preparation can be. This platform exists so no aspirant ever has to choose between food and mock tests."</p>
+          <p class="hi-content">"मैंने खुद UPSC का प्रयास किया है। मुझे पता है यह तैयारी कितनी महंगी और थकाऊ हो सकती है। यह मंच इसलिए बना है कि कोई भी अभ्यर्थी खाने और मॉक टेस्ट के बीच चुनाव करने पर मजबूर न हो।"</p>
+          <div class="founder-sig">— Founder, PrepSaathi</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <section class="how-section" id="how">
+    <div class="inner">
+      <div class="reveal">
+        <div class="section-label">Simple Process</div>
+        <div class="en-content">
+          <h2 class="section-title">Start Practising in 3 Steps.<br>No Account Needed.</h2>
+          <p class="section-sub">We removed every barrier between you and your preparation. No email. No OTP. No payment. Just open and start.</p>
+        </div>
+        <div class="hi-content">
+          <h2 class="section-title-hi">3 चरणों में अभ्यास शुरू करें।<br>कोई अकाउंट नहीं चाहिए।</h2>
+          <p class="section-sub-hi">हमने आपकी तैयारी और आपके बीच की हर रुकावट हटा दी है। कोई ईमेल नहीं। कोई OTP नहीं। कोई भुगतान नहीं। बस खोलें और शुरू करें।</p>
+        </div>
+      </div>
+      <div class="steps-grid reveal">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-icon">🎯</div>
+          <div class="en-content"><div class="step-title">Choose Your Subject</div><div class="step-desc">Pick from Polity, History, Geography, Economy, Environment, Science & Tech, or International Relations — or take a full mixed mock.</div></div>
+          <div class="hi-content"><div class="step-title-hi">अपना विषय चुनें</div><div class="step-desc-hi">राजनीति, इतिहास, भूगोल, अर्थव्यवस्था, पर्यावरण, विज्ञान या अंतर्राष्ट्रीय संबंध — या पूर्ण मिश्रित मॉक लें।</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-icon">📝</div>
+          <div class="en-content"><div class="step-title">Attempt the Test</div><div class="step-desc">100 questions. UPSC marking scheme (+2 / -0.66). Real PYQ questions highlighted. Skip, revisit, and change answers freely.</div></div>
+          <div class="hi-content"><div class="step-title-hi">परीक्षा दें</div><div class="step-desc-hi">100 प्रश्न। UPSC मार्किंग स्कीम (+2 / -0.66)। असली PYQ प्रश्न हाइलाइट किए गए। स्वतंत्र रूप से छोड़ें, दोबारा देखें और उत्तर बदलें।</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-icon">📊</div>
+          <div class="en-content"><div class="step-title">Review & Learn</div><div class="step-desc">Every answer comes with a 5-sentence expert explanation — not just "correct/wrong" but WHY, with syllabus context and exam tips.</div></div>
+          <div class="hi-content"><div class="step-title-hi">समीक्षा करें और सीखें</div><div class="step-desc-hi">हर उत्तर के साथ 5-वाक्य की विशेषज्ञ व्याख्या — सिर्फ "सही/गलत" नहीं, बल्कि क्यों, पाठ्यक्रम संदर्भ और परीक्षा टिप्स के साथ।</div></div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <div class="step-icon">📈</div>
+          <div class="en-content"><div class="step-title">Track Your Progress</div><div class="step-desc">See your subject-wise strengths and weak areas after every test. Know exactly where to invest your study time.</div></div>
+          <div class="hi-content"><div class="step-title-hi">अपनी प्रगति ट्रैक करें</div><div class="step-desc-hi">हर परीक्षण के बाद विषयवार शक्ति और कमजोरी देखें। जानें कि अपना अध्ययन समय कहाँ लगाना है।</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FEATURES ══ -->
+  <section class="features-section" id="features">
+    <div class="inner">
+      <div class="reveal">
+        <div class="section-label">What Makes Us Different</div>
+        <div class="en-content">
+          <h2 class="section-title">Built for the Aspirant<br>Who Can't Afford to Fail.</h2>
+          <p class="section-sub">Every decision in this platform was made asking one question: "Does this help the student from Patna, Jaipur, or Nagpur who has no coaching support?"</p>
+        </div>
+        <div class="hi-content">
+          <h2 class="section-title-hi">उस अभ्यर्थी के लिए बना<br>जो असफल होने का खर्च नहीं उठा सकता।</h2>
+          <p class="section-sub-hi">इस मंच में हर निर्णय एक सवाल पूछकर लिया गया: "क्या यह पटना, जयपुर या नागपुर के उस छात्र की मदद करता है जिसके पास कोई कोचिंग सहायता नहीं है?"</p>
+        </div>
+      </div>
+      <div class="features-grid reveal">
+
+        <div class="feat-card">
+          <div class="feat-icon-wrap" style="background:rgba(232,83,26,0.15)">🆓</div>
+          <h3 class="en-content">First 5 Tests — Completely Free</h3>
+          <h3 class="hi hi-content">पहले 5 परीक्षण — बिल्कुल निःशुल्क</h3>
+          <p class="en-content">No credit card. No registration. No tricks. Full 100-question mock tests at zero cost for every new aspirant.</p>
+          <p class="hi hi-content">कोई क्रेडिट कार्ड नहीं। कोई पंजीकरण नहीं। कोई चाल नहीं। हर नए अभ्यर्थी के लिए शून्य लागत पर पूरे 100 प्रश्नों के मॉक टेस्ट।</p>
+          <span class="feat-tag tag-free">FREE FOREVER</span>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon-wrap" style="background:rgba(22,118,58,0.15)">🌐</div>
+          <h3 class="en-content">Hindi & English Both</h3>
+          <h3 class="hi hi-content">हिंदी और अंग्रेजी दोनों</h3>
+          <p class="en-content">Every question, every explanation available in both languages. Because your medium of study should never be a barrier.</p>
+          <p class="hi hi-content">हर प्रश्न, हर व्याख्या दोनों भाषाओं में उपलब्ध। क्योंकि आपका अध्ययन का माध्यम कभी बाधा नहीं बनना चाहिए।</p>
+          <span class="feat-tag tag-free">AVAILABLE NOW</span>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon-wrap" style="background:rgba(201,155,42,0.15)">📅</div>
+          <h3 class="en-content">Real PYQ Questions (2011–2024)</h3>
+          <h3 class="hi hi-content">असली PYQ प्रश्न (2011–2024)</h3>
+          <p class="en-content">Questions from actual UPSC papers are clearly labelled "UPSC CSE — Year". Know what the exam really asks.</p>
+          <p class="hi hi-content">वास्तविक UPSC पेपर के प्रश्न स्पष्ट रूप से "UPSC CSE — वर्ष" से लेबल किए गए हैं। जानें कि परीक्षा वास्तव में क्या पूछती है।</p>
+          <span class="feat-tag tag-free">INCLUDED FREE</span>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon-wrap" style="background:rgba(90,123,208,0.15)">🔍</div>
+          <h3 class="en-content">Deep Answer Explanations</h3>
+          <h3 class="hi hi-content">गहन उत्तर व्याख्या</h3>
+          <p class="en-content">Not just "Correct" — but WHY it's correct and why each wrong option is wrong. Written like a mentor, not a textbook.</p>
+          <p class="hi hi-content">सिर्फ "सही" नहीं — बल्कि क्यों सही है और हर गलत विकल्प क्यों गलत है। एक गुरु की तरह लिखा, पाठ्यपुस्तक की तरह नहीं।</p>
+          <span class="feat-tag tag-free">INCLUDED FREE</span>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon-wrap" style="background:rgba(16,118,200,0.15)">📱</div>
+          <h3 class="en-content">Works on Any Phone</h3>
+          <h3 class="hi hi-content">किसी भी फोन पर काम करता है</h3>
+          <p class="en-content">Designed mobile-first for ₹8,000 Android phones on 4G. No app download. Works directly in your browser.</p>
+          <p class="hi hi-content">4G पर ₹8,000 के Android फोन के लिए मोबाइल-फर्स्ट डिज़ाइन। कोई ऐप डाउनलोड नहीं। सीधे आपके ब्राउज़र में काम करता है।</p>
+          <span class="feat-tag tag-free">ALWAYS FREE</span>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon-wrap" style="background:rgba(150,50,200,0.15)">📊</div>
+          <h3 class="en-content">Subject-wise Analytics</h3>
+          <h3 class="hi hi-content">विषयवार विश्लेषण</h3>
+          <p class="en-content">After every test, see exactly which subjects to strengthen. Polity strong but Environment weak? We'll show you.</p>
+          <p class="hi hi-content">हर परीक्षण के बाद देखें कि कौन से विषयों को मजबूत करना है। राजनीति मजबूत लेकिन पर्यावरण कमजोर? हम आपको दिखाएंगे।</p>
+          <span class="feat-tag tag-soon">COMING SOON</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PRICING ══ -->
+  <section class="pricing-section" id="pricing">
+    <div class="inner">
+      <div class="reveal" style="text-align:center">
+        <div class="section-label">Transparent Pricing</div>
+        <div class="en-content">
+          <h2 class="section-title">Fair Pricing for Every Aspirant</h2>
+          <p class="section-sub" style="margin-left:auto;margin-right:auto;text-align:center">We will never put a paywall where a free option should exist. Period.</p>
+        </div>
+        <div class="hi-content">
+          <h2 class="section-title-hi">हर अभ्यर्थी के लिए उचित मूल्य</h2>
+          <p class="section-sub-hi" style="margin-left:auto;margin-right:auto;text-align:center">हम कभी भी वहाँ पेवॉल नहीं लगाएंगे जहाँ निःशुल्क विकल्प होना चाहिए।</p>
+        </div>
+      </div>
+      <div class="pricing-grid reveal">
+
+        <!-- FREE -->
+        <div class="price-card">
+          <div class="price-tier">Starter · निःशुल्क</div>
+          <div class="price-amount"><span class="curr">₹</span><span class="amt">0</span><span class="per">/forever</span></div>
+          <div class="price-tagline en-content">For every aspirant, always.</div>
+          <div class="price-tagline hi">हर अभ्यर्थी के लिए, हमेशा के लिए।</div>
+          <ul class="price-list">
+            <li><span class="check">✓</span><span class="en-content">5 Full Mock Tests (100 Qs each)</span><span class="hi-content">5 पूर्ण मॉक टेस्ट (100 प्रश्न प्रत्येक)</span></li>
+            <li><span class="check">✓</span><span class="en-content">All PYQ Questions (2011–2024)</span><span class="hi-content">सभी PYQ प्रश्न (2011–2024)</span></li>
+            <li><span class="check">✓</span><span class="en-content">Full answer explanations</span><span class="hi-content">पूर्ण उत्तर व्याख्या</span></li>
+            <li><span class="check">✓</span><span class="en-content">Hindi + English</span><span class="hi-content">हिंदी + अंग्रेजी</span></li>
+            <li><span class="check">✓</span><span class="en-content">No registration required</span><span class="hi-content">कोई पंजीकरण आवश्यक नहीं</span></li>
+          </ul>
+          <button class="price-btn price-btn-outline en-content">Start Free Now →</button>
+          <button class="price-btn price-btn-outline hi-content">अभी निःशुल्क शुरू करें →</button>
+        </div>
+
+        <!-- PRO -->
+        <div class="price-card featured">
+          <div class="price-badge en-content">Most Popular</div>
+          <div class="price-badge hi-content" style="display:none">सबसे लोकप्रिय</div>
+          <div class="price-tier">Aspirant Pro · प्रो</div>
+          <div class="price-amount"><span class="curr">₹</span><span class="amt">99</span><span class="per">/month</span></div>
+          <div class="price-tagline en-content">Less than a chai per day. ☕</div>
+          <div class="price-tagline hi">एक दिन की चाय से भी कम। ☕</div>
+          <ul class="price-list">
+            <li><span class="check">✓</span><span class="en-content">Unlimited Mock Tests</span><span class="hi-content">असीमित मॉक टेस्ट</span></li>
+            <li><span class="check">✓</span><span class="en-content">Full PYQ Bank (1,300+ questions)</span><span class="hi-content">पूर्ण PYQ बैंक (1,300+ प्रश्न)</span></li>
+            <li><span class="check">✓</span><span class="en-content">Subject-wise performance graphs</span><span class="hi-content">विषयवार प्रदर्शन ग्राफ</span></li>
+            <li><span class="check">✓</span><span class="en-content">State PCS tests (UPPSC, BPSC…)</span><span class="hi-content">राज्य PCS परीक्षण (UPPSC, BPSC…)</span></li>
+            <li><span class="check">✓</span><span class="en-content">Bookmark weak questions</span><span class="hi-content">कमजोर प्रश्न बुकमार्क करें</span></li>
+            <li><span class="check">✓</span><span class="en-content">Priority support</span><span class="hi-content">प्राथमिकता सहायता</span></li>
+          </ul>
+          <button class="price-btn price-btn-fill en-content">Get Pro for ₹99 →</button>
+          <button class="price-btn price-btn-fill hi-content">₹99 में प्रो पाएं →</button>
+        </div>
+
+        <!-- PRELIMS PACK -->
+        <div class="price-card">
+          <div class="price-tier">Prelims Pack · वन-टाइम</div>
+          <div class="price-amount"><span class="curr">₹</span><span class="amt">299</span><span class="per">one-time</span></div>
+          <div class="price-tagline en-content">Everything you need for Prelims.</div>
+          <div class="price-tagline hi">प्रीलिम्स के लिए जो चाहिए सब।</div>
+          <ul class="price-list">
+            <li><span class="check">✓</span><span class="en-content">All 20 Full Mock Tests</span><span class="hi-content">सभी 20 पूर्ण मॉक टेस्ट</span></li>
+            <li><span class="check">✓</span><span class="en-content">2013–2024 Complete PYQ Pack</span><span class="hi-content">2013–2024 पूर्ण PYQ पैक</span></li>
+            <li><span class="check">✓</span><span class="en-content">CSAT Paper 2 Practice</span><span class="hi-content">CSAT पेपर 2 अभ्यास</span></li>
+            <li><span class="check">✓</span><span class="en-content">Lifetime access, no subscription</span><span class="hi-content">आजीवन पहुंच, कोई सदस्यता नहीं</span></li>
+            <li><span class="check">✓</span><span class="en-content">Downloadable PDF summaries</span><span class="hi-content">डाउनलोड करने योग्य PDF सारांश</span></li>
+          </ul>
+          <button class="price-btn price-btn-outline en-content">Buy Prelims Pack →</button>
+          <button class="price-btn price-btn-outline hi-content">प्रीलिम्स पैक खरीदें →</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIALS ══ -->
+  <section class="testi-section">
+    <div class="inner">
+      <div class="reveal">
+        <div class="section-label">From Aspirants</div>
+        <div class="en-content">
+          <h2 class="section-title">What Students Are Saying</h2>
+          <p class="section-sub">Real voices from real aspirants across India — from small towns to metro cities.</p>
+        </div>
+        <div class="hi-content">
+          <h2 class="section-title-hi">छात्र क्या कह रहे हैं</h2>
+          <p class="section-sub-hi">पूरे भारत के वास्तविक अभ्यर्थियों की आवाजें — छोटे शहरों से महानगरों तक।</p>
+        </div>
+      </div>
+      <div class="testi-grid reveal">
+
+        <div class="testi-card">
+          <div class="testi-quote">"</div>
+          <p class="testi-text en-content">The explanation for each question is unlike anything I've seen on paid platforms. It actually teaches you, not just tells you the answer.</p>
+          <p class="testi-text hi hi-content">हर प्रश्न की व्याख्या वैसी है जो मैंने किसी भुगतान वाले मंच पर नहीं देखी। यह वास्तव में आपको सिखाता है, न कि सिर्फ उत्तर बताता है।</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#E8531A">R</div>
+            <div>
+              <div class="testi-name">Rahul Verma</div>
+              <div class="testi-from en-content">UPSC Aspirant · 3rd Attempt</div>
+              <div class="testi-from hi hi-content">UPSC अभ्यर्थी · तीसरा प्रयास</div>
+            </div>
+            <span class="testi-state">Patna, Bihar</span>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-quote">"</div>
+          <p class="testi-text en-content">Hindi medium students like me always felt left out on online platforms. PrepSaathi actually understands us. The Hindi translations are natural, not machine-translated.</p>
+          <p class="testi-text hi hi-content">हम जैसे हिंदी माध्यम के छात्र हमेशा ऑनलाइन प्लेटफॉर्म पर उपेक्षित महसूस करते थे। PrepSaathi वास्तव में हमें समझता है। हिंदी अनुवाद स्वाभाविक है, मशीनी नहीं।</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#16763A">P</div>
+            <div>
+              <div class="testi-name">Priya Tiwari</div>
+              <div class="testi-from en-content">Hindi Medium · 1st Attempt</div>
+              <div class="testi-from hi hi-content">हिंदी माध्यम · पहला प्रयास</div>
+            </div>
+            <span class="testi-state">Bhopal, MP</span>
+          </div>
+        </div>
+
+        <div class="testi-card">
+          <div class="testi-quote">"</div>
+          <p class="testi-text en-content">I used to spend ₹3,000/month on test series. The free tests here are honestly better quality. I can't believe this is free.</p>
+          <p class="testi-text hi hi-content">मैं टेस्ट सीरीज पर ₹3,000/माह खर्च करता था। यहाँ के निःशुल्क टेस्ट सच में बेहतर गुणवत्ता के हैं। मुझे विश्वास नहीं हो रहा कि यह मुफ्त है।</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#0F2044">A</div>
+            <div>
+              <div class="testi-name">Ankit Sharma</div>
+              <div class="testi-from en-content">Self-study · Rajasthan</div>
+              <div class="testi-from hi hi-content">स्व-अध्ययन · राजस्थान</div>
+            </div>
+            <span class="testi-state">Jaipur, RJ</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CTA BAND ══ -->
+  <div class="cta-band">
+    <h2 class="en-content">Your IAS Dream Starts Today.<br>For Free.</h2>
+    <h2 class="hi hi-content">आपका IAS सपना आज शुरू होता है।<br>निःशुल्क।</h2>
+    <p class="en-content">No registration. No payment. No excuses. Just open the test and begin. Your preparation deserves a fair start.</p>
+    <p class="hi hi-content">कोई पंजीकरण नहीं। कोई भुगतान नहीं। कोई बहाना नहीं। बस परीक्षा खोलें और शुरू करें। आपकी तैयारी एक उचित शुरुआत की हकदार है।</p>
+    <div class="cta-btns">
+      <button class="cta-btn-white en-content">🚀 Start Free Mock Test</button>
+      <button class="cta-btn-white hi-content">🚀 निःशुल्क मॉक टेस्ट शुरू करें</button>
+      <button class="cta-btn-ghost en-content">📋 View Full Syllabus</button>
+      <button class="cta-btn-ghost hi-content">📋 पूरा पाठ्यक्रम देखें</button>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:0">
+            <div class="nav-logo-icon">🏛️</div>
+            <div class="nav-logo-text">
+              <strong style="color:white">PrepSaathi</strong>
+              <small>UPSC · IAS · IPS · IFS</small>
+            </div>
+          </div>
+          <p class="en-content">Built with love by an aspirant who understands the struggle. PrepSaathi exists so that financial constraints never stop a deserving student from clearing UPSC.</p>
+          <p class="hi hi-content">एक ऐसे अभ्यर्थी द्वारा प्यार से बनाया गया जो संघर्ष को समझता है। PrepSaathi इसलिए है ताकि आर्थिक बाधाएं कभी किसी योग्य छात्र को UPSC पास करने से न रोकें।</p>
+        </div>
+        <div class="footer-col">
+          <h4>Practice</h4>
+          <ul>
+            <li><a href="#" class="en-content">Free Mock Tests</a><a href="#" class="hi-content">निःशुल्क मॉक टेस्ट</a></li>
+            <li><a href="#" class="en-content">PYQ Bank</a><a href="#" class="hi-content">PYQ बैंक</a></li>
+            <li><a href="#" class="en-content">Subject Tests</a><a href="#" class="hi-content">विषय परीक्षण</a></li>
+            <li><a href="#" class="en-content">CSAT Practice</a><a href="#" class="hi-content">CSAT अभ्यास</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Syllabus</h4>
+          <ul>
+            <li><a href="#">Polity / राजनीति</a></li>
+            <li><a href="#">History / इतिहास</a></li>
+            <li><a href="#">Geography / भूगोल</a></li>
+            <li><a href="#">Economy / अर्थव्यवस्था</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>About</h4>
+          <ul>
+            <li><a href="#" class="en-content">Our Story</a><a href="#" class="hi-content">हमारी कहानी</a></li>
+            <li><a href="#" class="en-content">Contact Us</a><a href="#" class="hi-content">संपर्क करें</a></li>
+            <li><a href="#" class="en-content">Contribute Questions</a><a href="#" class="hi-content">प्रश्न योगदान दें</a></li>
+            <li><a href="#">Telegram Group</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="en-content">© 2025 PrepSaathi · Made in India 🇮🇳 · For every aspirant who dares to dream</p>
+        <p class="hi hi-content">© 2025 PrepSaathi · भारत में बना 🇮🇳 · हर उस अभ्यर्थी के लिए जो सपने देखने का साहस रखता है</p>
+        <p class="footer-mission en-content">"Empowering aspirants, one question at a time."</p>
+        <p class="footer-mission hi-content">"एक प्रश्न से एक बार में अभ्यर्थियों को सशक्त बनाना।"</p>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+// ── LANGUAGE TOGGLE ──────────────────────────────────────────────────────────
+function setLang(lang) {
+  const body = document.body;
+  const btnEn = document.getElementById('btnEn');
+  const btnHi = document.getElementById('btnHi');
+  if (lang === 'hi') {
+    body.classList.add('lang-hindi');
+    btnHi.classList.add('active');
+    btnEn.classList.remove('active');
+    document.documentElement.lang = 'hi';
+    // show hi price badge
+    document.querySelectorAll('.price-badge.hi-content').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.price-badge.en-content').forEach(el => el.style.display = 'none');
+  } else {
+    body.classList.remove('lang-hindi');
+    btnEn.classList.add('active');
+    btnHi.classList.remove('active');
+    document.documentElement.lang = 'en';
+    document.querySelectorAll('.price-badge.en-content').forEach(el => el.style.display = 'block');
+    document.querySelectorAll('.price-badge.hi-content').forEach(el => el.style.display = 'none');
+  }
+}
+
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+// ── MOCK PREVIEW INTERACTION ───────────────────────────────────────────────────
+document.querySelectorAll('.mock-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.mock-opt').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+  });
+});
+
+// ── SMOOTH NAV SCROLL ─────────────────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', e => {
+    const target = document.querySelector(anchor.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+</body>
+</html>

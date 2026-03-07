@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPSC Civil Services Prelims Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0d1b2a;
+  --navy2: #1b2d42;
+  --saffron: #e87722;
+  --saffron2: #f59530;
+  --gold: #c9a84c;
+  --gold2: #e8c97a;
+  --white: #f8f5ef;
+  --white2: #ede8df;
+  --green: #22723a;
+  --green2: #2fa052;
+  --green-bg: #e8f5ed;
+  --green-border: #a8d8b4;
+  --red: #c0392b;
+  --red-bg: #fdecea;
+  --muted: #7a8694;
+  --shadow: 0 8px 32px rgba(13,27,42,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--navy);
+  min-height: 100vh;
+  font-family: 'Source Sans 3', sans-serif;
+  color: var(--navy);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 0%, #1b3a5c 0%, transparent 70%),
+    repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.012) 60px, rgba(255,255,255,0.012) 61px);
+  padding: 0 0 60px;
+}
+
+/* ── HEADER ── */
+.site-header {
+  background: linear-gradient(135deg, var(--navy2) 0%, #0d1b2a 100%);
+  border-bottom: 3px solid var(--saffron);
+  padding: 18px 24px 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.emblem { font-size: 36px; line-height: 1; }
+.site-title { flex: 1; }
+.site-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(15px, 2.5vw, 22px);
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.site-title p {
+  font-size: 12px;
+  color: var(--gold2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.header-badge {
+  background: var(--saffron);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 2px;
+}
+
+/* ── CONTAINER ── */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 20px 0;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+/* ── START SCREEN ── */
+.start-screen { padding: 0; }
+.start-hero {
+  background: linear-gradient(135deg, var(--navy2), #0d1b2a);
+  padding: 40px 40px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.start-hero::before {
+  content: '⚖️ 🏛️ 📜';
+  position: absolute;
+  font-size: 120px;
+  opacity: 0.04;
+  top: -20px; right: -20px;
+  letter-spacing: -20px;
+}
+.start-hero h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 4vw, 36px);
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.start-hero p { color: var(--gold2); font-size: 15px; font-style: italic; }
+
+.start-body { padding: 32px 36px 36px; }
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.info-box {
+  background: var(--white2);
+  border: 1px solid #ddd5c5;
+  border-radius: 6px;
+  padding: 16px;
+  text-align: center;
+}
+.info-box .ib-icon { font-size: 26px; margin-bottom: 6px; }
+.info-box .ib-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+}
+.info-box .ib-lbl { font-size: 12px; color: var(--muted); margin-top: 3px; letter-spacing: 1px; text-transform: uppercase; }
+
+.marking-box {
+  background: #fff8ee;
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: var(--navy);
+  line-height: 1.6;
+}
+.marking-box strong { color: var(--saffron); }
+
+.syllabus-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.stag {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.stag-polity  { background: #e8eeff; color: #2c4cc0; }
+.stag-history { background: #fef0e0; color: #8b4500; }
+.stag-geo     { background: #e0f5e8; color: #1a6630; }
+.stag-eco     { background: #fce8e8; color: #8b1a1a; }
+.stag-env     { background: #e0f4f0; color: #1a6655; }
+.stag-sci     { background: #f0e8ff; color: #5a1ab5; }
+.stag-ir      { background: #fff0e8; color: #8b4000; }
+
+.pyq-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--green-bg);
+  border: 1.5px solid var(--green-border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 28px;
+  font-size: 14px;
+  color: var(--green);
+}
+.pyq-dot { width: 14px; height: 14px; border-radius: 3px; background: var(--green); flex-shrink: 0; }
+
+.start-btn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(232,119,34,0.35);
+}
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(232,119,34,0.45);
+}
+
+/* ── QUIZ SCREEN ── */
+.quiz-topbar {
+  background: var(--navy2);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.qbar-item { text-align: center; }
+.qbar-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold2);
+  line-height: 1;
+}
+.qbar-lbl { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+.qbar-neg { color: #e87070; }
+
+.progress-bar-wrap { padding: 0; }
+.progress-bar-bg {
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+}
+.progress-bar-fill {
+  height: 4px;
+  background: linear-gradient(to right, var(--saffron), var(--saffron2));
+  transition: width 0.5s ease;
+}
+
+.question-body { padding: 28px 32px 24px; }
+
+/* PYQ badge */
+.pyq-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--green-bg);
+  border: 1.5px solid var(--green-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--green);
+  font-weight: 600;
+}
+.pyq-badge {
+  background: var(--green);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 9px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.q-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.q-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.q-subject-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+.diff-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 3px;
+  margin-left: auto;
+}
+.diff-easy   { background: #e8f5ed; color: #1a6630; }
+.diff-medium { background: #fff4e0; color: #8b5000; }
+.diff-hard   { background: #fdecea; color: #8b1a1a; }
+
+.question-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(16px, 2.5vw, 20px);
+  color: var(--navy);
+  line-height: 1.5;
+  margin-bottom: 24px;
+  font-weight: 400;
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.opt-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--white2);
+  border: 1.5px solid #ddd5c5;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 15px;
+  color: var(--navy);
+  text-align: left;
+  transition: all 0.15s;
+  line-height: 1.45;
+}
+.opt-btn:hover:not(:disabled) {
+  background: #fff4e6;
+  border-color: var(--saffron);
+  transform: translateX(4px);
+}
+.opt-letter {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--saffron);
+  min-width: 22px;
+  margin-top: 1px;
+}
+.opt-btn:disabled { cursor: default; }
+.opt-btn.selected-correct {
+  background: var(--green-bg);
+  border-color: var(--green2);
+  color: var(--navy);
+}
+.opt-btn.selected-correct .opt-letter { color: var(--green); }
+.opt-btn.selected-wrong {
+  background: var(--red-bg);
+  border-color: var(--red);
+  opacity: 0.85;
+}
+.opt-btn.selected-wrong .opt-letter { color: var(--red); }
+.opt-btn.show-correct {
+  background: var(--green-bg);
+  border-color: var(--green-border);
+}
+.opt-btn.show-correct .opt-letter { color: var(--green); }
+
+.answer-indicator {
+  margin-left: auto;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Nav buttons */
+.quiz-nav {
+  padding: 0 32px 28px;
+  display: flex;
+  gap: 12px;
+}
+.btn-skip {
+  padding: 12px 24px;
+  background: transparent;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Source Sans 3', sans-serif;
+}
+.btn-skip:hover { border-color: var(--navy); color: var(--navy); }
+.btn-next {
+  flex: 1;
+  padding: 12px 24px;
+  background: var(--navy);
+  color: var(--gold2);
+  border: none;
+  border-radius: 6px;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+  pointer-events: none;
+}
+.btn-next.active { opacity: 1; pointer-events: all; }
+.btn-next:hover { background: var(--navy2); }
+
+/* Answered tracker */
+.answered-tracker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 32px 16px;
+}
+.tracker-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--white2);
+  border: 1.5px solid #ddd5c5;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tracker-dot.current { border-color: var(--saffron); color: var(--saffron); background: #fff5ea; }
+.tracker-dot.answered-n { background: #eef2ff; border-color: #5a7bd0; color: #2c4cc0; }
+.tracker-dot.answered-c { background: var(--green-bg); border-color: var(--green2); color: var(--green); }
+.tracker-dot.answered-w { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+.tracker-dot.skipped { background: #f5f0e8; border-color: #c8b88a; color: #8b7a55; }
+
+/* ── RESULTS SCREEN ── */
+.results-header {
+  background: linear-gradient(135deg, var(--navy2), #0d1b2a);
+  padding: 36px 32px 28px;
+  text-align: center;
+}
+.results-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 3vw, 30px);
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.results-header p { color: var(--gold2); font-style: italic; font-size: 14px; }
+
+.score-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  padding: 28px 32px 0;
+  flex-wrap: wrap;
+}
+.score-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid var(--saffron);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 8px var(--saffron2);
+  background: white;
+}
+.score-ring .sr-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1;
+}
+.score-ring .sr-denom { font-size: 13px; color: var(--muted); }
+
+.score-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  min-width: 200px;
+}
+.ss-item { text-align: center; padding: 12px; background: var(--white2); border-radius: 6px; }
+.ss-val { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1; }
+.ss-lbl { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
+.ss-green .ss-val { color: var(--green); }
+.ss-red .ss-val { color: var(--red); }
+.ss-orange .ss-val { color: var(--saffron); }
+.ss-blue .ss-val { color: #2c4cc0; }
+
+.rank-banner {
+  margin: 24px 32px 0;
+  padding: 16px 20px;
+  border-radius: 6px;
+  text-align: center;
+  border: 2px solid;
+}
+.rank-banner .rank-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.rank-banner p { font-size: 14px; font-style: italic; }
+.rank-gold { background: #fffbf0; border-color: var(--gold); color: #7a5a00; }
+.rank-green { background: var(--green-bg); border-color: var(--green2); color: var(--green); }
+.rank-orange { background: #fff5ea; border-color: var(--saffron); color: #8b4500; }
+.rank-muted { background: var(--white2); border-color: #ccc; color: var(--muted); }
+
+/* Review section */
+.review-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--navy);
+  padding: 28px 32px 16px;
+  border-top: 1px solid #e0d8cc;
+  margin-top: 24px;
+}
+
+.review-item {
+  margin: 0 32px 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid #ddd5c5;
+}
+.review-item.pyq-item {
+  border: 2px solid var(--green-border);
+}
+.review-header {
+  padding: 14px 18px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.review-header.correct-h { background: var(--green-bg); border-bottom: 1px solid var(--green-border); }
+.review-header.wrong-h   { background: var(--red-bg);   border-bottom: 1px solid #f0c0be; }
+.review-header.skipped-h { background: #fdf8ee; border-bottom: 1px solid #e8d8aa; }
+
+.ri-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.ri-q {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: var(--navy);
+  line-height: 1.4;
+  flex: 1;
+}
+.ri-result {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.pyq-mini-badge {
+  background: var(--green);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.review-body { padding: 14px 18px 16px; background: white; }
+.answer-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.ar-item label {
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.ar-correct { color: var(--green); font-weight: 600; }
+.ar-wrong   { color: var(--red);   font-weight: 600; }
+.ar-skip    { color: #8b7a55;      font-style: italic; }
+
+.explanation-box {
+  background: var(--white2);
+  border-left: 3px solid var(--saffron);
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--navy);
+  border-radius: 0 4px 4px 0;
+}
+.explanation-box strong { color: var(--saffron); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+
+.result-actions {
+  padding: 24px 32px 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-replay {
+  flex: 1;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(232,119,34,0.3);
+}
+.btn-replay:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,119,34,0.4); }
+
+/* ── MODAL OVERLAY ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,27,42,0.75);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeOverlay 0.2s ease forwards;
+}
+@keyframes fadeOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.modal-box {
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  max-width: 480px;
+  width: 100%;
+  overflow: hidden;
+  animation: modalPop 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes modalPop {
+  from { opacity:0; transform: scale(0.92) translateY(16px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.modal-header {
+  background: linear-gradient(135deg, var(--navy2), var(--navy));
+  padding: 24px 28px 20px;
+  text-align: center;
+}
+.modal-header .modal-icon { font-size: 40px; margin-bottom: 8px; display: block; }
+.modal-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.modal-header p { font-size: 13px; color: var(--gold2); font-style: italic; }
+
+.modal-stats {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.modal-stat {
+  flex: 1;
+  padding: 12px 8px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.modal-stat:last-child { border-right: none; }
+.modal-stat .ms-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+.modal-stat .ms-lbl { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; opacity: 0.7; }
+.ms-answered .ms-val { color: var(--saffron2); }
+.ms-skipped  .ms-val { color: #f0d080; }
+.ms-left     .ms-val { color: #a8d8b4; }
+
+.modal-body { padding: 24px 28px; }
+.modal-body p {
+  font-size: 14px;
+  color: var(--navy);
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.modal-actions { display: flex; flex-direction: column; gap: 10px; }
+
+.mbtn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.15s;
+  text-align: left;
+  width: 100%;
+}
+.mbtn-icon { font-size: 22px; flex-shrink: 0; }
+.mbtn-text { flex: 1; }
+.mbtn-text span { display: block; font-size: 12px; font-weight: 400; opacity: 0.75; margin-top: 2px; }
+
+.mbtn-finish {
+  background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+  color: white;
+  box-shadow: 0 4px 14px rgba(232,119,34,0.35);
+}
+.mbtn-finish:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,119,34,0.45); }
+
+.mbtn-skipped {
+  background: var(--green-bg);
+  border: 1.5px solid var(--green-border);
+  color: var(--green);
+}
+.mbtn-skipped:hover { background: #d4eddb; }
+
+.mbtn-back {
+  background: var(--white2);
+  border: 1.5px solid #ddd5c5;
+  color: var(--navy);
+}
+.mbtn-back:hover { background: #e0d8cc; }
+
+.skipped-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+.skipped-pill {
+  background: #fff4e6;
+  border: 1.5px solid var(--saffron);
+  color: var(--saffron);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+/* ── NEUTRAL SELECTED OPTION (no correct/wrong reveal during quiz) ── */
+.opt-btn.selected-neutral {
+  background: #eef2ff;
+  border-color: #5a7bd0;
+  color: var(--navy);
+}
+.opt-btn.selected-neutral .opt-letter { color: #2c4cc0; }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(16px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.4s ease forwards; }
+
+/* Mobile */
+@media (max-width:560px) {
+  .question-body { padding: 20px 16px 16px; }
+  .quiz-nav { padding: 0 16px 20px; }
+  .answered-tracker { padding: 8px 16px 12px; }
+  .review-item { margin: 0 16px 16px; }
+  .review-title { padding: 24px 16px 12px; }
+  .result-actions { padding: 16px 16px 24px; }
+  .start-body { padding: 24px 20px 24px; }
+  .score-display { gap: 20px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="emblem">🏛️</div>
+  <div class="site-title">
+    <h1>UPSC Civil Services Prelims</h1>
+    <p>General Studies · Mock Practice Quiz</p>
+  </div>
+  <div class="header-badge">IAS · IPS · IFS</div>
+</header>
+
+<div class="container" id="app"></div>
+
+<script>
+// ─── QUESTION BANK ────────────────────────────────────────────────────────────
+// PYQ = appeared in actual UPSC Prelims paper
+// subjectClass matches CSS classes: polity, history, geo, eco, env, sci, ir
+const QUESTIONS = [
+  // ── POLITY ──
+  {
+    id:1, subject:"Indian Polity", subjectClass:"polity", difficulty:"medium",
+    pyq:true, pyqYear:2023,
+    q:"With reference to the Constitution of India, consider the following statements:\n1. No High Court shall have the jurisdiction in matters relating to the elections to the Panchayats and Municipalities.\n2. The Supreme Court of India has the power to review its own judgement or Order.\nWhich of the statements given above is/are correct?",
+    options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    answer:1,
+    explanation:"Article 243-O of the Constitution bars the jurisdiction of courts in matters relating to elections to Panchayats, not the High Courts alone. Courts (including High Courts) are barred from interference. However, Article 137 explicitly grants the Supreme Court the power to review any judgement or order made by it. Statement 1 is incorrect because it specifically says 'No High Court' — the restriction is broader. Statement 2 is correct. Hence only Statement 2 is correct."
+  },
+  {
+    id:2, subject:"Indian Polity", subjectClass:"polity", difficulty:"hard",
+    pyq:false,
+    q:"Which of the following is NOT a constitutional body in India?",
+    options:["Union Public Service Commission","National Human Rights Commission","Election Commission of India","Finance Commission"],
+    answer:1,
+    explanation:"The National Human Rights Commission (NHRC) is a statutory body established under the Protection of Human Rights Act, 1993 — not a constitutional body. In contrast, the Union Public Service Commission (Article 315), Election Commission (Article 324), and Finance Commission (Article 280) are all constitutional bodies established under specific provisions of the Indian Constitution. This distinction is critical for UPSC aspirants and frequently tested."
+  },
+  {
+    id:3, subject:"Indian Polity", subjectClass:"polity", difficulty:"medium",
+    pyq:true, pyqYear:2022,
+    q:"Consider the following statements:\n1. The Speaker of the Lok Sabha can allow a 'no-confidence motion' against the Deputy Speaker.\n2. The Deputy Speaker has the same immunities as the Speaker of the Lok Sabha.\nWhich of the statements given above is/are correct?",
+    options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    answer:2,
+    explanation:"Both statements are correct. Under Article 179 of the Constitution, the Deputy Speaker can be removed by a resolution of the Lok Sabha, and the Speaker has the power to admit and allow discussion of such motions. Under Article 180, the Deputy Speaker performs all the functions of the Speaker when the Speaker's office is vacant or the Speaker is absent, and has the same constitutional immunities and privileges as the Speaker when acting in that capacity."
+  },
+  {
+    id:4, subject:"Indian Polity", subjectClass:"polity", difficulty:"easy",
+    pyq:false,
+    q:"Which Article of the Indian Constitution provides for the formation of a new State or alteration of boundaries of existing States?",
+    options:["Article 1","Article 2","Article 3","Article 4"],
+    answer:2,
+    explanation:"Article 3 of the Indian Constitution empowers Parliament to form new States, increase or diminish the area of States, alter the boundaries of States, and alter the names of States. This is done by passing a simple majority bill. Article 1 defines India as a Union of States. Article 2 deals with Parliament's power to admit or establish new States. Article 4 provides that laws made under Articles 2 and 3 shall not be deemed constitutional amendments."
+  },
+
+  // ── HISTORY ──
+  {
+    id:5, subject:"Modern History", subjectClass:"history", difficulty:"medium",
+    pyq:true, pyqYear:2021,
+    q:"With reference to Indian history, the Members of the Constituent Assembly from the Princely States were:",
+    options:["Elected by the Legislative Assemblies of the Princely States","Nominated by the Indian National Congress","Elected by the people of Princely States directly","Nominated by the rulers of the Princely States"],
+    answer:3,
+    explanation:"The members representing Princely States in the Constituent Assembly were nominated by the rulers (princes) of those states, not elected. The Indian Independence Act, 1947 gave Princely States the option to join the Constituent Assembly, and those who chose to do so nominated their representatives. This is in contrast to the British India provinces where members were elected by the Provincial Legislative Assemblies through indirect elections."
+  },
+  {
+    id:6, subject:"Ancient History & Culture", subjectClass:"history", difficulty:"hard",
+    pyq:true, pyqYear:2020,
+    q:"With reference to the period of Gupta dynasty in ancient India, the towns known as 'Nagara' were:",
+    options:["Capitals of the Gupta empire","Commercial centres at river confluences","Fortified towns at strategic pass locations","Religious centres built around temples"],
+    answer:1,
+    explanation:"In the Gupta period, 'Nagara' referred to major urban centers that served as provincial capitals or administrative headquarters of the Gupta empire. These were distinct from smaller market towns ('Nigama') or pilgrimage centers. The Gupta age saw significant urbanization with towns like Pataliputra, Ujjain, and Vaishali serving as major Nagaras. This administrative classification is frequently discussed in the context of Gupta administration in UPSC history syllabi."
+  },
+  {
+    id:7, subject:"Modern History", subjectClass:"history", difficulty:"medium",
+    pyq:false,
+    q:"Which of the following events occurred FIRST in the Indian freedom struggle?",
+    options:["Dandi March","Non-Cooperation Movement","Quit India Movement","Khilafat Movement"],
+    answer:3,
+    explanation:"The Khilafat Movement began in 1919–1920, making it the earliest among the given options. The Non-Cooperation Movement was launched by Gandhi in 1920 (closely aligned with Khilafat). The Dandi March occurred in 1930, and the Quit India Movement was launched in August 1942. The Khilafat Movement was led by Ali Brothers (Mohammad Ali and Shaukat Ali) to defend the Ottoman Caliphate, and Gandhi merged it with the Non-Cooperation Movement to unite Hindu-Muslim solidarity."
+  },
+
+  // ── GEOGRAPHY ──
+  {
+    id:8, subject:"Geography", subjectClass:"geo", difficulty:"medium",
+    pyq:true, pyqYear:2024,
+    q:"Consider the following pairs:\nRiver — Country it passes through before entering India\n1. Indus — China\n2. Brahmaputra — China\n3. Mekong — Myanmar\nHow many of the above pairs are correctly matched?",
+    options:["Only one","Only two","All three","None"],
+    answer:2,
+    explanation:"All three pairs are correctly matched. The Indus originates in Tibet (China) near Lake Mansarovar and flows through China and then Pakistan-administered Kashmir before entering India. The Brahmaputra originates in Tibet (China) as the Yarlung Tsangpo and enters India through Arunachal Pradesh. The Mekong (known as Lancang in China) flows through China, Myanmar, Laos, Thailand, Cambodia, and Vietnam — it passes through Myanmar before reaching the sea, not India. All three pairs are correctly matched."
+  },
+  {
+    id:9, subject:"Geography", subjectClass:"geo", difficulty:"easy",
+    pyq:false,
+    q:"The Deccan Plateau in India is bounded on the west by which mountain range?",
+    options:["Eastern Ghats","Satpura Range","Western Ghats","Vindhya Range"],
+    answer:2,
+    explanation:"The Deccan Plateau is bounded on the west by the Western Ghats, which run parallel to the western coast of India from Gujarat to Tamil Nadu. The Eastern Ghats form the eastern boundary of the Deccan Plateau, though they are more discontinuous. The Western Ghats are a UNESCO World Heritage Site and act as a water divide — rivers like the Godavari, Krishna, and Cauvery originate here and flow eastward across the Deccan Plateau."
+  },
+  {
+    id:10, subject:"Geography", subjectClass:"geo", difficulty:"hard",
+    pyq:true, pyqYear:2023,
+    q:"With reference to 'Global Climate Change Alliance', which of the following statements is/are correct?\n1. It is an initiative of the European Union.\n2. It targets the Least Developed Countries and Small Island Developing States.\nSelect the correct answer:",
+    options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    answer:2,
+    explanation:"Both statements are correct. The Global Climate Change Alliance (GCCA) was launched by the European Commission in 2007. It was specifically designed to support the Least Developed Countries (LDCs) and Small Island Developing States (SIDS), which are among the most vulnerable to climate change yet have contributed the least to greenhouse gas emissions. GCCA provides technical and financial assistance to help these nations adapt to climate change and integrate it into development strategies."
+  },
+
+  // ── ECONOMY ──
+  {
+    id:11, subject:"Indian Economy", subjectClass:"eco", difficulty:"hard",
+    pyq:true, pyqYear:2022,
+    q:"With reference to India's economy, consider the following statements:\n1. Commercial Paper is a short-term unsecured promissory note issued by financial and non-financial corporations.\n2. 'Yield Curve' shows the relationship between bond yields and maturities.\nWhich of the statements given above is/are correct?",
+    options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    answer:2,
+    explanation:"Both statements are correct. Commercial Paper (CP) is indeed a short-term unsecured money market instrument issued by both financial and non-financial corporations to raise funds for a short duration. A Yield Curve is a graphical representation that shows the relationship between interest rates (yields) and different maturity dates for bonds of equivalent credit quality. In India, government securities yield curves are closely tracked by the RBI and financial institutions. Both are standard instruments in Indian money markets."
+  },
+  {
+    id:12, subject:"Indian Economy", subjectClass:"eco", difficulty:"medium",
+    pyq:false,
+    q:"The concept of 'Minimum Support Price' (MSP) in India is related to which sector?",
+    options:["Industrial goods","Agricultural commodities","Export services","Banking sector deposits"],
+    answer:1,
+    explanation:"Minimum Support Price (MSP) is a government-set price floor for agricultural commodities in India. It is announced by the Government of India on the recommendation of the Commission for Agricultural Costs and Prices (CACP) before the sowing season. MSP ensures farmers receive a guaranteed minimum price for their crops, protecting them from price crashes. Currently, MSP is announced for 23 major crops including cereals, pulses, oilseeds, and commercial crops like cotton and sugarcane."
+  },
+
+  // ── ENVIRONMENT ──
+  {
+    id:13, subject:"Environment & Ecology", subjectClass:"env", difficulty:"medium",
+    pyq:true, pyqYear:2023,
+    q:"'Bioremediation' is a process used for which of the following purposes?",
+    options:["Developing genetically modified organisms","Using organisms to remove or neutralize pollutants","Enhancing biodiversity in protected areas","Cultivating rare medicinal plants in laboratory conditions"],
+    answer:1,
+    explanation:"Bioremediation is a waste management technique that uses living organisms — primarily bacteria, fungi, algae, and plants — to neutralize or remove pollutants from a contaminated environment. It is widely used to clean up oil spills, heavy metal contamination, and industrial effluents. Phytoremediation is a specific type using plants. The process is eco-friendly and cost-effective compared to physical or chemical remediation methods. UPSC has increasingly focused on such environment-related biotechnology concepts."
+  },
+  {
+    id:14, subject:"Environment & Ecology", subjectClass:"env", difficulty:"hard",
+    pyq:false,
+    q:"The 'Nagoya Protocol' which entered into force in 2014 deals with:",
+    options:["Reduction of carbon emissions from aviation","Access and benefit sharing of genetic resources","Protection of migratory bird species","Control of persistent organic pollutants"],
+    answer:1,
+    explanation:"The Nagoya Protocol on Access to Genetic Resources and the Fair and Equitable Sharing of Benefits Arising from their Utilization is a supplementary agreement to the Convention on Biological Diversity (CBD). Adopted in 2010 in Nagoya, Japan, and entered into force in October 2014, it provides a framework for the fair sharing of benefits arising from the use of genetic resources. It aims to prevent biopiracy and ensures that genetic resources are accessed with proper consent from the providing country."
+  },
+
+  // ── SCIENCE & TECHNOLOGY ──
+  {
+    id:15, subject:"Science & Technology", subjectClass:"sci", difficulty:"medium",
+    pyq:true, pyqYear:2024,
+    q:"Consider the following statements regarding 'mRNA Vaccine Technology':\n1. mRNA vaccines introduce a piece of genetic code that instructs cells to produce an antigen.\n2. mRNA integrates into the human cell's DNA permanently.\nWhich of the statements given above is/are correct?",
+    options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    answer:0,
+    explanation:"Only Statement 1 is correct. mRNA (messenger RNA) vaccines work by introducing a synthetic piece of mRNA that provides instructions to the body's cells to produce an antigen — in the case of COVID-19 vaccines, the spike protein of the SARS-CoV-2 virus. The immune system then recognizes this protein and builds a defense. Statement 2 is incorrect: mRNA does NOT integrate into the human DNA. The mRNA breaks down within days after entering the cell, without ever entering the cell nucleus."
+  },
+
+  // ── INTERNATIONAL RELATIONS ──
+  {
+    id:16, subject:"International Relations", subjectClass:"ir", difficulty:"medium",
+    pyq:true, pyqYear:2021,
+    q:"The 'Wassenaar Arrangement' is:",
+    options:["A nuclear non-proliferation treaty among South Asian nations","A multilateral export control regime for conventional arms and dual-use goods","A climate change agreement between G-7 nations","A financial stability framework under the World Bank"],
+    answer:1,
+    explanation:"The Wassenaar Arrangement on Export Controls for Conventional Arms and Dual-Use Goods and Technologies is a multilateral export control regime. Established in 1996 and headquartered in Vienna, Austria, it aims to prevent destabilizing accumulations of arms and dual-use goods. India was admitted to the Wassenaar Arrangement in December 2017, a milestone in India's recognition as a responsible nuclear and arms-trade state. It works alongside other export control regimes like NSG, MTCR, and the Australia Group."
+  },
+  {
+    id:17, subject:"International Relations", subjectClass:"ir", difficulty:"hard",
+    pyq:false,
+    q:"With reference to India's nuclear doctrine, 'No First Use' (NFU) policy means India:",
+    options:["Will not develop nuclear weapons","Will use nuclear weapons only as retaliation to a nuclear strike on Indian territory","Will not conduct nuclear tests under any circumstances","Will share nuclear technology only with NPT signatories"],
+    answer:1,
+    explanation:"India's 'No First Use' (NFU) nuclear doctrine, first articulated in 1999 and reaffirmed in 2003, means India will NOT be the first to use nuclear weapons in any conflict. However, India reserves the right to massive retaliation if nuclear weapons are used against India or Indian forces anywhere. NFU is a core tenet of India's nuclear policy. India is one of the few nuclear-armed states with an explicit NFU doctrine, alongside China. The doctrine also mentions 'credible minimum deterrence' as its foundation."
+  },
+
+  // ── ART & CULTURE ──
+  {
+    id:18, subject:"Art & Culture", subjectClass:"history", difficulty:"hard",
+    pyq:true, pyqYear:2020,
+    q:"With reference to the 'Nayanmars' in ancient India, consider the following statements:\n1. The Nayanmars were Tamil Shaivite saints whose compositions are known as 'Tevaram'.\n2. The literary works of the Nayanmars were compiled and preserved in the 'Tirumurai'.\nWhich of the statements is/are correct?",
+    options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    answer:2,
+    explanation:"Both statements are correct. The Nayanmars (also spelled Nayanars) were 63 Tamil poet-saints who were devotees of Shiva, active primarily between the 6th and 9th centuries CE. Their devotional hymns are collectively called 'Tevaram' (from the 7th–8th centuries, by three principal saints: Appar, Sambandar, and Sundarar). All the devotional works of the Nayanmars were compiled into a 12-volume canon called the 'Tirumurai' by Nambiyandar Nambi in the 10th century. This Bhakti movement had profound socio-religious impact on South India."
+  },
+  {
+    id:19, subject:"Indian Economy", subjectClass:"eco", difficulty:"medium",
+    pyq:false,
+    q:"The 'Fiscal Responsibility and Budget Management (FRBM) Act' in India was enacted primarily to:",
+    options:["Regulate foreign direct investment inflows","Reduce India's fiscal deficit and public debt over time","Regulate the functioning of public sector banks","Monitor inflation and interest rate policy"],
+    answer:1,
+    explanation:"The Fiscal Responsibility and Budget Management (FRBM) Act was enacted in 2003 with the primary objective of ensuring long-term fiscal sustainability by setting targets for reduction of fiscal deficit and public debt. The Act mandates the government to present a Medium Term Fiscal Policy Statement and Fiscal Policy Strategy Statement along with the Union Budget. It was amended in 2018 based on the N.K. Singh Committee recommendations to introduce a 'debt rule' alongside the fiscal deficit target of 3% of GDP."
+  },
+  {
+    id:20, subject:"Geography", subjectClass:"geo", difficulty:"medium",
+    pyq:true, pyqYear:2022,
+    q:"Consider the following statements about the 'Western Disturbances' that affect India:\n1. They are extra-tropical cyclones that originate in the Mediterranean Sea.\n2. They cause winter rains in northern India, which are crucial for Rabi crop cultivation.\nWhich of the statements given above is/are correct?",
+    options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    answer:2,
+    explanation:"Both statements are correct. Western Disturbances are low-pressure systems (extra-tropical cyclones) that originate in the Mediterranean Sea region. They travel eastward, gathering moisture from the Caspian Sea and Black Sea, and reach the Indian subcontinent via Afghanistan and Pakistan. In India, they bring winter precipitation to the plains of Punjab, Haryana, and UP, and snowfall in Jammu & Kashmir, Himachal Pradesh, and Uttarakhand. This winter rainfall is vital for Rabi crops (wheat, mustard, barley) sown in October-November."
+  }
+];
+
+const SUBJ_COLORS = {
+  polity: {bg:'#e8eeff',color:'#2c4cc0',label:'Indian Polity'},
+  history:{bg:'#fef0e0',color:'#8b4500',label:'History & Culture'},
+  geo:    {bg:'#e0f5e8',color:'#1a6630',label:'Geography'},
+  eco:    {bg:'#fce8e8',color:'#8b1a1a',label:'Economy'},
+  env:    {bg:'#e0f4f0',color:'#1a6655',label:'Env & Ecology'},
+  sci:    {bg:'#f0e8ff',color:'#5a1ab5',label:'Sci & Tech'},
+  ir:     {bg:'#fff0e8',color:'#8b4000',label:'Intl Relations'}
+};
+
+let state = {
+  screen: 'start',
+  questions: [],
+  current: 0,
+  answers: {},   // qId -> answerIndex or null (skipped)
+  score: 0,
+  negatives: 0,
+  skipped: 0
+};
+
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+// ── RENDER ROUTER ─────────────────────────────────────────────────────────────
+function render(){
+  const app = document.getElementById('app');
+  if(state.screen === 'start')   app.innerHTML = renderStart();
+  else if(state.screen === 'quiz')    app.innerHTML = renderQuiz();
+  else                           app.innerHTML = renderResults();
+}
+
+// ── START SCREEN ──────────────────────────────────────────────────────────────
+function renderStart(){
+  return `<div class="card start-screen fade-up">
+    <div class="start-hero">
+      <h2>UPSC Civil Services<br>Prelims Practice Quiz</h2>
+      <p>General Studies Paper I — As per official syllabus &amp; PYQ pattern</p>
+    </div>
+    <div class="start-body">
+      <div class="info-grid">
+        <div class="info-box"><div class="ib-icon">📋</div><div class="ib-val">${QUESTIONS.length}</div><div class="ib-lbl">Questions</div></div>
+        <div class="info-box"><div class="ib-icon">⏱️</div><div class="ib-val">~30</div><div class="ib-lbl">Minutes</div></div>
+        <div class="info-box"><div class="ib-icon">✅</div><div class="ib-val">+2</div><div class="ib-lbl">Correct</div></div>
+        <div class="info-box"><div class="ib-icon">❌</div><div class="ib-val">−0.66</div><div class="ib-lbl">Incorrect</div></div>
+      </div>
+      <div class="marking-box">
+        <strong>⚠️ UPSC Marking Scheme Applied:</strong> Each correct answer carries <strong>+2 marks</strong>. Each wrong answer deducts <strong>0.66 marks (1/3rd)</strong>. Unattempted questions carry no penalty. Scores are calculated at the end.
+      </div>
+      <div class="syllabus-tags">
+        <span class="stag stag-polity">🏛 Indian Polity</span>
+        <span class="stag stag-history">📜 History & Culture</span>
+        <span class="stag stag-geo">🗺️ Geography</span>
+        <span class="stag stag-eco">📊 Economy</span>
+        <span class="stag stag-env">🌿 Environment</span>
+        <span class="stag stag-sci">🔬 Sci & Tech</span>
+        <span class="stag stag-ir">🌐 Intl Relations</span>
+      </div>
+      <div class="pyq-note">
+        <div class="pyq-dot"></div>
+        <div>Questions sourced from actual UPSC Prelims papers are <strong>highlighted in green</strong> with the year they appeared. These carry special weight in your preparation.</div>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">🚀 Begin Mock Test</button>
+    </div>
+  </div>`;
+}
+
+// ── QUIZ SCREEN ───────────────────────────────────────────────────────────────
+function renderQuiz(){
+  const q = state.questions[state.current];
+  const total = state.questions.length;
+  const prog = Math.round((state.current / total) * 100);
+  const sColor = SUBJ_COLORS[q.subjectClass];
+  const diffClass = {easy:'diff-easy',medium:'diff-medium',hard:'diff-hard'}[q.difficulty];
+
+  const trackerHTML = state.questions.map((qq,i)=>{
+    let cls = 'tracker-dot';
+    if(i === state.current) cls += ' current';
+    else if(state.answers.hasOwnProperty(qq.id)){
+      // During quiz: show only "answered" (neutral) or "skipped" — no correct/wrong reveal
+      cls += state.answers[qq.id] === null ? ' skipped' : ' answered-n';
+    }
+    return `<div class="${cls}" title="Q${i+1}" onclick="jumpTo(${i})">${i+1}</div>`;
+  }).join('');
+
+  const optLetters = ['A','B','C','D'];
+  const selectedAns = state.answers[q.id];
+
+  const optionsHTML = q.options.map((opt,i)=>{
+    let cls = 'opt-btn';
+    // Highlight whichever option is currently selected — always changeable
+    if(selectedAns !== null && selectedAns !== undefined && selectedAns === i){
+      cls += ' selected-neutral';
+    }
+    return `<button class="${cls}" onclick="selectAnswer(${q.id},${i})">
+      <span class="opt-letter">${optLetters[i]}.</span>
+      <span style="flex:1">${opt}</span>
+    </button>`;
+  }).join('');
+
+  const pyqBanner = q.pyq ? `
+    <div class="pyq-banner">
+      <span class="pyq-badge">📄 PYQ</span>
+      <span>This question appeared in <strong>UPSC CSE — ${q.pyqYear}</strong></span>
+    </div>` : '';
+
+  const questionLines = q.q.split('\n').map(l => l.trim()).filter(Boolean).join('<br>');
+
+  const hasSelection = selectedAns !== null && selectedAns !== undefined;
+  const isLastQ = state.current === total - 1;
+  const nextLabel = isLastQ ? 'Review & Submit →' : 'Next Question →';
+
+  return `<div class="card fade-up">
+    <div class="quiz-topbar">
+      <div class="qbar-item"><span class="qbar-val">${state.current+1}/${total}</span><span class="qbar-lbl">Question</span></div>
+      <div class="qbar-item"><span class="qbar-val">${calcScore().toFixed(2)}</span><span class="qbar-lbl">Current Score</span></div>
+      <div class="qbar-item"><span class="qbar-val">${Object.keys(state.answers).length}</span><span class="qbar-lbl">Attempted</span></div>
+      <div class="qbar-item"><span class="qbar-val qbar-neg">${Object.values(state.answers).filter(v=>v!==null && state.questions.find(q=>state.answers[q.id]===v && v!==q.answer)).length}</span><span class="qbar-lbl">Negative</span></div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${prog}%"></div></div></div>
+    <div class="answered-tracker">${trackerHTML}</div>
+    <div class="question-body">
+      ${pyqBanner}
+      <div class="q-meta">
+        <span class="q-num">Q.${state.current+1}</span>
+        <span class="q-subject-badge" style="background:${sColor.bg};color:${sColor.color}">${q.subject}</span>
+        <span class="diff-badge ${diffClass}">${q.difficulty.charAt(0).toUpperCase()+q.difficulty.slice(1)}</span>
+      </div>
+      <div class="question-text">${questionLines}</div>
+      <div class="options">${optionsHTML}</div>
+    </div>
+    <div class="quiz-nav">
+      <button class="btn-skip" onclick="skipQuestion(${q.id})">${hasSelection ? 'Clear & Skip →' : 'Skip →'}</button>
+      <button class="btn-next ${hasSelection?'active':''}" id="nextBtn" onclick="nextQuestion()">${nextLabel}</button>
+    </div>
+  </div>
+  <div id="modal-container"></div>`;
+}
+
+// ── RESULTS SCREEN ────────────────────────────────────────────────────────────
+function renderResults(){
+  const total = state.questions.length;
+  const correct = state.questions.filter(q => state.answers[q.id] !== undefined && state.answers[q.id] !== null && state.answers[q.id] === q.answer).length;
+  const wrong = state.questions.filter(q => state.answers[q.id] !== undefined && state.answers[q.id] !== null && state.answers[q.id] !== q.answer).length;
+  const skipped = state.questions.filter(q => !state.answers.hasOwnProperty(q.id) || state.answers[q.id] === null).length;
+  const finalScore = (correct * 2) - (wrong * 0.66);
+  const maxScore = total * 2;
+  const pct = Math.round((finalScore / maxScore) * 100);
+
+  const rank = pct >= 80 ? {label:'IAS Calibre 🏆', cls:'rank-gold', desc:'Outstanding performance! You are in the top percentile of UPSC aspirants.'}
+             : pct >= 65 ? {label:'Prelims Qualifier 🎯', cls:'rank-green', desc:'Strong performance — with consistent effort you can clear Prelims.'}
+             : pct >= 45 ? {label:'Serious Aspirant 📚', cls:'rank-orange', desc:'Good foundation. Focus on weak areas and revise previous year patterns.'}
+             :             {label:'Keep Preparing 💪', cls:'rank-muted', desc:'UPSC is a marathon, not a sprint. Identify gaps and build systematically.'};
+
+  const reviewHTML = state.questions.map((q,i) => {
+    const ans = state.answers[q.id];
+    const isSkipped = !state.answers.hasOwnProperty(q.id) || ans === null;
+    const isCorrect = !isSkipped && ans === q.answer;
+    const isWrong = !isSkipped && ans !== q.answer;
+    const sColor = SUBJ_COLORS[q.subjectClass];
+    const optLetters = ['A','B','C','D'];
+    const hdrClass = isCorrect ? 'correct-h' : isWrong ? 'wrong-h' : 'skipped-h';
+    const resultIcon = isCorrect ? '✅' : isWrong ? '❌' : '⏭️';
+    const pyqTag = q.pyq ? `<span class="pyq-mini-badge">📄 UPSC CSE — ${q.pyqYear}</span>` : '';
+    const questionLines = q.q.split('\n').map(l=>l.trim()).filter(Boolean).join(' ');
+
+    let userAnswerHTML = '';
+    if(isSkipped) userAnswerHTML = `<div class="ar-item"><label>Your Answer</label><span class="ar-skip">Not Attempted</span></div>`;
+    else userAnswerHTML = `<div class="ar-item"><label>Your Answer</label><span class="${isCorrect?'ar-correct':'ar-wrong'}">${optLetters[ans]}. ${q.options[ans]}</span></div>`;
+
+    return `<div class="review-item ${q.pyq ? 'pyq-item' : ''}">
+      <div class="review-header ${hdrClass}">
+        <span class="ri-num">Q.${i+1}</span>
+        <div style="flex:1">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+            <span class="q-subject-badge" style="background:${sColor.bg};color:${sColor.color};font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700;letter-spacing:1px;text-transform:uppercase">${q.subject}</span>
+            ${pyqTag}
+          </div>
+          <div class="ri-q">${questionLines}</div>
+        </div>
+        <span class="ri-result">${resultIcon}</span>
+      </div>
+      <div class="review-body">
+        <div class="answer-row">
+          ${userAnswerHTML}
+          <div class="ar-item"><label>Correct Answer</label><span class="ar-correct">${optLetters[q.answer]}. ${q.options[q.answer]}</span></div>
+        </div>
+        <div class="explanation-box">
+          <strong>📖 Explanation</strong>
+          ${q.explanation}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="card fade-up">
+    <div class="results-header">
+      <h2>📊 Your Result Report</h2>
+      <p>UPSC Civil Services Prelims — Mock Assessment</p>
+    </div>
+    <div class="score-display">
+      <div class="score-ring">
+        <div class="sr-num">${finalScore.toFixed(1)}</div>
+        <div class="sr-denom">/ ${maxScore} marks</div>
+      </div>
+      <div class="score-stats">
+        <div class="ss-item ss-green"><div class="ss-val">${correct}</div><div class="ss-lbl">Correct</div></div>
+        <div class="ss-item ss-red"><div class="ss-val">${wrong}</div><div class="ss-lbl">Wrong</div></div>
+        <div class="ss-item ss-orange"><div class="ss-val">${skipped}</div><div class="ss-lbl">Skipped</div></div>
+        <div class="ss-item ss-blue"><div class="ss-val">${pct}%</div><div class="ss-lbl">Accuracy</div></div>
+      </div>
+    </div>
+    <div class="rank-banner ${rank.cls}">
+      <div class="rank-title">${rank.label}</div>
+      <p>${rank.desc}</p>
+    </div>
+    <div class="review-title">📋 Detailed Answer Review with Explanations</div>
+    ${reviewHTML}
+    <div class="result-actions">
+      <button class="btn-replay" onclick="startQuiz()">🔄 Attempt Again</button>
+    </div>
+  </div>`;
+}
+
+// ── LOGIC ─────────────────────────────────────────────────────────────────────
+function calcScore(){
+  let score = 0;
+  state.questions.forEach(q => {
+    const ans = state.answers[q.id];
+    if(ans === undefined || ans === null) return;
+    if(ans === q.answer) score += 2;
+    else score -= 0.66;
+  });
+  return score;
+}
+
+function startQuiz(){
+  state = { screen:'quiz', questions: shuffle(QUESTIONS), current:0, answers:{} };
+  render();
+}
+
+function selectAnswer(qId, optIdx){
+  // Always allow changing the answer — no lock until final submit
+  state.answers[qId] = optIdx;
+  render();
+}
+
+function skipQuestion(qId){
+  // Clear any selected answer and mark as skipped
+  state.answers[qId] = null;
+  // If on last question, show modal; otherwise advance
+  if(state.current === state.questions.length - 1){
+    showEndModal();
+  } else {
+    state.current++;
+    render();
+  }
+}
+
+function jumpTo(idx){
+  state.current = idx;
+  render();
+}
+
+function nextQuestion(){
+  const isLast = state.current === state.questions.length - 1;
+  if(isLast){
+    showEndModal();
+  } else {
+    state.current++;
+    render();
+  }
+}
+
+// ── END-OF-QUIZ MODAL ─────────────────────────────────────────────────────────
+function showEndModal(){
+  const total = state.questions.length;
+  const attempted = state.questions.filter(q => state.answers.hasOwnProperty(q.id) && state.answers[q.id] !== null).length;
+  // Questions not yet visited or explicitly skipped
+  const skippedQs = state.questions.filter((q,i) => !state.answers.hasOwnProperty(q.id) || state.answers[q.id] === null);
+  const unansweredCount = skippedQs.length;
+  const leftToVisit = state.questions.filter(q => !state.answers.hasOwnProperty(q.id)).length;
+
+  const skippedPills = skippedQs.map(q => {
+    const idx = state.questions.indexOf(q);
+    return `<span class="skipped-pill" onclick="closeModalAndGoto(${idx})" style="cursor:pointer" title="Go to Q${idx+1}">Q${idx+1}</span>`;
+  }).join('');
+
+  const skippedBlock = unansweredCount > 0 ? `
+    <div class="skipped-pill-list">${skippedPills}</div>` : '';
+
+  const goSkippedBtn = unansweredCount > 0 ? `
+    <button class="mbtn mbtn-skipped" onclick="goToFirstSkipped()">
+      <span class="mbtn-icon">↩️</span>
+      <div class="mbtn-text">Go to Skipped Questions
+        <span>${unansweredCount} question${unansweredCount>1?'s':''} pending — click to attempt them</span>
+      </div>
+    </button>` : '';
+
+  const html = `<div class="modal-overlay" id="endModal">
+    <div class="modal-box">
+      <div class="modal-header" style="color:white">
+        <span class="modal-icon">📋</span>
+        <h3>Ready to Submit?</h3>
+        <p>You've reached the end of the question set</p>
+        <div class="modal-stats">
+          <div class="modal-stat ms-answered"><div class="ms-val">${attempted}</div><div class="ms-lbl">Answered</div></div>
+          <div class="modal-stat ms-skipped"><div class="ms-val">${unansweredCount}</div><div class="ms-lbl">Skipped</div></div>
+          <div class="modal-stat ms-left"><div class="ms-val">${total}</div><div class="ms-lbl">Total</div></div>
+        </div>
+      </div>
+      <div class="modal-body">
+        ${unansweredCount > 0 ? `<p>You have <strong>${unansweredCount} unanswered question${unansweredCount>1?'s':''}</strong>. Skipped questions carry no negative marks, but attempting them could improve your score.</p>${skippedBlock}` : '<p>You have answered all questions. Ready to see your results?</p>'}
+        <div class="modal-actions">
+          <button class="mbtn mbtn-finish" onclick="finishQuiz()">
+            <span class="mbtn-icon">🏁</span>
+            <div class="mbtn-text">Submit & See Results
+              <span>End the test and view your detailed answer review</span>
+            </div>
+          </button>
+          ${goSkippedBtn}
+          <button class="mbtn mbtn-back" onclick="closeModal()">
+            <span class="mbtn-icon">←</span>
+            <div class="mbtn-text">Continue Quiz
+              <span>Go back and review your answers before submitting</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  const container = document.getElementById('modal-container');
+  if(container) container.innerHTML = html;
+}
+
+function closeModal(){
+  const container = document.getElementById('modal-container');
+  if(container) container.innerHTML = '';
+}
+
+function closeModalAndGoto(idx){
+  closeModal();
+  state.current = idx;
+  render();
+}
+
+function goToFirstSkipped(){
+  const firstSkipped = state.questions.findIndex(q => !state.answers.hasOwnProperty(q.id) || state.answers[q.id] === null);
+  if(firstSkipped !== -1){
+    state.current = firstSkipped;
+    closeModal();
+    render();
+  }
+}
+
+function finishQuiz(){
+  closeModal();
+  state.screen = 'results';
+  render();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
