@@ -1628,19 +1628,6 @@ function nextQuestion(){
   }
 }
 
-function finishQuiz(){
-  stopMainTimer();
-  stopQTimer();
-  // Remove timeup overlay if present
-  const overlay = document.querySelector('.timeup-overlay');
-  if(overlay) overlay.remove();
-  closeModal();
-  const display = document.getElementById('mainTimerDisplay');
-  if(display) display.style.display = 'none';
-  state.screen = 'results';
-  render();
-}
-
 // ── END-OF-QUIZ MODAL ─────────────────────────────────────────────────────────
 function showEndModal(){
   const total = state.questions.length;
@@ -1720,6 +1707,7 @@ function goToFirstSkipped(){
     state.current = firstSkipped;
     closeModal();
     render();
+    startQTimer(state.questions[firstSkipped].id);
   }
 }
 
