@@ -1,125 +1,42 @@
-// api/current-affairs.js — CommonJS for Vercel compatibility
+// api/current-affairs.js — PrepSaathi Current Affairs
 
 const https = require('https');
-const http = require('http');
 
 module.exports = async function handler(req, res) {
-
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Content-Type', 'application/json');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   if (!ANTHROPIC_KEY) {
-    return res.status(500).json({ error: 'API key not configured on server.' });
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured.' });
   }
-
-  // ── FETCH URL HELPER ────────────────────────────────────────────────────────
-  function fetchUrl(url, timeoutMs = 8000) {
-    return new Promise((resolve, reject) => {
-      const lib = url.startsWith('https') ? https : http;
-      const req = lib.get(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (PrepSaathi UPSC Platform)',
-          'Accept': 'application/rss+xml, application/xml, text/xml, */*'
-        }
-      }, (r) => {
-        if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) {
-          return fetchUrl(r.headers.location, timeoutMs).then(resolve).catch(reject);
-        }
-        let data = '';
-        r.on('data', chunk => data += chunk);
-        r.on('end', () => resolve(data));
-      });
-      req.setTimeout(timeoutMs, () => { req.destroy(); reject(new Error('Timeout')); });
-      req.on('error', reject);
-    });
-  }
-
-  // ── RSS PARSER ───────────────────────────────────────────────────────────────
-  function parseRSS(xml, tag) {
-    const items = [];
-    const matches = xml.matchAll(/<item>([\s\S]*?)<\/item>/g);
-    for (const m of matches) {
-      const block = m[1];
-      const title = cleanText(stripCDATA(extractTag(block, 'title')));
-      const desc  = cleanText(stripCDATA(extractTag(block, 'description')));
-      if (title && title.length > 8) {
-        items.push({ tag, title, description: desc.substring(0, 350) });
-      }
-    }
-    return items.slice(0, 7);
-  }
-
-  function extractTag(xml, tag) {
-    const m = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i'));
-    return m ? m[1].trim() : '';
-  }
-  function stripCDATA(s) { return s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim(); }
-  function cleanText(s) {
-    return s.replace(/<[^>]+>/g, ' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<')
-            .replace(/&gt;/g,'>').replace(/&nbsp;/g,' ').replace(/&#\d+;/g,'')
-            .replace(/\s+/g,' ').trim();
-  }
-
-  // ── RSS SOURCES ───────────────────────────────────────────────────────────────
-  const RSS_FEEDS = [
-    { name: 'PIB',       tag: 'PIB', url: 'https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3' },
-    { name: 'AIR News',  tag: 'AIR', url: 'https://newsonair.gov.in/rss.aspx' },
-    { name: 'PRS India', tag: 'PRS', url: 'https://prsindia.org/feed' },
-  ];
-
-  const allArticles = [];
-  for (const feed of RSS_FEEDS) {
-    try {
-      const xml = await fetchUrl(feed.url);
-      const items = parseRSS(xml, feed.tag);
-      allArticles.push(...items);
-      console.log(`${feed.tag}: fetched ${items.length} items`);
-    } catch (e) {
-      console.log(`Skipped ${feed.name}: ${e.message}`);
-    }
-  }
-
-  const fallback = allArticles.length === 0;
-  const articleText = fallback
-    ? 'No live feeds available. Generate 5 highlights and 10 questions on recent UPSC topics: Indian polity, economy, environment, science & technology, and international relations.'
-    : allArticles.map((a, i) => `[${i+1}] [${a.tag}] ${a.title}\n${a.description}`).join('\n\n');
 
   const today = new Date().toLocaleDateString('en-IN', {
     weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata'
   });
 
-  const prompt = `You are a UPSC Civil Services exam expert for PrepSaathi, a free IAS preparation platform.
+  // Skip RSS (unreliable on Vercel) — Claude generates from its own knowledge
+  const prompt = `You are a UPSC Civil Services exam expert for PrepSaathi, a free IAS prep platform for Indian students.
 
-Today: ${today}
-${fallback ? 'Note: Live news feeds unavailable. Generate from recent UPSC-relevant knowledge.' : 'News from PIB, AIR News, PRS India:'}
+Today's date: ${today}
 
-${articleText}
+Generate today's current affairs content based on your knowledge of recent Indian and global events relevant to UPSC Civil Services Prelims.
 
-Return ONLY a valid JSON object, no markdown, no text outside JSON:
+Return ONLY a raw JSON object. No markdown. No backticks. No explanation. Just the JSON:
 
-{
-  "summary": "150-200 word English summary. Start: Today's current affairs covers...",
-  "summaryHi": "Same in Hindi Devanagari 150-200 words. Start: आज के समसामयिक मामलों में...",
-  "highlights": [
-    {"title":"English headline max 8 words","titleHi":"Hindi Devanagari","body":"2-sentence English UPSC context","bodyHi":"Same Hindi","tag":"Polity","source":"PIB"}
-  ],
-  "questions": [
-    {"q":"UPSC English question","qHi":"Hindi Devanagari","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"3-4 sentence English","explanationHi":"Hindi","subject":"Polity","subjectHi":"राजनीति","source":"PIB"}
-  ]
-}
+{"summary":"150 word English summary of today's most important UPSC-relevant current affairs. Start with: Today's current affairs covers","summaryHi":"150 शब्दों का हिंदी सारांश। शुरुआत: आज के समसामयिक मामलों में","highlights":[{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Polity","source":"PIB"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Economy","source":"AIR"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Environment","source":"PIB"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"IR","source":"AIR"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Science","source":"PRS"}],"questions":[{"q":"Q1 UPSC style","qHi":"Q1 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"3 sentence explanation","explanationHi":"3 वाक्य हिंदी व्याख्या","subject":"Polity","subjectHi":"राजनीति","source":"PIB"},{"q":"Q2","qHi":"Q2 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},{"q":"Q3","qHi":"Q3 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Environment","subjectHi":"पर्यावरण","source":"PIB"},{"q":"Q4","qHi":"Q4 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Geography","subjectHi":"भूगोल","source":"AIR"},{"q":"Q5","qHi":"Q5 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"explanation","explanationHi":"व्याख्या","subject":"History","subjectHi":"इतिहास","source":"PIB"},{"q":"Q6","qHi":"Q6 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Science","subjectHi":"विज्ञान","source":"PRS"},{"q":"Q7","qHi":"Q7 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"explanation","explanationHi":"व्याख्या","subject":"IR","subjectHi":"अंतर्राष्ट्रीय संबंध","source":"AIR"},{"q":"Q8","qHi":"Q8 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Polity","subjectHi":"राजनीति","source":"PIB"},{"q":"Q9","qHi":"Q9 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},{"q":"Q10","qHi":"Q10 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Governance","subjectHi":"शासन","source":"PRS"}]}
 
-Rules: highlights=exactly 5, questions=exactly 10, answer is 0-indexed int, mix subjects, UPSC style questions, all Hindi in Devanagari. Return ONLY JSON.`;
+Fill in all placeholder values with real UPSC-quality content. Keep all Hindi in Devanagari. Return only the JSON.`;
+
+  const reqBody = JSON.stringify({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 4096,
+    messages: [{ role: 'user', content: prompt }]
+  });
 
   try {
-    const body = JSON.stringify({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 4096,
-      messages: [{ role: 'user', content: prompt }]
-    });
-
-    const claudeResponse = await new Promise((resolve, reject) => {
+    const result = await new Promise((resolve, reject) => {
       const options = {
         hostname: 'api.anthropic.com',
         path: '/v1/messages',
@@ -128,38 +45,40 @@ Rules: highlights=exactly 5, questions=exactly 10, answer is 0-indexed int, mix 
           'Content-Type': 'application/json',
           'x-api-key': ANTHROPIC_KEY,
           'anthropic-version': '2023-06-01',
-          'Content-Length': Buffer.byteLength(body)
+          'Content-Length': Buffer.byteLength(reqBody)
         }
       };
-      const r = https.request(options, (res) => {
+      const r = https.request(options, (resp) => {
         let data = '';
-        res.on('data', c => data += c);
-        res.on('end', () => resolve({ status: res.statusCode, body: data }));
+        resp.on('data', c => data += c);
+        resp.on('end', () => resolve({ status: resp.statusCode, body: data }));
       });
-      r.setTimeout(55000, () => { r.destroy(); reject(new Error('Claude timeout')); });
+      r.setTimeout(55000, () => { r.destroy(); reject(new Error('Claude timed out')); });
       r.on('error', reject);
-      r.write(body);
+      r.write(reqBody);
       r.end();
     });
 
-    if (claudeResponse.status !== 200) {
-      console.error('Claude API error status:', claudeResponse.status, claudeResponse.body);
-      return res.status(502).json({ error: 'AI service error. Please try again.' });
+    console.log('Claude status:', result.status);
+
+    if (result.status !== 200) {
+      console.error('Claude error:', result.body);
+      const e = JSON.parse(result.body);
+      return res.status(502).json({ error: e?.error?.message || 'Claude API error' });
     }
 
-    const claudeData = JSON.parse(claudeResponse.body);
-    const rawText = claudeData.content[0].text.trim()
+    const claudeJson = JSON.parse(result.body);
+    const text = claudeJson.content[0].text.trim()
       .replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
 
-    const parsed = JSON.parse(rawText);
+    const parsed = JSON.parse(text);
     parsed.date = today;
-    parsed.articleCount = allArticles.length;
-    parsed.generatedAt = new Date().toISOString();
+    parsed.articleCount = 0;
 
     return res.status(200).json(parsed);
 
-  } catch (err) {
+  } catch(err) {
     console.error('Error:', err.message);
-    return res.status(500).json({ error: 'Error: ' + err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
