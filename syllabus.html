@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPSC CSE Syllabus — PrepSaathi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #0d1b2a;
+  --navy2:   #1b2d42;
+  --saffron: #e87722;
+  --saffron2:#f59530;
+  --gold:    #c9a84c;
+  --gold2:   #e8c97a;
+  --white:   #f8f5ef;
+  --white2:  #ede8df;
+  --muted:   #7a8694;
+  --green:   #22723a;
+  --shadow:  0 8px 32px rgba(13,27,42,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--white);
+  font-family: 'Source Sans 3', sans-serif;
+  color: var(--navy);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.site-header {
+  background: linear-gradient(135deg, var(--navy2) 0%, var(--navy) 100%);
+  border-bottom: 3px solid var(--saffron);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.emblem { font-size: 32px; line-height: 1; }
+.site-title { flex: 1; }
+.site-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(14px, 2.2vw, 20px);
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.site-title p { font-size: 11px; color: var(--gold2); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+.header-back {
+  font-size: 13px; color: rgba(255,255,255,0.6);
+  text-decoration: none; display: flex; align-items: center; gap: 6px;
+  transition: color 0.15s; white-space: nowrap;
+}
+.header-back:hover { color: var(--gold2); }
+
+/* ── HERO BANNER ── */
+.hero {
+  background: linear-gradient(135deg, var(--navy2) 0%, #0d1b2a 60%, #1a3a5c 100%);
+  padding: 52px 24px 44px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px);
+}
+.hero::after {
+  content: '📜';
+  position: absolute; font-size: 200px; opacity: 0.04;
+  top: -30px; right: -20px; line-height: 1;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(232,119,34,0.18);
+  border: 1px solid var(--saffron);
+  color: var(--saffron2);
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; padding: 5px 16px; border-radius: 20px;
+  margin-bottom: 18px;
+}
+.hero h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 5vw, 44px);
+  color: var(--white); line-height: 1.2; margin-bottom: 14px;
+}
+.hero h2 span { color: var(--gold2); }
+.hero p { color: rgba(255,255,255,0.65); font-size: 15px; max-width: 580px; margin: 0 auto 28px; line-height: 1.7; }
+.hero-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.hero-pill {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.8); font-size: 12px; padding: 5px 14px;
+  border-radius: 20px; font-weight: 600; letter-spacing: 0.5px;
+}
+
+/* ── LANGUAGE TOGGLE ── */
+.lang-bar {
+  background: var(--navy2);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 24px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+}
+.lang-toggle { display: flex; gap: 4px; background: rgba(255,255,255,0.07); border-radius: 8px; padding: 3px; }
+.lang-toggle button {
+  background: transparent; border: none;
+  color: rgba(255,255,255,0.5); font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; padding: 5px 12px; border-radius: 6px;
+  cursor: pointer; transition: all 0.2s; font-family: 'Source Sans 3', sans-serif;
+}
+.lang-toggle button.active { background: var(--saffron); color: white; }
+.lang-note { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* ── CONTAINER ── */
+.container { max-width: 960px; margin: 0 auto; padding: 36px 20px 60px; }
+
+/* ── SECTION TABS / NAV ── */
+.sticky-nav {
+  background: white; border-radius: 12px; padding: 6px;
+  box-shadow: var(--shadow); margin-bottom: 32px;
+  display: flex; gap: 4px; flex-wrap: wrap;
+  position: sticky; top: 70px; z-index: 50;
+  border: 1.5px solid var(--white2);
+}
+.snav-btn {
+  background: transparent; border: none; cursor: pointer;
+  font-family: 'Source Sans 3', sans-serif; font-size: 12px;
+  font-weight: 700; letter-spacing: 0.5px;
+  padding: 7px 14px; border-radius: 8px;
+  transition: all 0.15s; color: var(--muted); white-space: nowrap;
+}
+.snav-btn:hover { background: var(--white2); color: var(--navy); }
+.snav-btn.active { background: var(--navy); color: white; }
+
+/* ── PAPER CARDS ── */
+.paper-section { margin-bottom: 40px; }
+.paper-header {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, var(--navy2), var(--navy));
+  border-radius: 12px 12px 0 0; padding: 20px 24px;
+  border-left: 5px solid var(--saffron);
+}
+.paper-icon { font-size: 32px; }
+.paper-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; color: var(--white); margin-bottom: 3px;
+}
+.paper-header p { font-size: 12px; color: var(--gold2); letter-spacing: 1px; text-transform: uppercase; }
+.paper-body {
+  background: white; border-radius: 0 0 12px 12px;
+  border: 1.5px solid var(--white2); border-top: none;
+  box-shadow: var(--shadow);
+}
+
+/* ── SUBJECT BLOCKS ── */
+.subject-block { border-bottom: 1px solid var(--white2); }
+.subject-block:last-child { border-bottom: none; }
+.subject-toggle {
+  width: 100%; background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 24px; text-align: left;
+  transition: background 0.15s; font-family: 'Source Sans 3', sans-serif;
+}
+.subject-toggle:hover { background: var(--white); }
+.subject-toggle.open { background: #fdf9f4; }
+.subj-icon { font-size: 22px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; }
+.subj-info { flex: 1; }
+.subj-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+.subj-name-hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 14px; }
+.subj-count { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.subj-arrow { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
+.subject-toggle.open .subj-arrow { transform: rotate(180deg); }
+
+.subject-content { display: none; padding: 4px 24px 20px 74px; }
+.subject-content.open { display: block; }
+
+.topic-list { list-style: none; }
+.topic-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 7px 0; border-bottom: 1px dashed #ede8df;
+  font-size: 14px; line-height: 1.5; color: #2a3a4a;
+}
+.topic-list li:last-child { border-bottom: none; }
+.topic-list li::before {
+  content: '▸'; color: var(--saffron); font-size: 10px;
+  margin-top: 4px; flex-shrink: 0;
+}
+.topic-list.hi li { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 13px; line-height: 1.8; }
+
+/* ── MARKS BADGE ── */
+.marks-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff4e6; border: 1.5px solid var(--saffron);
+  color: var(--saffron); font-size: 12px; font-weight: 700;
+  padding: 3px 10px; border-radius: 6px; margin-left: auto; flex-shrink: 0;
+}
+
+/* ── INFO BOX ── */
+.info-box {
+  background: linear-gradient(135deg, #fff8f0, #fff4e6);
+  border: 1.5px solid #f5d9b5; border-radius: 10px;
+  padding: 16px 20px; margin-bottom: 28px;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.info-box-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+.info-box h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.info-box p { font-size: 13px; color: #4a3a2a; line-height: 1.6; }
+
+/* ── STAGE TIMELINE ── */
+.stage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.stage-card {
+  background: white; border-radius: 10px; padding: 20px;
+  border: 1.5px solid var(--white2); box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  text-align: center; position: relative; overflow: hidden;
+}
+.stage-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+}
+.stage-card.prelims::before { background: var(--saffron); }
+.stage-card.mains::before   { background: var(--green); }
+.stage-card.interview::before { background: var(--gold); }
+.stage-num { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.stage-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--navy); margin-bottom: 8px; }
+.stage-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.stage-mark { font-size: 22px; font-weight: 900; color: var(--saffron); margin-bottom: 4px; }
+
+/* ── EN/HI CONTENT ── */
+.en-content { display: block; }
+.hi-content { display: none; }
+body.hi .en-content { display: none; }
+body.hi .hi-content { display: block; }
+.hi-inline { display: none; }
+body.hi .en-inline { display: none; }
+body.hi .hi-inline { display: inline; }
+
+/* ── FOOTER NOTE ── */
+.footer-note {
+  background: var(--navy2); color: rgba(255,255,255,0.5);
+  text-align: center; padding: 20px 24px; font-size: 12px; line-height: 1.7;
+}
+.footer-note a { color: var(--gold2); text-decoration: none; }
+
+/* Mobile */
+@media(max-width:600px){
+  .subject-content { padding-left: 20px; }
+  .sticky-nav { top: 64px; }
+  .paper-header { padding: 16px 18px; }
+  .subject-toggle { padding: 14px 18px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="emblem">🏛️</div>
+  <div class="site-title">
+    <h1>PrepSaathi</h1>
+    <p>Free UPSC Preparation Platform</p>
+  </div>
+  <a href="index.html" class="header-back">← Home</a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Official Syllabus — UPSC CSE 2025</div>
+  <h2>UPSC Civil Services<br><span>Complete Syllabus</span></h2>
+  <p class="en-content">Detailed subject-wise syllabus for Prelims and Mains — as prescribed by the Union Public Service Commission of India.</p>
+  <p class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">संघ लोक सेवा आयोग द्वारा निर्धारित प्रारंभिक और मुख्य परीक्षा का विस्तृत विषयवार पाठ्यक्रम।</p>
+  <div class="hero-pills">
+    <span class="hero-pill">📋 Prelims GS Paper I &amp; II</span>
+    <span class="hero-pill">📝 Mains 9 Papers</span>
+    <span class="hero-pill">🎤 Personality Test</span>
+    <span class="hero-pill">⭐ 2025 Pattern</span>
+  </div>
+</div>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <div class="lang-toggle">
+    <button id="btnEn" class="active" onclick="setLang('en')">EN</button>
+    <button id="btnHi" onclick="setLang('hi')">हिंदी</button>
+  </div>
+  <span class="lang-note en-content">Click any subject to expand topics</span>
+  <span class="lang-note hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">विषय पर क्लिक करके विस्तार देखें</span>
+</div>
+
+<div class="container">
+
+  <!-- EXAM STRUCTURE -->
+  <div class="stage-grid">
+    <div class="stage-card prelims">
+      <div class="stage-num">Stage 1</div>
+      <div class="stage-title">Prelims</div>
+      <div class="stage-mark">400</div>
+      <div class="stage-desc en-content">2 objective papers · Screening only · Marks not counted in final merit</div>
+      <div class="stage-desc hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">2 वस्तुनिष्ठ पेपर · केवल स्क्रीनिंग · अंक अंतिम मेरिट में नहीं</div>
+    </div>
+    <div class="stage-card mains">
+      <div class="stage-num">Stage 2</div>
+      <div class="stage-title">Mains</div>
+      <div class="stage-mark">1750</div>
+      <div class="stage-desc en-content">9 descriptive papers · 7 counted in merit · Essay + GS + Optional</div>
+      <div class="stage-desc hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">9 वर्णनात्मक पेपर · 7 मेरिट में · निबंध + GS + वैकल्पिक</div>
+    </div>
+    <div class="stage-card interview">
+      <div class="stage-num">Stage 3</div>
+      <div class="stage-title">Interview</div>
+      <div class="stage-mark">275</div>
+      <div class="stage-desc en-content">Personality Test · Board interview · Final selection based on Mains + Interview</div>
+      <div class="stage-desc hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">व्यक्तित्व परीक्षण · बोर्ड साक्षात्कार · अंतिम चयन मुख्य + साक्षात्कार पर</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="info-box-icon">💡</div>
+    <div>
+      <h4 class="en-content">How to use this syllabus</h4>
+      <h4 class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">इस पाठ्यक्रम का उपयोग कैसे करें</h4>
+      <p class="en-content">Click any subject heading to expand its detailed topics. Use this as your daily checklist — tick off topics as you cover them. Prelims and Mains syllabi overlap heavily; strong Mains preparation automatically strengthens your Prelims.</p>
+      <p class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">किसी भी विषय शीर्षक पर क्लिक करें। इसे अपनी दैनिक चेकलिस्ट के रूप में उपयोग करें। प्रारंभिक और मुख्य पाठ्यक्रम काफी हद तक ओवरलैप करते हैं।</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       PRELIMS
+  ══════════════════════════════════════════════ -->
+  <div class="paper-section" id="sec-prelims">
+    <div class="paper-header">
+      <div class="paper-icon">📋</div>
+      <div>
+        <h3 class="en-content">Prelims — General Studies Paper I</h3>
+        <h3 class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रारंभिक — सामान्य अध्ययन पेपर I</h3>
+        <p>100 Questions · 200 Marks · 2 Hours · Negative Marking (−1/3)</p>
+      </div>
+    </div>
+    <div class="paper-body">
+
+      <!-- Current Events -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#fff3e0">🌏</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">Current Events of National & International Importance</div>
+            <div class="subj-name hi-content hi-q">राष्ट्रीय और अंतर्राष्ट्रीय महत्व की समसामयिक घटनाएँ</div>
+            <div class="subj-count en-content">~15–20 questions per year</div>
+            <div class="subj-count hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रतिवर्ष ~15–20 प्रश्न</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>National and international current affairs from the past 12 months</li>
+            <li>Government schemes, policies, and programmes (Central & State)</li>
+            <li>International organisations — UN, WTO, IMF, World Bank, BRICS, SCO, G20</li>
+            <li>India's foreign policy, bilateral relations, summits and agreements</li>
+            <li>Important appointments — national and international</li>
+            <li>Awards, honours, sports events, and cultural achievements</li>
+            <li>Recent scientific developments, space missions, defence acquisitions</li>
+            <li>Economic surveys, Union Budget highlights, key indices</li>
+          </ul>
+          <ul class="topic-list hi-content hi" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>पिछले 12 महीनों की राष्ट्रीय और अंतर्राष्ट्रीय समसामयिक घटनाएँ</li>
+            <li>सरकारी योजनाएं, नीतियां और कार्यक्रम (केंद्र एवं राज्य)</li>
+            <li>अंतर्राष्ट्रीय संगठन — UN, WTO, IMF, विश्व बैंक, BRICS, SCO, G20</li>
+            <li>भारत की विदेश नीति, द्विपक्षीय संबंध, शिखर सम्मेलन और समझौते</li>
+            <li>महत्वपूर्ण नियुक्तियां — राष्ट्रीय और अंतर्राष्ट्रीय</li>
+            <li>पुरस्कार, सम्मान, खेल आयोजन और सांस्कृतिक उपलब्धियां</li>
+            <li>हालिया वैज्ञानिक विकास, अंतरिक्ष मिशन, रक्षा अधिग्रहण</li>
+            <li>आर्थिक सर्वेक्षण, केंद्रीय बजट की मुख्य बातें, प्रमुख सूचकांक</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#fce8d5">📜</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">History of India & Indian National Movement</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">भारत का इतिहास और भारतीय राष्ट्रीय आंदोलन</div>
+            <div class="subj-count en-content">~12–18 questions per year</div>
+            <div class="subj-count hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रतिवर्ष ~12–18 प्रश्न</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Ancient India — Indus Valley Civilisation, Vedic Age, Mahajanapadas, Maurya & Gupta empires</li>
+            <li>Medieval India — Delhi Sultanate, Mughal Empire, Vijayanagara, Bhakti & Sufi movements</li>
+            <li>Art & Architecture — Buddhist, Jain, Hindu temples, cave architecture, sculptures</li>
+            <li>Modern India — European arrival, rise of British power, 1857 revolt</li>
+            <li>Social & religious reform movements — Raja Ram Mohan Roy, Arya Samaj, Brahmo Samaj</li>
+            <li>Indian National Congress — formation, moderate phase, extremist phase</li>
+            <li>Mahatma Gandhi — Non-Cooperation, Civil Disobedience, Quit India movements</li>
+            <li>Partition of Bengal, Lucknow Pact, Montagu-Chelmsford reforms</li>
+            <li>Revolutionary nationalism — Bhagat Singh, Chandrashekhar Azad, INA</li>
+            <li>Constitutional developments — Government of India Acts 1919 & 1935</li>
+            <li>Partition of India and Independence 1947</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>प्राचीन भारत — सिंधु घाटी सभ्यता, वैदिक युग, महाजनपद, मौर्य एवं गुप्त साम्राज्य</li>
+            <li>मध्यकालीन भारत — दिल्ली सल्तनत, मुगल साम्राज्य, विजयनगर, भक्ति एवं सूफी आंदोलन</li>
+            <li>कला एवं वास्तुकला — बौद्ध, जैन, हिंदू मंदिर, गुफा वास्तुकला, मूर्तिकला</li>
+            <li>आधुनिक भारत — यूरोपीय आगमन, ब्रिटिश शक्ति का उदय, 1857 विद्रोह</li>
+            <li>सामाजिक एवं धार्मिक सुधार आंदोलन — राजा राम मोहन राय, आर्य समाज, ब्रह्म समाज</li>
+            <li>भारतीय राष्ट्रीय कांग्रेस — गठन, उदारवादी चरण, अतिवादी चरण</li>
+            <li>महात्मा गांधी — असहयोग, सविनय अवज्ञा, भारत छोड़ो आंदोलन</li>
+            <li>क्रांतिकारी राष्ट्रवाद — भगत सिंह, चंद्रशेखर आजाद, INA</li>
+            <li>भारत का विभाजन और स्वतंत्रता 1947</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Geography -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#e0f5e8">🗺️</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">Indian & World Geography</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">भारतीय एवं विश्व भूगोल</div>
+            <div class="subj-count en-content">~12–18 questions per year</div>
+            <div class="subj-count hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रतिवर्ष ~12–18 प्रश्न</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Physical Geography — geomorphology, landforms, rocks, earthquakes, volcanoes</li>
+            <li>Climatology — pressure belts, wind systems, monsoons, cyclones, El Niño/La Niña</li>
+            <li>Oceanography — ocean currents, tides, coral reefs, marine resources</li>
+            <li>Indian physiography — Himalayas, Northern plains, Deccan plateau, coastal plains, islands</li>
+            <li>Rivers of India — Himalayan and Peninsular river systems, tributaries, dams</li>
+            <li>Climate of India — monsoon, seasons, regional variations, Western Disturbances</li>
+            <li>Soils of India — types, distribution, degradation, conservation</li>
+            <li>Natural vegetation — forest types, wildlife sanctuaries, biosphere reserves</li>
+            <li>World geography — continents, major mountain ranges, rivers, deserts, straits</li>
+            <li>Economic geography — mineral distribution, agriculture, industries, trade routes</li>
+            <li>Population — distribution, density, demographic transition, urbanisation</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>भौतिक भूगोल — भू-आकृति विज्ञान, स्थलरूप, चट्टानें, भूकंप, ज्वालामुखी</li>
+            <li>जलवायु विज्ञान — दाब पेटियां, पवन तंत्र, मानसून, चक्रवात, अल-नीनो/ला-नीना</li>
+            <li>समुद्र विज्ञान — महासागरीय धाराएं, ज्वार-भाटा, प्रवाल भित्तियां</li>
+            <li>भारत की भौतिक संरचना — हिमालय, उत्तरी मैदान, दक्कन पठार, तटीय मैदान, द्वीप</li>
+            <li>भारत की नदियां — हिमालयी और प्रायद्वीपीय नदी तंत्र, सहायक नदियां, बांध</li>
+            <li>भारत की जलवायु — मानसून, ऋतुएं, क्षेत्रीय भिन्नताएं, पश्चिमी विक्षोभ</li>
+            <li>भारत की मिट्टियां — प्रकार, वितरण, क्षरण, संरक्षण</li>
+            <li>प्राकृतिक वनस्पति — वन प्रकार, वन्यजीव अभयारण्य, जीवमंडल आरक्षित क्षेत्र</li>
+            <li>विश्व भूगोल — महाद्वीप, प्रमुख पर्वत श्रृंखलाएं, नदियां, मरुस्थल, जलडमरूमध्य</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Polity -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#e8eeff">🏛️</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">Indian Polity, Governance & Constitution</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">भारतीय राजनीति, शासन एवं संविधान</div>
+            <div class="subj-count en-content">~12–16 questions per year</div>
+            <div class="subj-count hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रतिवर्ष ~12–16 प्रश्न</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Indian Constitution — features, Preamble, Schedules, Articles, Amendments</li>
+            <li>Fundamental Rights (Articles 12–35), Directive Principles, Fundamental Duties</li>
+            <li>Union Government — President, Vice President, Prime Minister, Cabinet, Parliament</li>
+            <li>State Government — Governor, Chief Minister, State Legislature, High Courts</li>
+            <li>Constitutional bodies — Election Commission, UPSC, CAG, Finance Commission</li>
+            <li>Judiciary — Supreme Court, High Courts, judicial review, PIL</li>
+            <li>Federal structure — Centre-State relations, Inter-State Council, Zonal Councils</li>
+            <li>Local self-government — 73rd and 74th Amendments, Panchayati Raj</li>
+            <li>Emergency provisions — National, State, Financial emergencies</li>
+            <li>Statutory bodies — NHRC, CBI, CVC, SEBI, RBI</li>
+            <li>Governance — RTI, e-governance, transparency mechanisms</li>
+            <li>International relations — India's foreign policy, UN system</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>भारतीय संविधान — विशेषताएं, प्रस्तावना, अनुसूचियां, अनुच्छेद, संशोधन</li>
+            <li>मौलिक अधिकार (अनुच्छेद 12–35), नीति निर्देशक तत्व, मौलिक कर्तव्य</li>
+            <li>केंद्र सरकार — राष्ट्रपति, उपराष्ट्रपति, प्रधानमंत्री, मंत्रिमंडल, संसद</li>
+            <li>राज्य सरकार — राज्यपाल, मुख्यमंत्री, राज्य विधानमंडल, उच्च न्यायालय</li>
+            <li>संवैधानिक निकाय — निर्वाचन आयोग, UPSC, CAG, वित्त आयोग</li>
+            <li>न्यायपालिका — सर्वोच्च न्यायालय, उच्च न्यायालय, न्यायिक समीक्षा, PIL</li>
+            <li>संघीय ढांचा — केंद्र-राज्य संबंध, अंतर-राज्य परिषद, क्षेत्रीय परिषदें</li>
+            <li>स्थानीय स्वशासन — 73वां और 74वां संशोधन, पंचायती राज</li>
+            <li>आपातकालीन प्रावधान — राष्ट्रीय, राज्य, वित्तीय आपातकाल</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Economy -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#fce8e8">📊</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">Economic & Social Development</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">आर्थिक एवं सामाजिक विकास</div>
+            <div class="subj-count en-content">~10–14 questions per year</div>
+            <div class="subj-count hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रतिवर्ष ~10–14 प्रश्न</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Indian economy — planning, growth, five-year plans, NITI Aayog</li>
+            <li>Macro-economics — GDP, GNP, national income, inflation, monetary policy</li>
+            <li>Banking — RBI, commercial banks, NBFCs, financial inclusion</li>
+            <li>Budget — Union Budget, fiscal policy, FRBM Act, deficit types</li>
+            <li>Taxation — direct and indirect taxes, GST, tax reforms</li>
+            <li>Agriculture — Green Revolution, MSP, crop insurance, PM-KISAN</li>
+            <li>Industry — Make in India, PLI schemes, industrial policy</li>
+            <li>International trade — WTO, exports, FDI, balance of payments</li>
+            <li>Social development — poverty, inequality, HDI, SDGs</li>
+            <li>Demography — census, population trends, sex ratio, literacy</li>
+            <li>Key schemes — PM Awas Yojana, Swachh Bharat, Jal Jeevan Mission</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>भारतीय अर्थव्यवस्था — योजना, विकास, पंचवर्षीय योजनाएं, नीति आयोग</li>
+            <li>समष्टि अर्थशास्त्र — GDP, GNP, राष्ट्रीय आय, मुद्रास्फीति, मौद्रिक नीति</li>
+            <li>बैंकिंग — RBI, वाणिज्यिक बैंक, NBFCs, वित्तीय समावेशन</li>
+            <li>बजट — केंद्रीय बजट, राजकोषीय नीति, FRBM अधिनियम, घाटे के प्रकार</li>
+            <li>कराधान — प्रत्यक्ष और अप्रत्यक्ष कर, GST, कर सुधार</li>
+            <li>कृषि — हरित क्रांति, MSP, फसल बीमा, PM-KISAN</li>
+            <li>सामाजिक विकास — गरीबी, असमानता, HDI, SDGs</li>
+            <li>प्रमुख योजनाएं — PM आवास योजना, स्वच्छ भारत, जल जीवन मिशन</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Environment -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#e0f4f0">🌿</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">Environment, Ecology & Climate Change</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">पर्यावरण, पारिस्थितिकी एवं जलवायु परिवर्तन</div>
+            <div class="subj-count en-content">~10–14 questions per year</div>
+            <div class="subj-count hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रतिवर्ष ~10–14 प्रश्न</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Ecology — ecosystem, food chains, energy flow, biogeochemical cycles</li>
+            <li>Biodiversity — types, hotspots, threats, conservation (in-situ/ex-situ)</li>
+            <li>Protected areas — National Parks, Wildlife Sanctuaries, Tiger Reserves, Biosphere Reserves</li>
+            <li>Climate change — greenhouse effect, global warming, IPCC reports</li>
+            <li>International conventions — UNFCCC, Kyoto Protocol, Paris Agreement, COP summits</li>
+            <li>Environmental laws — Environment Protection Act, Forest Rights Act, Coastal Regulation Zone</li>
+            <li>Pollution — air, water, soil, noise, e-waste, plastic pollution</li>
+            <li>Environmental issues — deforestation, desertification, ozone depletion, acid rain</li>
+            <li>Renewable energy — solar, wind, hydro, biomass</li>
+            <li>Bioremediation, biotechnology in environment</li>
+            <li>India's environmental schemes — Green India Mission, CAMPA, NAPCC</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>पारिस्थितिकी — पारिस्थितिकी तंत्र, खाद्य श्रृंखला, ऊर्जा प्रवाह, जैव-रासायनिक चक्र</li>
+            <li>जैव विविधता — प्रकार, हॉटस्पॉट, खतरे, संरक्षण (स्व-स्थाने/बाह्य-स्थाने)</li>
+            <li>संरक्षित क्षेत्र — राष्ट्रीय उद्यान, वन्यजीव अभयारण्य, टाइगर रिजर्व</li>
+            <li>जलवायु परिवर्तन — ग्रीनहाउस प्रभाव, वैश्विक ताप, IPCC रिपोर्ट</li>
+            <li>अंतर्राष्ट्रीय सम्मेलन — UNFCCC, क्योटो प्रोटोकॉल, पेरिस समझौता, COP</li>
+            <li>पर्यावरण कानून — पर्यावरण संरक्षण अधिनियम, वन अधिकार अधिनियम</li>
+            <li>प्रदूषण — वायु, जल, मृदा, ध्वनि, ई-अपशिष्ट, प्लास्टिक प्रदूषण</li>
+            <li>नवीकरणीय ऊर्जा — सौर, पवन, जल, जैव ऊर्जा</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Science & Tech -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#f0e8ff">🔬</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">General Science & Technology</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">सामान्य विज्ञान एवं प्रौद्योगिकी</div>
+            <div class="subj-count en-content">~10–14 questions per year</div>
+            <div class="subj-count hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रतिवर्ष ~10–14 प्रश्न</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Physics — laws of motion, optics, thermodynamics, nuclear physics basics</li>
+            <li>Chemistry — periodic table, acids/bases, chemical reactions, everyday chemistry</li>
+            <li>Biology — cell biology, genetics, human body systems, diseases</li>
+            <li>Biotechnology — GM crops, vaccines, CRISPR, mRNA technology</li>
+            <li>Space technology — ISRO missions (Chandrayaan, Gaganyaan, Mangalyaan), satellites</li>
+            <li>Defence technology — missiles (DRDO), nuclear doctrine, cyber security</li>
+            <li>IT & AI — artificial intelligence, machine learning, blockchain, 5G</li>
+            <li>Health — National Health Mission, vaccine development, disease surveillance</li>
+            <li>Nuclear energy — reactors, India's nuclear programme, NSG</li>
+            <li>Nanotechnology, robotics, quantum computing</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>भौतिकी — गति के नियम, प्रकाशिकी, ऊष्मागतिकी, परमाणु भौतिकी मूल</li>
+            <li>रसायन विज्ञान — आवर्त सारणी, अम्ल/क्षार, रासायनिक अभिक्रियाएं</li>
+            <li>जीव विज्ञान — कोशिका जीव विज्ञान, आनुवंशिकी, मानव शरीर तंत्र, रोग</li>
+            <li>जैव प्रौद्योगिकी — GM फसलें, टीके, CRISPR, mRNA तकनीक</li>
+            <li>अंतरिक्ष प्रौद्योगिकी — ISRO मिशन (चंद्रयान, गगनयान, मंगलयान)</li>
+            <li>रक्षा प्रौद्योगिकी — मिसाइलें (DRDO), परमाणु सिद्धांत, साइबर सुरक्षा</li>
+            <li>IT एवं AI — कृत्रिम बुद्धिमत्ता, ब्लॉकचेन, 5G</li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /paper-body -->
+  </div><!-- /prelims -->
+
+  <!-- CSAT -->
+  <div class="paper-section" id="sec-csat">
+    <div class="paper-header">
+      <div class="paper-icon">🧮</div>
+      <div>
+        <h3 class="en-content">Prelims — CSAT Paper II (Qualifying)</h3>
+        <h3 class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">प्रारंभिक — CSAT पेपर II (क्वालीफाइंग)</h3>
+        <p>80 Questions · 200 Marks · 2 Hours · Qualifying: 33% minimum</p>
+      </div>
+    </div>
+    <div class="paper-body">
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#e8f0ff">🧠</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">CSAT Topics</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">CSAT विषय</div>
+            <div class="subj-count en-content">Qualifying — 33 marks needed</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Comprehension — reading passages, inferring meaning, critical analysis</li>
+            <li>Interpersonal skills including communication skills</li>
+            <li>Logical reasoning and analytical ability</li>
+            <li>Decision-making and problem-solving</li>
+            <li>General mental ability — series, analogies, coding-decoding</li>
+            <li>Basic numeracy — numbers, magnitude, percentages, ratios (Class X level)</li>
+            <li>Data interpretation — charts, graphs, tables, data sufficiency</li>
+            <li>English language comprehension (Class X level)</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>बोधगम्यता — गद्यांश पठन, अर्थ निकालना, आलोचनात्मक विश्लेषण</li>
+            <li>पारस्परिक कौशल, संचार कौशल सहित</li>
+            <li>तार्किक तर्क और विश्लेषणात्मक क्षमता</li>
+            <li>निर्णय लेना और समस्या समाधान</li>
+            <li>सामान्य मानसिक क्षमता — श्रृंखला, सादृश्यता, कोडिंग-डिकोडिंग</li>
+            <li>मूल संख्यात्मकता — संख्याएं, प्रतिशत, अनुपात (दसवीं कक्षा स्तर)</li>
+            <li>डेटा व्याख्या — चार्ट, ग्राफ, तालिकाएं</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAINS -->
+  <div class="paper-section" id="sec-mains">
+    <div class="paper-header" style="border-left-color: var(--green)">
+      <div class="paper-icon">📝</div>
+      <div>
+        <h3 class="en-content">Mains — General Studies Papers I–IV</h3>
+        <h3 class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">मुख्य परीक्षा — सामान्य अध्ययन पेपर I–IV</h3>
+        <p>4 Papers × 250 Marks = 1000 Marks · 3 Hours each · Descriptive</p>
+      </div>
+    </div>
+    <div class="paper-body">
+
+      <!-- GS1 -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#fce8d5">📖</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">GS Paper I — Heritage, History, Geography, Society</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">GS पेपर I — विरासत, इतिहास, भूगोल, समाज</div>
+            <div class="subj-count">250 Marks</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Indian culture — salient features of art, architecture, literature from ancient to modern</li>
+            <li>Modern Indian history — 18th century to Independence; important events, personalities, issues</li>
+            <li>Post-independence consolidation — reorganisation of states, Nehruvian era, Emergency</li>
+            <li>World History — industrial revolution, world wars, colonialism, decolonisation, Cold War</li>
+            <li>Indian society — salient features, diversity, role of women, poverty, urbanisation</li>
+            <li>Globalisation and its effects on Indian society</li>
+            <li>Communalism, regionalism, secularism</li>
+            <li>Physical Geography — geomorphology, climatology, oceanography</li>
+            <li>Human Geography — population distribution, migration, urbanisation</li>
+            <li>Distribution of resources — minerals, agriculture, industry</li>
+            <li>Important geophysical phenomena — earthquakes, tsunamis, volcanoes, cyclones</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>भारतीय संस्कृति — प्राचीन से आधुनिक तक कला, वास्तुकला, साहित्य की प्रमुख विशेषताएं</li>
+            <li>आधुनिक भारतीय इतिहास — 18वीं सदी से स्वतंत्रता तक</li>
+            <li>स्वतंत्रता के बाद का सुदृढीकरण — राज्यों का पुनर्गठन, नेहरूवादी युग, आपातकाल</li>
+            <li>विश्व इतिहास — औद्योगिक क्रांति, विश्व युद्ध, उपनिवेशवाद, शीत युद्ध</li>
+            <li>भारतीय समाज — प्रमुख विशेषताएं, विविधता, महिलाओं की भूमिका, गरीबी, शहरीकरण</li>
+            <li>वैश्वीकरण और भारतीय समाज पर इसके प्रभाव</li>
+            <li>सांप्रदायिकता, क्षेत्रवाद, धर्मनिरपेक्षता</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GS2 -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#e8eeff">⚖️</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">GS Paper II — Polity, Governance, IR, Social Justice</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">GS पेपर II — राजनीति, शासन, IR, सामाजिक न्याय</div>
+            <div class="subj-count">250 Marks</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Indian Constitution — historical underpinnings, evolution, features, amendments</li>
+            <li>Union & State Governments — structure, functioning, ministries, powers</li>
+            <li>Parliament — structure, functioning, committees, legislative process</li>
+            <li>Judiciary — structure, powers, role in democratic governance</li>
+            <li>Federalism — Centre-State relations, devolution, intergovernmental disputes</li>
+            <li>Constitutional bodies and their functioning</li>
+            <li>Government policies and interventions for development in various sectors</li>
+            <li>Welfare schemes for vulnerable sections — SC, ST, OBC, minorities, women, elderly</li>
+            <li>Important aspects of governance, transparency, accountability</li>
+            <li>Role of civil services in a democracy</li>
+            <li>India and its neighbourhood — bilateral relations, regional organisations</li>
+            <li>Effect of foreign policies on India's interests; diaspora</li>
+            <li>Important international organisations — UN bodies, WTO, IMF, World Bank</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>भारतीय संविधान — ऐतिहासिक आधार, विकास, विशेषताएं, संशोधन</li>
+            <li>केंद्र एवं राज्य सरकारें — संरचना, कामकाज, मंत्रालय, शक्तियां</li>
+            <li>संसद — संरचना, कामकाज, समितियां, विधायी प्रक्रिया</li>
+            <li>न्यायपालिका — संरचना, शक्तियां, लोकतांत्रिक शासन में भूमिका</li>
+            <li>संघवाद — केंद्र-राज्य संबंध, विकेंद्रीकरण</li>
+            <li>कमजोर वर्गों के लिए कल्याण योजनाएं — SC, ST, OBC, अल्पसंख्यक, महिलाएं</li>
+            <li>भारत और पड़ोसी देश — द्विपक्षीय संबंध, क्षेत्रीय संगठन</li>
+            <li>महत्वपूर्ण अंतर्राष्ट्रीय संगठन — UN, WTO, IMF, विश्व बैंक</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GS3 -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#fce8e8">💹</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">GS Paper III — Economy, Environment, Science, Security</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">GS पेपर III — अर्थव्यवस्था, पर्यावरण, विज्ञान, सुरक्षा</div>
+            <div class="subj-count">250 Marks</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Indian economy — planning, mobilisation of resources, growth, development</li>
+            <li>Agriculture — issues of food security, subsidies, PDS, buffer stock</li>
+            <li>Land reforms — effects of liberalisation on agriculture</li>
+            <li>Infrastructure — energy, ports, roads, airports, railways</li>
+            <li>Investment models — PPP, FDI, FII</li>
+            <li>Science & Technology — developments and applications; role in India's development</li>
+            <li>Achievements of Indians in science and technology; indigenisation</li>
+            <li>Space, defence, nuclear, biotechnology</li>
+            <li>Environment — conservation, environmental pollution, degradation</li>
+            <li>Disaster management — vulnerability profile of India, NDMA, disaster preparedness</li>
+            <li>Linkages between development and spread of extremism</li>
+            <li>Internal security — role of external state and non-state actors, terrorism</li>
+            <li>Cyber security, money laundering, border management</li>
+            <li>Organised crime, narco-terrorism, North-East insurgency</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>भारतीय अर्थव्यवस्था — योजना, संसाधन जुटाना, विकास</li>
+            <li>कृषि — खाद्य सुरक्षा के मुद्दे, सब्सिडी, PDS, बफर स्टॉक</li>
+            <li>बुनियादी ढांचा — ऊर्जा, बंदरगाह, सड़कें, हवाई अड्डे, रेलवे</li>
+            <li>विज्ञान एवं प्रौद्योगिकी — विकास और अनुप्रयोग; भारत के विकास में भूमिका</li>
+            <li>अंतरिक्ष, रक्षा, परमाणु, जैव प्रौद्योगिकी</li>
+            <li>पर्यावरण — संरक्षण, पर्यावरणीय प्रदूषण, क्षरण</li>
+            <li>आपदा प्रबंधन — भारत की संवेदनशीलता, NDMA, आपदा तैयारी</li>
+            <li>आंतरिक सुरक्षा — आतंकवाद, साइबर सुरक्षा, सीमा प्रबंधन</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GS4 -->
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#e0f4f0">🧭</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">GS Paper IV — Ethics, Integrity & Aptitude</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">GS पेपर IV — नीतिशास्त्र, सत्यनिष्ठा एवं अभिवृत्ति</div>
+            <div class="subj-count">250 Marks</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Ethics and human interface — essence, determinants, consequences of ethics in human actions</li>
+            <li>Attitude — content, structure, function; moral and political attitudes; social influence</li>
+            <li>Aptitude and foundational values for civil services — integrity, impartiality, non-partisanship</li>
+            <li>Emotional intelligence — concepts, utilities in administration and governance</li>
+            <li>Contributions of moral thinkers — Kautilya, Gandhi, Ambedkar, Aristotle, Kant</li>
+            <li>Public/civil service values — dedication, objectivity, empathy, tolerance</li>
+            <li>Probity in governance — concept, philosophical basis; information sharing</li>
+            <li>Codes of conduct, citizens' charters, RTI, work culture</li>
+            <li>Ethical issues in international relations and funding; corporate governance</li>
+            <li>Case studies on ethical dilemmas in administration</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>नीतिशास्त्र और मानव इंटरफेस — नीतिशास्त्र के सार, निर्धारक और परिणाम</li>
+            <li>अभिवृत्ति — सामग्री, संरचना, कार्य; नैतिक और राजनीतिक अभिवृत्ति</li>
+            <li>सिविल सेवाओं के लिए योग्यता और मूलभूत मूल्य — सत्यनिष्ठा, निष्पक्षता</li>
+            <li>भावनात्मक बुद्धिमत्ता — अवधारणाएं, प्रशासन में उपयोगिता</li>
+            <li>नैतिक विचारकों का योगदान — कौटिल्य, गांधी, अंबेडकर, अरस्तू, कांट</li>
+            <li>शासन में ईमानदारी — अवधारणा, दार्शनिक आधार</li>
+            <li>आचार संहिता, नागरिक चार्टर, RTI, कार्य संस्कृति</li>
+            <li>प्रशासन में नैतिक दुविधाओं पर केस स्टडी</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ESSAY & OPTIONAL -->
+  <div class="paper-section" id="sec-essay">
+    <div class="paper-header" style="border-left-color:var(--gold)">
+      <div class="paper-icon">✍️</div>
+      <div>
+        <h3 class="en-content">Mains — Essay & Optional Subject</h3>
+        <h3 class="hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">मुख्य परीक्षा — निबंध एवं वैकल्पिक विषय</h3>
+        <p>Essay: 250 Marks · Optional Paper I + II: 500 Marks</p>
+      </div>
+    </div>
+    <div class="paper-body">
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#fff8e0">✍️</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">Essay Paper</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">निबंध पेपर</div>
+            <div class="subj-count">250 Marks · 2 Essays · 3 Hours</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Section A — Choose 1 essay from 4 topics (~125 marks) on philosophical, social, political, ethical themes</li>
+            <li>Section B — Choose 1 essay from 4 topics (~125 marks) on development, governance, science, economic themes</li>
+            <li>Emphasis on coherence of thought, clarity of expression, depth of analysis</li>
+            <li>Expected length: 1000–1200 words per essay</li>
+            <li>No marks for mere factual recitation — original perspective and structure valued</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>खंड A — 4 विषयों में से 1 निबंध (~125 अंक) — दार्शनिक, सामाजिक, राजनीतिक, नैतिक विषय</li>
+            <li>खंड B — 4 विषयों में से 1 निबंध (~125 अंक) — विकास, शासन, विज्ञान, आर्थिक विषय</li>
+            <li>विचार की सुसंगतता, अभिव्यक्ति की स्पष्टता, विश्लेषण की गहराई पर जोर</li>
+            <li>अपेक्षित लंबाई: प्रति निबंध 1000–1200 शब्द</li>
+          </ul>
+        </div>
+      </div>
+      <div class="subject-block">
+        <button class="subject-toggle" onclick="toggleSubject(this)">
+          <div class="subj-icon" style="background:#f0e8ff">📚</div>
+          <div class="subj-info">
+            <div class="subj-name en-content">Optional Subject (choose 1 from 48 subjects)</div>
+            <div class="subj-name hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">वैकल्पिक विषय (48 विषयों में से 1 चुनें)</div>
+            <div class="subj-count">2 Papers × 250 = 500 Marks</div>
+          </div>
+          <span class="subj-arrow">▼</span>
+        </button>
+        <div class="subject-content">
+          <ul class="topic-list en-content">
+            <li>Agriculture, Animal Husbandry & Veterinary Science, Anthropology</li>
+            <li>Botany, Chemistry, Civil Engineering, Commerce & Accountancy</li>
+            <li>Economics, Electrical Engineering, Geography, Geology</li>
+            <li>History, Law, Management, Mathematics, Mechanical Engineering</li>
+            <li>Medical Science, Philosophy, Physics, Political Science & IR</li>
+            <li>Psychology, Public Administration, Sociology, Statistics, Zoology</li>
+            <li>Literature of: Assamese, Bengali, Bodo, Dogri, Gujarati, Hindi, Kannada, Kashmiri, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Odia, Punjabi, Sanskrit, Santhali, Sindhi, Tamil, Telugu, Urdu, English</li>
+            <li>Most popular choices: Public Administration, Sociology, History, Geography, Political Science</li>
+          </ul>
+          <ul class="topic-list hi-content" style="font-family:'Noto Sans Devanagari',sans-serif">
+            <li>कृषि, पशुपालन एवं पशु चिकित्सा विज्ञान, नृविज्ञान</li>
+            <li>वनस्पति विज्ञान, रसायन विज्ञान, सिविल इंजीनियरिंग, वाणिज्य</li>
+            <li>अर्थशास्त्र, भूगोल, भूविज्ञान, इतिहास, कानून, प्रबंधन, गणित</li>
+            <li>दर्शनशास्त्र, भौतिकी, राजनीति विज्ञान, मनोविज्ञान, लोक प्रशासन, समाजशास्त्र</li>
+            <li>साहित्य: हिंदी, संस्कृत, उर्दू, तमिल, तेलुगु, मराठी सहित 23 भाषाएं</li>
+            <li>सबसे लोकप्रिय: लोक प्रशासन, समाजशास्त्र, इतिहास, भूगोल, राजनीति विज्ञान</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div style="text-align:center;padding:12px 0 0">
+    <a href="quiz.html" style="display:inline-block;background:linear-gradient(135deg,#e87722,#f59530);color:white;font-weight:700;font-size:16px;padding:16px 40px;border-radius:10px;text-decoration:none;box-shadow:0 4px 16px rgba(232,119,34,0.35);">
+      🚀 <span class="en-content" style="display:inline">Start Free Mock Test</span><span class="hi-content" style="display:none;font-family:'Noto Sans Devanagari',sans-serif">निःशुल्क मॉक टेस्ट शुरू करें</span>
+    </a>
+    <p style="margin-top:12px;font-size:13px;color:var(--muted)" class="en-content">Test yourself on Prelims GS Paper I right now — free, no login</p>
+    <p style="margin-top:12px;font-size:13px;color:var(--muted);font-family:'Noto Sans Devanagari',sans-serif" class="hi-content">अभी प्रारंभिक GS पेपर I पर खुद को परखें — मुफ्त, कोई लॉगिन नहीं</p>
+  </div>
+
+</div><!-- /container -->
+
+<div class="footer-note">
+  Syllabus based on official UPSC notification. Always verify with <a href="https://upsc.gov.in" target="_blank">upsc.gov.in</a> for latest updates. &nbsp;|&nbsp; <a href="index.html">← Back to PrepSaathi</a>
+</div>
+
+<script>
+// Language toggle
+let lang = localStorage.getItem('prepsaathi_lang') || 'en';
+
+function setLang(l){
+  lang = l;
+  localStorage.setItem('prepsaathi_lang', l);
+  document.body.classList.toggle('hi', l === 'hi');
+  document.getElementById('btnEn').classList.toggle('active', l === 'en');
+  document.getElementById('btnHi').classList.toggle('active', l === 'hi');
+}
+
+// Init language
+setLang(lang);
+
+// Subject accordion
+function toggleSubject(btn){
+  const content = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  content.classList.toggle('open', !isOpen);
+}
+
+// Sticky nav smooth scroll
+document.querySelectorAll('.snav-btn').forEach(btn => {
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.snav-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const target = document.getElementById(this.dataset.target);
+    if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// Highlight nav on scroll
+const sections = ['sec-prelims','sec-csat','sec-mains','sec-essay'];
+window.addEventListener('scroll', ()=>{
+  let current = sections[0];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && window.scrollY >= el.offsetTop - 120) current = id;
+  });
+  document.querySelectorAll('.snav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.target === current);
+  });
+});
+</script>
+</body>
+</html>
