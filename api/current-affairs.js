@@ -1,123 +1,87 @@
-// api/current-affairs.js — PrepSaathi (minimal, reliable)
+// api/current-affairs.js — PrepSaathi FINAL VERSION
+// Single focused call, 5 questions, minimal tokens
 
 const https = require('https');
-
-function callClaude(key, prompt) {
-  const reqBody = JSON.stringify({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 1500,
-    messages: [{ role: 'user', content: prompt }]
-  });
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.anthropic.com',
-      path: '/v1/messages',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'Content-Length': Buffer.byteLength(reqBody)
-      }
-    };
-    const r = https.request(options, (resp) => {
-      let data = '';
-      resp.on('data', c => data += c);
-      resp.on('end', () => resolve({ status: resp.statusCode, body: data }));
-    });
-    r.on('error', reject);
-    r.write(reqBody);
-    r.end();
-  });
-}
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'API key not configured.' });
+  const KEY = process.env.ANTHROPIC_API_KEY;
+  if (!KEY) return res.status(500).json({ error: 'API key not configured.' });
 
   const today = new Date().toLocaleDateString('en-IN', {
     weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata'
   });
 
-  const type = req.query.type || 'summary';
+  const type = req.query.type || 'all';
+
+  // Extremely focused prompts — one thing at a time
+  const prompts = {
+
+    summary: `You are a UPSC expert. Today: ${today}.
+Write a 5-sentence English paragraph on today's UPSC current affairs. Cover polity, economy, environment. Include real facts. Start with: "Today's current affairs covers"
+Return ONLY the paragraph text. No JSON. No bullets. No extra text.`,
+
+    summaryHi: `Translate this English paragraph to Hindi Devanagari script. Return ONLY the Hindi text, nothing else:
+"Today's current affairs covers important developments in Indian polity, economy, environment, and international relations relevant to UPSC Civil Services Examination aspirants."`,
+
+    sections: `UPSC expert. Today: ${today}. Return ONLY this exact JSON with real content (no markdown):
+{"sections":[{"tag":"Polity","heading":"Polity & Governance","headingHi":"राजनीति","icon":"⚖️","content":"One real sentence about Indian polity today.","contentHi":"एक वाक्य हिंदी में।"},{"tag":"Economy","heading":"Economy","headingHi":"अर्थव्यवस्था","icon":"📈","content":"One real sentence about economy.","contentHi":"एक वाक्य हिंदी में।"},{"tag":"IR","heading":"International Relations","headingHi":"विदेश नीति","icon":"🌏","content":"One real sentence about IR.","contentHi":"एक वाक्य हिंदी में।"},{"tag":"Environment","heading":"Environment","headingHi":"पर्यावरण","icon":"🌿","content":"One real sentence about environment.","contentHi":"एक वाक्य हिंदी में।"},{"tag":"Science","heading":"Science & Tech","headingHi":"विज्ञान","icon":"🔬","content":"One real sentence about science.","contentHi":"एक वाक्य हिंदी में।"}],"highlights":[{"title":"Headline 1","titleHi":"शीर्षक 1","body":"One sentence body.","bodyHi":"एक वाक्य।","tag":"Polity","source":"PIB"},{"title":"Headline 2","titleHi":"शीर्षक 2","body":"One sentence.","bodyHi":"एक वाक्य।","tag":"Economy","source":"AIR"},{"title":"Headline 3","titleHi":"शीर्षक 3","body":"One sentence.","bodyHi":"एक वाक्य।","tag":"IR","source":"PIB"},{"title":"Headline 4","titleHi":"शीर्षक 4","body":"One sentence.","bodyHi":"एक वाक्य।","tag":"Environment","source":"AIR"},{"title":"Headline 5","titleHi":"शीर्षक 5","body":"One sentence.","bodyHi":"एक वाक्य।","tag":"Science","source":"PIB"}]}`,
+
+    questions: `UPSC expert. Today: ${today}. Return ONLY this JSON with 5 real UPSC MCQs (no markdown):
+{"questions":[{"q":"Real UPSC question 1","qHi":"प्रश्न 1","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"One sentence.","explanationHi":"एक वाक्य।","subject":"Polity","subjectHi":"राजनीति","source":"PIB"},{"q":"Real UPSC question 2","qHi":"प्रश्न 2","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"One sentence.","explanationHi":"एक वाक्य।","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},{"q":"Real UPSC question 3","qHi":"प्रश्न 3","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"One sentence.","explanationHi":"एक वाक्य।","subject":"Environment","subjectHi":"पर्यावरण","source":"PIB"},{"q":"Real UPSC question 4","qHi":"प्रश्न 4","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"One sentence.","explanationHi":"एक वाक्य।","subject":"IR","subjectHi":"अंतर्राष्ट्रीय संबंध","source":"AIR"},{"q":"Real UPSC question 5","qHi":"प्रश्न 5","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"One sentence.","explanationHi":"एक वाक्य।","subject":"Science","subjectHi":"विज्ञान","source":"PIB"}]}`
+  };
+
+  function claude(prompt, maxTok=800) {
+    const body = JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: maxTok,
+      messages: [{ role: 'user', content: prompt }]
+    });
+    return new Promise((resolve, reject) => {
+      const r = https.request({
+        hostname: 'api.anthropic.com', path: '/v1/messages', method: 'POST',
+        headers: { 'Content-Type':'application/json','x-api-key':KEY,'anthropic-version':'2023-06-01','Content-Length':Buffer.byteLength(body) }
+      }, (resp) => {
+        let d=''; resp.on('data',c=>d+=c); resp.on('end',()=>resolve(JSON.parse(d)));
+      });
+      r.on('error', reject); r.write(body); r.end();
+    });
+  }
+
+  function parseJSON(text) {
+    return JSON.parse(text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim());
+  }
 
   try {
-    let result, parsed;
-
     if (type === 'summary') {
-
-      // ── CALL 1: Overview paragraph only ─────────────────────────────────────
-      const r1 = await callClaude(ANTHROPIC_KEY,
-        `UPSC expert. Today: ${today}. Write a 6-sentence English paragraph about today's most important current affairs for UPSC aspirants. Cover polity, economy, IR, environment. Include real facts. Start exactly with: "Today's current affairs covers" — plain text only, no JSON, no bullets.`
-      );
-      const r1json = JSON.parse(r1.body);
-      const summary = r1json.content[0].text.trim();
-
-      // ── CALL 2: Hindi summary ────────────────────────────────────────────────
-      const r2 = await callClaude(ANTHROPIC_KEY,
-        `Translate this to Hindi Devanagari script exactly:\n\n${summary}`
-      );
-      const r2json = JSON.parse(r2.body);
-      const summaryHi = r2json.content[0].text.trim();
-
-      // ── CALL 3: Sections + Highlights as JSON ────────────────────────────────
-      const r3 = await callClaude(ANTHROPIC_KEY,
-        `UPSC expert. Today: ${today}. Return ONLY this JSON (no markdown, keep each string under 100 chars):
-{"sections":[
-{"tag":"Polity","heading":"Polity & Governance","headingHi":"राजनीति और शासन","icon":"⚖️","content":"1 sentence polity news","contentHi":"1 sentence Hindi"},
-{"tag":"Economy","heading":"Economy & Finance","headingHi":"अर्थव्यवस्था","icon":"📈","content":"1 sentence economy","contentHi":"1 sentence Hindi"},
-{"tag":"IR","heading":"International Relations","headingHi":"अंतर्राष्ट्रीय संबंध","icon":"🌏","content":"1 sentence IR","contentHi":"1 sentence Hindi"},
-{"tag":"Environment","heading":"Environment","headingHi":"पर्यावरण","icon":"🌿","content":"1 sentence environment","contentHi":"1 sentence Hindi"},
-{"tag":"Science","heading":"Science & Tech","headingHi":"विज्ञान","icon":"🔬","content":"1 sentence science","contentHi":"1 sentence Hindi"}
-],
-"highlights":[
-{"title":"short EN title","titleHi":"हिंदी","body":"1 sentence EN","bodyHi":"1 sentence HI","tag":"Polity","source":"PIB"},
-{"title":"short EN title","titleHi":"हिंदी","body":"1 sentence EN","bodyHi":"1 sentence HI","tag":"Economy","source":"AIR"},
-{"title":"short EN title","titleHi":"हिंदी","body":"1 sentence EN","bodyHi":"1 sentence HI","tag":"IR","source":"PIB"},
-{"title":"short EN title","titleHi":"हिंदी","body":"1 sentence EN","bodyHi":"1 sentence HI","tag":"Environment","source":"AIR"},
-{"title":"short EN title","titleHi":"हिंदी","body":"1 sentence EN","bodyHi":"1 sentence HI","tag":"Science","source":"PIB"}
-]}
-Real UPSC content. Hindi in Devanagari. JSON only.`
-      );
-      const r3json = JSON.parse(r3.body);
-      const r3text = r3json.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim();
-      const sectionsData = JSON.parse(r3text);
-
-      parsed = { date: today, summary, summaryHi, ...sectionsData };
-
-    } else {
-
-      // ── QUESTIONS: 5 at a time ───────────────────────────────────────────────
-      const makeQPrompt = (subjects, startIdx) =>
-        `UPSC expert. Today: ${today}. Generate exactly 5 UPSC Prelims MCQs on current affairs. Subjects: ${subjects}. Return ONLY JSON (no markdown, strings under 120 chars each):
-{"questions":[
-{"q":"Q EN","qHi":"Q HI","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"1 sentence EN","explanationHi":"1 sentence HI","subject":"${subjects.split(',')[0].trim()}","subjectHi":"विषय","source":"PIB"},
-{"q":"Q EN","qHi":"Q HI","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"1 sentence EN","explanationHi":"1 sentence HI","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},
-{"q":"Q EN","qHi":"Q HI","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"1 sentence EN","explanationHi":"1 sentence HI","subject":"Environment","subjectHi":"पर्यावरण","source":"PIB"},
-{"q":"Q EN","qHi":"Q HI","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"1 sentence EN","explanationHi":"1 sentence HI","subject":"IR","subjectHi":"अंतर्राष्ट्रीय संबंध","source":"AIR"},
-{"q":"Q EN","qHi":"Q HI","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"1 sentence EN","explanationHi":"1 sentence HI","subject":"${subjects.split(',')[1]?.trim()||'Science'}","subjectHi":"विज्ञान","source":"PIB"}
-]}
-Real UPSC MCQs. Hindi Devanagari. JSON only.`;
-
-      const [qa, qb] = await Promise.all([
-        callClaude(ANTHROPIC_KEY, makeQPrompt('Polity, History', 0)),
-        callClaude(ANTHROPIC_KEY, makeQPrompt('Science, Geography, Governance', 5))
+      // 3 tiny parallel calls
+      const [s1, s2, s3] = await Promise.all([
+        claude(prompts.summary, 400),
+        claude(prompts.sections, 900),
+        claude(prompts.questions, 900)
       ]);
 
-      const parseQ = (r) => {
-        const j = JSON.parse(r.body);
-        const t = j.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim();
-        return JSON.parse(t).questions;
-      };
+      const summary = s1.content[0].text.trim();
+      const sections = parseJSON(s2.content[0].text);
+      const questions = parseJSON(s3.content[0].text);
 
-      parsed = { questions: [...parseQ(qa), ...parseQ(qb)] };
+      // Quick Hindi translation of summary
+      const s4 = await claude(`Translate to Hindi Devanagari: "${summary.substring(0,200)}"`, 300);
+      const summaryHi = s4.content[0].text.trim();
+
+      return res.status(200).json({
+        date: today,
+        summary,
+        summaryHi,
+        ...sections,
+        ...questions
+      });
     }
 
-    return res.status(200).json(parsed);
+    return res.status(400).json({ error: 'Invalid type' });
 
   } catch(err) {
     console.error('Error:', err.message);
