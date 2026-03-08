@@ -16,22 +16,42 @@ module.exports = async function handler(req, res) {
     weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata'
   });
 
-  // Skip RSS (unreliable on Vercel) — Claude generates from its own knowledge
-  const prompt = `You are a UPSC Civil Services exam expert for PrepSaathi, a free IAS prep platform for Indian students.
+  const prompt = `You are a UPSC expert for PrepSaathi. Today: ${today}.
 
-Today's date: ${today}
+Generate current affairs content for UPSC Civil Services Prelims aspirants.
 
-Generate today's current affairs content based on your knowledge of recent Indian and global events relevant to UPSC Civil Services Prelims.
+Return ONLY valid JSON, no markdown, no backticks, no extra text. Keep all strings concise to fit in response.
 
-Return ONLY a raw JSON object. No markdown. No backticks. No explanation. Just the JSON:
+JSON structure:
+{
+  "summary": "120 word English summary starting with: Today current affairs covers",
+  "summaryHi": "120 शब्द हिंदी में। शुरुआत: आज के समसामयिक मामलों में",
+  "highlights": [
+    {"title":"Title EN","titleHi":"शीर्षक","body":"1-2 sentence EN","bodyHi":"1-2 वाक्य हिंदी","tag":"Polity","source":"PIB"},
+    {"title":"Title EN","titleHi":"शीर्षक","body":"1-2 sentence EN","bodyHi":"1-2 वाक्य हिंदी","tag":"Economy","source":"AIR"},
+    {"title":"Title EN","titleHi":"शीर्षक","body":"1-2 sentence EN","bodyHi":"1-2 वाक्य हिंदी","tag":"Environment","source":"PIB"},
+    {"title":"Title EN","titleHi":"शीर्षक","body":"1-2 sentence EN","bodyHi":"1-2 वाक्य हिंदी","tag":"IR","source":"AIR"},
+    {"title":"Title EN","titleHi":"शीर्षक","body":"1-2 sentence EN","bodyHi":"1-2 वाक्य हिंदी","tag":"Science","source":"PRS"}
+  ],
+  "questions": [
+    {"q":"UPSC Q1 EN","qHi":"Q1 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Polity","subjectHi":"राजनीति","source":"PIB"},
+    {"q":"UPSC Q2 EN","qHi":"Q2 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},
+    {"q":"UPSC Q3 EN","qHi":"Q3 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Environment","subjectHi":"पर्यावरण","source":"PIB"},
+    {"q":"UPSC Q4 EN","qHi":"Q4 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Geography","subjectHi":"भूगोल","source":"AIR"},
+    {"q":"UPSC Q5 EN","qHi":"Q5 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"History","subjectHi":"इतिहास","source":"PIB"},
+    {"q":"UPSC Q6 EN","qHi":"Q6 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Science","subjectHi":"विज्ञान","source":"PRS"},
+    {"q":"UPSC Q7 EN","qHi":"Q7 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"IR","subjectHi":"अंतर्राष्ट्रीय संबंध","source":"AIR"},
+    {"q":"UPSC Q8 EN","qHi":"Q8 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Polity","subjectHi":"राजनीति","source":"PIB"},
+    {"q":"UPSC Q9 EN","qHi":"Q9 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},
+    {"q":"UPSC Q10 EN","qHi":"Q10 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"2 sentence EN","explanationHi":"2 वाक्य हिंदी","subject":"Governance","subjectHi":"शासन","source":"PRS"}
+  ]
+}
 
-{"summary":"150 word English summary of today's most important UPSC-relevant current affairs. Start with: Today's current affairs covers","summaryHi":"150 शब्दों का हिंदी सारांश। शुरुआत: आज के समसामयिक मामलों में","highlights":[{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Polity","source":"PIB"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Economy","source":"AIR"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Environment","source":"PIB"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"IR","source":"AIR"},{"title":"English headline","titleHi":"हिंदी शीर्षक","body":"2 sentence English UPSC context","bodyHi":"2 वाक्य हिंदी","tag":"Science","source":"PRS"}],"questions":[{"q":"Q1 UPSC style","qHi":"Q1 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"3 sentence explanation","explanationHi":"3 वाक्य हिंदी व्याख्या","subject":"Polity","subjectHi":"राजनीति","source":"PIB"},{"q":"Q2","qHi":"Q2 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},{"q":"Q3","qHi":"Q3 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Environment","subjectHi":"पर्यावरण","source":"PIB"},{"q":"Q4","qHi":"Q4 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Geography","subjectHi":"भूगोल","source":"AIR"},{"q":"Q5","qHi":"Q5 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"explanation","explanationHi":"व्याख्या","subject":"History","subjectHi":"इतिहास","source":"PIB"},{"q":"Q6","qHi":"Q6 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Science","subjectHi":"विज्ञान","source":"PRS"},{"q":"Q7","qHi":"Q7 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":2,"explanation":"explanation","explanationHi":"व्याख्या","subject":"IR","subjectHi":"अंतर्राष्ट्रीय संबंध","source":"AIR"},{"q":"Q8","qHi":"Q8 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Polity","subjectHi":"राजनीति","source":"PIB"},{"q":"Q9","qHi":"Q9 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":1,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Economy","subjectHi":"अर्थव्यवस्था","source":"AIR"},{"q":"Q10","qHi":"Q10 हिंदी","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":3,"explanation":"explanation","explanationHi":"व्याख्या","subject":"Governance","subjectHi":"शासन","source":"PRS"}]}
-
-Fill in all placeholder values with real UPSC-quality content. Keep all Hindi in Devanagari. Return only the JSON.`;
+Replace every placeholder with real UPSC-quality content for today. All Hindi in Devanagari. Return ONLY the JSON object.`;
 
   const reqBody = JSON.stringify({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 4096,
+    max_tokens: 8000,
     messages: [{ role: 'user', content: prompt }]
   });
 
@@ -59,10 +79,7 @@ Fill in all placeholder values with real UPSC-quality content. Keep all Hindi in
       r.end();
     });
 
-    console.log('Claude status:', result.status);
-
     if (result.status !== 200) {
-      console.error('Claude error:', result.body);
       const e = JSON.parse(result.body);
       return res.status(502).json({ error: e?.error?.message || 'Claude API error' });
     }
