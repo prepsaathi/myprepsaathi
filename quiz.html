@@ -1481,30 +1481,30 @@ function renderResults(){
     const hdrClass = isCorrect ? 'correct-h' : isWrong ? 'wrong-h' : 'skipped-h';
     const resultIcon = isCorrect ? '✅' : isWrong ? '❌' : '⏭️';
     const pyqTag = q.pyq ? `<span class="pyq-mini-badge">📄 UPSC CSE — ${q.pyqYear}</span>` : '';
-    const questionLines = q.q.split('\n').map(l=>l.trim()).filter(Boolean).join(' ');
+    const questionLines = getQ(q).split('\n').map(l=>l.trim()).filter(Boolean).join(' ');
     const timeSpent = state.qTimeSecs[q.id] || 0;
     const timeTag = `<span class="q-time-spent">⏱ ${fmtTime(timeSpent)}</span>`;
 
     let userAnswerHTML = '';
     if(isSkipped) userAnswerHTML = `<div class="ar-item"><label>Your Answer</label><span class="ar-skip">Not Attempted</span></div>`;
-    else userAnswerHTML = `<div class="ar-item"><label>Your Answer</label><span class="${isCorrect?'ar-correct':'ar-wrong'}">${optLetters[ans]}. ${q.options[ans]}</span></div>`;
+    else userAnswerHTML = `<div class="ar-item"><label>Your Answer</label><span class="${isCorrect?'ar-correct':'ar-wrong'}">${optLetters[ans]}. ${getOpts(q)[ans]}</span></div>`;
 
     return `<div class="review-item ${q.pyq ? 'pyq-item' : ''}">
       <div class="review-header ${hdrClass}">
         <span class="ri-num">Q.${i+1}</span>
         <div style="flex:1">
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
-            <span class="q-subject-badge" style="background:${sColor.bg};color:${sColor.color};font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700;letter-spacing:1px;text-transform:uppercase">${q.subject}</span>
+            <span class="q-subject-badge" style="background:${sColor.bg};color:${sColor.color};font-size:11px;padding:2px 8px;border-radius:3px;font-weight:700;letter-spacing:1px;text-transform:uppercase">${getSubject(q)}</span>
             ${pyqTag}${timeTag}
           </div>
-          <div class="ri-q">${questionLines}</div>
+          <div class="ri-q${quizLang==='hi' ? ' hi-q' : ''}">${questionLines}</div>
         </div>
         <span class="ri-result">${resultIcon}</span>
       </div>
       <div class="review-body">
         <div class="answer-row">
           ${userAnswerHTML}
-          <div class="ar-item"><label>Correct Answer</label><span class="ar-correct">${optLetters[q.answer]}. ${q.options[q.answer]}</span></div>
+          <div class="ar-item"><label>Correct Answer</label><span class="ar-correct">${optLetters[q.answer]}. ${getOpts(q)[q.answer]}</span></div>
         </div>
         <div class="explanation-box">
           <strong>📖 Explanation</strong>
