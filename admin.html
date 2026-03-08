@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrepSaathi Admin — Upload Today's Hindu</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b2a;--saffron:#e87722;--green:#22723a;--green-bg:#e8f5ed;--red:#c0392b;--red-bg:#fdecea;--border:#e8e0d4;--white:#f8f5ef;--muted:#7a8694;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--navy);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+
+/* LOGIN */
+.login-card{background:white;border-radius:16px;border:1.5px solid var(--border);padding:40px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(13,27,42,0.12);text-align:center;}
+.login-icon{font-size:40px;margin-bottom:16px;}
+.login-card h2{font-size:22px;font-weight:700;margin-bottom:6px;}
+.login-card p{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.input-group{text-align:left;margin-bottom:16px;}
+.input-group label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;}
+.input-group input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color 0.15s;}
+.input-group input:focus{border-color:var(--saffron);}
+.btn-login{background:var(--navy);color:white;border:none;width:100%;padding:13px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:4px;}
+.btn-login:hover{background:#1b2d42;}
+.err-msg{background:var(--red-bg);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none;}
+
+/* ADMIN PANEL */
+.admin-wrap{width:100%;max-width:680px;}
+.admin-header{background:var(--navy);border-radius:14px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;}
+.admin-header h1{color:white;font-size:20px;}
+.admin-header p{color:rgba(255,255,255,0.6);font-size:12px;margin-top:2px;}
+.btn-logout{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.2);padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+.panel-card{background:white;border-radius:14px;border:1.5px solid var(--border);padding:28px;margin-bottom:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+.panel-card h3{font-size:16px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.panel-card .desc{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:10px;padding:36px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--white);}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--saffron);background:#fff8f3;}
+.upload-zone .icon{font-size:36px;margin-bottom:12px;}
+.upload-zone h4{font-size:15px;font-weight:700;margin-bottom:4px;}
+.upload-zone p{font-size:12px;color:var(--muted);}
+#pdfInput{display:none;}
+
+/* PROGRESS */
+.progress-wrap{display:none;margin-top:16px;}
+.progress-bar-bg{background:#eee;border-radius:8px;height:8px;overflow:hidden;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--saffron),#f59530);border-radius:8px;width:0%;transition:width 0.3s;}
+.progress-label{font-size:12px;color:var(--muted);margin-top:6px;}
+
+/* STATUS MESSAGES */
+.status-box{border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.6;margin-top:16px;display:none;}
+.status-box.success{background:var(--green-bg);color:var(--green);border:1.5px solid #a8d5b5;}
+.status-box.error{background:var(--red-bg);color:var(--red);border:1.5px solid #f5c6c0;}
+.status-box.info{background:#eef2ff;color:#2c4cc0;border:1.5px solid #b8c8f0;}
+
+/* MANUAL REFRESH */
+.btn-manual{background:linear-gradient(135deg,var(--saffron),#f59530);color:white;border:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;transition:all 0.15s;}
+.btn-manual:hover{transform:translateY(-1px);}
+.btn-manual:disabled{opacity:0.5;cursor:default;transform:none;}
+
+/* TODAY STATUS */
+.today-status{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--white);border-radius:8px;border:1.5px solid var(--border);font-size:13px;}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.status-dot.green{background:var(--green);}
+.status-dot.orange{background:var(--saffron);}
+
+.view-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--saffron);text-decoration:none;font-weight:600;margin-top:12px;}
+.view-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-card" id="loginScreen">
+  <div class="login-icon">🔐</div>
+  <h2>PrepSaathi Admin</h2>
+  <p>Upload today's The Hindu PDF to generate fresh current affairs for students.</p>
+  <div class="input-group">
+    <label>Admin Password</label>
+    <input type="password" id="pwdInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+  </div>
+  <button class="btn-login" onclick="doLogin()">Login →</button>
+  <div class="err-msg" id="errMsg">❌ Wrong password. Try again.</div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-wrap" id="adminPanel" style="display:none;">
+  <div class="admin-header">
+    <div>
+      <h1>📰 PrepSaathi Admin</h1>
+      <p>Daily Current Affairs Manager</p>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Logout</button>
+  </div>
+
+  <!-- UPLOAD CARD -->
+  <div class="panel-card">
+    <h3>📄 Upload Today's Hindu PDF</h3>
+    <p class="desc">Upload The Hindu newspaper PDF. Claude AI will read it, extract UPSC-relevant news, and generate today's summary + 10 questions automatically for all students.</p>
+
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('pdfInput').click()"
+         ondragover="event.preventDefault();this.classList.add('drag')"
+         ondragleave="this.classList.remove('drag')"
+         ondrop="handleDrop(event)">
+      <div class="icon">📥</div>
+      <h4 id="uploadZoneTitle">Click to upload PDF or drag & drop here</h4>
+      <p>The Hindu PDF · Max 20MB · Only PDF files</p>
+    </div>
+    <input type="file" id="pdfInput" accept=".pdf" onchange="handleFileSelect(event)">
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel">Uploading…</div>
+    </div>
+
+    <div class="status-box" id="uploadStatus"></div>
+  </div>
+
+  <!-- MANUAL REFRESH CARD -->
+  <div class="panel-card">
+    <h3>🤖 Generate Without PDF</h3>
+    <p class="desc">No PDF today? Generate current affairs using Claude's own knowledge of recent events. Good for days when The Hindu PDF is unavailable.</p>
+    <button class="btn-manual" id="manualBtn" onclick="generateManual()">
+      ⚡ Generate Today's Quiz from AI Knowledge
+    </button>
+    <div class="status-box" id="manualStatus"></div>
+  </div>
+
+  <!-- PREVIEW LINK -->
+  <div class="panel-card">
+    <h3>👁️ Preview & Test</h3>
+    <p class="desc">Open the student-facing current affairs page to verify today's content looks correct.</p>
+    <div class="today-status">
+      <div class="status-dot orange" id="statusDot"></div>
+      <span id="statusText">Open the page below to check today's content.</span>
+    </div>
+    <a href="current-affairs.html" target="_blank" class="view-link">🔗 Open Current Affairs Page →</a>
+  </div>
+</div>
+
+<script>
+// ── PASSWORD ──────────────────────────────────────────────────────────────────
+// Change this password to whatever you want!
+const ADMIN_PASSWORD = 'prepsaathi2026';
+
+function doLogin(){
+  const pwd = document.getElementById('pwdInput').value;
+  if(pwd === ADMIN_PASSWORD){
+    sessionStorage.setItem('ps_admin', '1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+  } else {
+    document.getElementById('errMsg').style.display = 'block';
+    document.getElementById('pwdInput').value = '';
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem('ps_admin');
+  location.reload();
+}
+
+// Auto-login if already logged in this session
+if(sessionStorage.getItem('ps_admin')){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'block';
+}
+
+// ── FILE HANDLING ─────────────────────────────────────────────────────────────
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if(file) processFile(file);
+}
+
+function handleFileSelect(e){
+  const file = e.target.files[0];
+  if(file) processFile(file);
+}
+
+async function processFile(file){
+  if(!file.name.endsWith('.pdf')){
+    showStatus('uploadStatus','error','❌ Please upload a PDF file only.');
+    return;
+  }
+  if(file.size > 20 * 1024 * 1024){
+    showStatus('uploadStatus','error','❌ File too large. Max size is 20MB.');
+    return;
+  }
+
+  document.getElementById('uploadZoneTitle').textContent = `📄 ${file.name}`;
+  showProgress(true, 'Reading PDF…', 20);
+
+  // Read PDF as base64
+  const base64 = await fileToBase64(file);
+  showProgress(true, 'Sending to Claude AI…', 50);
+
+  // Send to our upload API
+  try {
+    showProgress(true, 'Claude is reading The Hindu…', 65);
+    const resp = await fetch('/api/upload-hindu', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pdf: base64, filename: file.name })
+    });
+    showProgress(true, 'Generating quiz questions…', 85);
+    const data = await resp.json();
+    showProgress(true, 'Done!', 100);
+
+    if(!resp.ok) throw new Error(data.error || 'Upload failed');
+
+    setTimeout(()=>showProgress(false),1000);
+    showStatus('uploadStatus','success',`✅ Success! Today's current affairs generated from ${file.name}.\n\nStudents can now access: Today's detailed summary, 5 section-wise highlights, and 10 UPSC questions based on The Hindu.\n\nClick "Open Current Affairs Page" below to preview.`);
+    document.getElementById('statusDot').className = 'status-dot green';
+    document.getElementById('statusText').textContent = '✅ Today\'s content is live from The Hindu PDF.';
+
+  } catch(err){
+    showProgress(false);
+    showStatus('uploadStatus','error', `❌ Error: ${err.message}\n\nTry the "Generate from AI Knowledge" button below as a fallback.`);
+  }
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── MANUAL GENERATE ───────────────────────────────────────────────────────────
+async function generateManual(){
+  const btn = document.getElementById('manualBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating… (takes ~30 seconds)';
+  showStatus('manualStatus','info','🤖 Claude is generating today\'s current affairs from recent knowledge…');
+
+  try {
+    const resp = await fetch('/api/current-affairs');
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.error || 'Generation failed');
+
+    showStatus('manualStatus','success',`✅ Generated successfully!\n\nSummary: ${data.summary?.substring(0,120)}…\n\nStudents can now access today's content.`);
+    document.getElementById('statusDot').className = 'status-dot green';
+    document.getElementById('statusText').textContent = '✅ Today\'s content is live (AI generated).';
+
+  } catch(err){
+    showStatus('manualStatus','error',`❌ Error: ${err.message}`);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⚡ Generate Today\'s Quiz from AI Knowledge';
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────────────────────
+function showProgress(visible, label='', pct=0){
+  const wrap = document.getElementById('progressWrap');
+  wrap.style.display = visible ? 'block' : 'none';
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = label;
+}
+
+function showStatus(id, type, msg){
+  const el = document.getElementById(id);
+  el.className = `status-box ${type}`;
+  el.style.display = 'block';
+  el.style.whiteSpace = 'pre-line';
+  el.textContent = msg;
+}
+</script>
+</body>
+</html>
