@@ -1422,6 +1422,8 @@ function renderQuiz(){
   const questionText = getQ(q).split('\n').map(l => l.trim()).filter(Boolean).join('<br>');
   const questionLines = `<span${quizLang==='hi' ? ' class="hi-q"' : ''}>${questionText}</span>`;
 
+  const hasSelection = selectedAns !== null && selectedAns !== undefined;
+  const isLastQ = state.current === total - 1;
   const hi = quizLang === 'hi';
   const nextLabel = isLastQ
     ? (hi ? 'समीक्षा करें और जमा करें →' : 'Review & Submit →')
