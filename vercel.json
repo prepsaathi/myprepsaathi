@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/current-affairs.js": {
+      "maxDuration": 60
+    }
+  }
+}
