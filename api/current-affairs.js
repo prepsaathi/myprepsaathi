@@ -1,202 +1,165 @@
-// api/current-affairs.js
-// Vercel Serverless Function — PrepSaathi Current Affairs
-// Fetches PIB + AIR News + PRS RSS feeds, sends to Claude API
-// Returns: { date, summary, summaryHi, articles, questions }
+// api/current-affairs.js — CommonJS for Vercel compatibility
 
-export default async function handler(req, res) {
+const https = require('https');
+const http = require('http');
 
-  // ── CORS ────────────────────────────────────────────────────────────────────
+module.exports = async function handler(req, res) {
+
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   if (!ANTHROPIC_KEY) {
-    return res.status(500).json({ error: 'API key not configured' });
+    return res.status(500).json({ error: 'API key not configured on server.' });
   }
 
-  // ── RSS SOURCES ──────────────────────────────────────────────────────────────
-  const RSS_FEEDS = [
-    {
-      name: 'PIB (Press Information Bureau)',
-      url: 'https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3',
-      tag: 'PIB'
-    },
-    {
-      name: 'AIR News (All India Radio)',
-      url: 'https://newsonair.gov.in/rss.aspx',
-      tag: 'AIR'
-    },
-    {
-      name: 'PRS India (Parliament)',
-      url: 'https://prsindia.org/feed',
-      tag: 'PRS'
-    }
-  ];
-
-  // ── FETCH RSS FEEDS ─────────────────────────────────────────────────────────
-  async function fetchRSS(feed) {
-    try {
-      // Use allorigins proxy to bypass CORS on server side isn't needed
-      // since this runs server-side on Vercel — direct fetch works
-      const response = await fetch(feed.url, {
-        headers: { 'User-Agent': 'PrepSaathi/1.0 (UPSC Prep Platform)' },
-        signal: AbortSignal.timeout(8000)
+  // ── FETCH URL HELPER ────────────────────────────────────────────────────────
+  function fetchUrl(url, timeoutMs = 8000) {
+    return new Promise((resolve, reject) => {
+      const lib = url.startsWith('https') ? https : http;
+      const req = lib.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (PrepSaathi UPSC Platform)',
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+        }
+      }, (r) => {
+        if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) {
+          return fetchUrl(r.headers.location, timeoutMs).then(resolve).catch(reject);
+        }
+        let data = '';
+        r.on('data', chunk => data += chunk);
+        r.on('end', () => resolve(data));
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const xml = await response.text();
-      return parseRSS(xml, feed.tag);
-    } catch (err) {
-      console.error(`Failed to fetch ${feed.name}:`, err.message);
-      return [];
-    }
+      req.setTimeout(timeoutMs, () => { req.destroy(); reject(new Error('Timeout')); });
+      req.on('error', reject);
+    });
   }
 
+  // ── RSS PARSER ───────────────────────────────────────────────────────────────
   function parseRSS(xml, tag) {
     const items = [];
-    const itemMatches = xml.matchAll(/<item>([\s\S]*?)<\/item>/g);
-    for (const match of itemMatches) {
-      const content = match[1];
-      const title = stripCDATA(extract(content, 'title'));
-      const description = stripCDATA(extract(content, 'description'));
-      const pubDate = extract(content, 'pubDate');
-      const link = extract(content, 'link');
-      if (title && title.length > 10) {
-        items.push({
-          tag,
-          title: cleanText(title),
-          description: cleanText(description).substring(0, 400),
-          pubDate,
-          link
-        });
+    const matches = xml.matchAll(/<item>([\s\S]*?)<\/item>/g);
+    for (const m of matches) {
+      const block = m[1];
+      const title = cleanText(stripCDATA(extractTag(block, 'title')));
+      const desc  = cleanText(stripCDATA(extractTag(block, 'description')));
+      if (title && title.length > 8) {
+        items.push({ tag, title, description: desc.substring(0, 350) });
       }
     }
-    return items.slice(0, 8); // top 8 per source
+    return items.slice(0, 7);
   }
 
-  function extract(xml, tag) {
-    const match = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i'));
-    return match ? match[1].trim() : '';
+  function extractTag(xml, tag) {
+    const m = xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i'));
+    return m ? m[1].trim() : '';
+  }
+  function stripCDATA(s) { return s.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim(); }
+  function cleanText(s) {
+    return s.replace(/<[^>]+>/g, ' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<')
+            .replace(/&gt;/g,'>').replace(/&nbsp;/g,' ').replace(/&#\d+;/g,'')
+            .replace(/\s+/g,' ').trim();
   }
 
-  function stripCDATA(str) {
-    return str.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1').trim();
+  // ── RSS SOURCES ───────────────────────────────────────────────────────────────
+  const RSS_FEEDS = [
+    { name: 'PIB',       tag: 'PIB', url: 'https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3' },
+    { name: 'AIR News',  tag: 'AIR', url: 'https://newsonair.gov.in/rss.aspx' },
+    { name: 'PRS India', tag: 'PRS', url: 'https://prsindia.org/feed' },
+  ];
+
+  const allArticles = [];
+  for (const feed of RSS_FEEDS) {
+    try {
+      const xml = await fetchUrl(feed.url);
+      const items = parseRSS(xml, feed.tag);
+      allArticles.push(...items);
+      console.log(`${feed.tag}: fetched ${items.length} items`);
+    } catch (e) {
+      console.log(`Skipped ${feed.name}: ${e.message}`);
+    }
   }
 
-  function cleanText(str) {
-    return str
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-      .replace(/&nbsp;/g, ' ').replace(/&#\d+;/g, '').replace(/&[a-z]+;/g, '')
-      .replace(/\s+/g, ' ').trim();
-  }
+  const fallback = allArticles.length === 0;
+  const articleText = fallback
+    ? 'No live feeds available. Generate 5 highlights and 10 questions on recent UPSC topics: Indian polity, economy, environment, science & technology, and international relations.'
+    : allArticles.map((a, i) => `[${i+1}] [${a.tag}] ${a.title}\n${a.description}`).join('\n\n');
 
-  // ── FETCH ALL FEEDS IN PARALLEL ─────────────────────────────────────────────
-  const feedResults = await Promise.all(RSS_FEEDS.map(fetchRSS));
-  const allArticles = feedResults.flat();
-
-  if (allArticles.length === 0) {
-    return res.status(502).json({ error: 'Could not fetch any news feeds. Please try again.' });
-  }
-
-  // ── BUILD PROMPT FOR CLAUDE ─────────────────────────────────────────────────
   const today = new Date().toLocaleDateString('en-IN', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-    timeZone: 'Asia/Kolkata'
+    weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata'
   });
 
-  const articleText = allArticles.map((a, i) =>
-    `[${i + 1}] [${a.tag}] ${a.title}\n${a.description}`
-  ).join('\n\n');
+  const prompt = `You are a UPSC Civil Services exam expert for PrepSaathi, a free IAS preparation platform.
 
-  const prompt = `You are a UPSC expert and educator for PrepSaathi, a free platform helping Indian students prepare for the IAS exam.
-
-Today's date: ${today}
-
-Here are today's news articles from PIB, AIR News, and PRS India:
+Today: ${today}
+${fallback ? 'Note: Live news feeds unavailable. Generate from recent UPSC-relevant knowledge.' : 'News from PIB, AIR News, PRS India:'}
 
 ${articleText}
 
-Your task: Analyze these articles from a UPSC Civil Services Examination perspective and produce the following in valid JSON format only (no markdown, no explanation outside JSON):
+Return ONLY a valid JSON object, no markdown, no text outside JSON:
 
 {
-  "summary": "A 150-200 word English summary of the most UPSC-relevant news today. Written clearly for aspirants. Mention key schemes, policies, constitutional provisions, or international events. Start with 'Today's current affairs covers...'",
-  
-  "summaryHi": "Same summary in Hindi (150-200 words), written in clear Hindi for Hindi-medium aspirants. Use Devanagari script. Start with 'आज के समसामयिक मामलों में...'",
-
+  "summary": "150-200 word English summary. Start: Today's current affairs covers...",
+  "summaryHi": "Same in Hindi Devanagari 150-200 words. Start: आज के समसामयिक मामलों में...",
   "highlights": [
-    { "title": "Short English headline (max 8 words)", "titleHi": "Hindi headline", "body": "2-sentence English explanation with UPSC relevance", "bodyHi": "Same in Hindi", "tag": "Polity/Economy/Environment/IR/Science/History/Geography/Governance", "source": "PIB or AIR or PRS" }
+    {"title":"English headline max 8 words","titleHi":"Hindi Devanagari","body":"2-sentence English UPSC context","bodyHi":"Same Hindi","tag":"Polity","source":"PIB"}
   ],
-
   "questions": [
-    {
-      "q": "UPSC-style question in English (match actual UPSC Prelims phrasing)",
-      "qHi": "Same question in Hindi",
-      "options": ["Option A", "Option B", "Option C", "Option D"],
-      "optionsHi": ["विकल्प A", "विकल्प B", "विकल्प C", "विकल्प D"],
-      "answer": 0,
-      "explanation": "Clear 3-4 sentence explanation in English with syllabus context",
-      "explanationHi": "Same explanation in Hindi",
-      "subject": "Subject name in English",
-      "subjectHi": "विषय हिंदी में",
-      "source": "PIB or AIR or PRS"
-    }
+    {"q":"UPSC English question","qHi":"Hindi Devanagari","options":["A","B","C","D"],"optionsHi":["A","B","C","D"],"answer":0,"explanation":"3-4 sentence English","explanationHi":"Hindi","subject":"Polity","subjectHi":"राजनीति","source":"PIB"}
   ]
 }
 
-Rules:
-- highlights array: exactly 5 items, most important UPSC-relevant stories
-- questions array: exactly 10 questions, varied across subjects, genuine UPSC Prelims difficulty
-- answer field: 0-indexed integer (0=A, 1=B, 2=C, 3=D)
-- All Hindi text must be in Devanagari script
-- Questions must be directly based on today's news articles provided
-- Match UPSC question style: "Consider the following statements", "Which of the following is correct", etc.
-- Return ONLY valid JSON, nothing else`;
+Rules: highlights=exactly 5, questions=exactly 10, answer is 0-indexed int, mix subjects, UPSC style questions, all Hindi in Devanagari. Return ONLY JSON.`;
 
-  // ── CALL CLAUDE API ─────────────────────────────────────────────────────────
   try {
-    const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
-        messages: [{ role: 'user', content: prompt }]
-      }),
-      signal: AbortSignal.timeout(45000)
+    const body = JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }]
     });
 
-    if (!claudeRes.ok) {
-      const errText = await claudeRes.text();
-      console.error('Claude API error:', errText);
-      return res.status(502).json({ error: 'AI service temporarily unavailable. Please try again in a moment.' });
+    const claudeResponse = await new Promise((resolve, reject) => {
+      const options = {
+        hostname: 'api.anthropic.com',
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'Content-Length': Buffer.byteLength(body)
+        }
+      };
+      const r = https.request(options, (res) => {
+        let data = '';
+        res.on('data', c => data += c);
+        res.on('end', () => resolve({ status: res.statusCode, body: data }));
+      });
+      r.setTimeout(55000, () => { r.destroy(); reject(new Error('Claude timeout')); });
+      r.on('error', reject);
+      r.write(body);
+      r.end();
+    });
+
+    if (claudeResponse.status !== 200) {
+      console.error('Claude API error status:', claudeResponse.status, claudeResponse.body);
+      return res.status(502).json({ error: 'AI service error. Please try again.' });
     }
 
-    const claudeData = await claudeRes.json();
-    const rawText = claudeData.content[0].text.trim();
+    const claudeData = JSON.parse(claudeResponse.body);
+    const rawText = claudeData.content[0].text.trim()
+      .replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
 
-    // Parse JSON — strip any accidental markdown fences
-    const jsonText = rawText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
-    const parsed = JSON.parse(jsonText);
-
-    // Attach metadata
+    const parsed = JSON.parse(rawText);
     parsed.date = today;
     parsed.articleCount = allArticles.length;
-    parsed.sources = RSS_FEEDS.map(f => f.name);
     parsed.generatedAt = new Date().toISOString();
 
     return res.status(200).json(parsed);
 
   } catch (err) {
-    console.error('Processing error:', err);
-    if (err instanceof SyntaxError) {
-      return res.status(502).json({ error: 'Could not parse AI response. Please refresh and try again.' });
-    }
-    return res.status(500).json({ error: 'Something went wrong. Please try again in a moment.' });
+    console.error('Error:', err.message);
+    return res.status(500).json({ error: 'Error: ' + err.message });
   }
-}
+};
