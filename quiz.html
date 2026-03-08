@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UPSC Civil Services Prelims Quiz</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --navy: #0d1b2a;
@@ -759,6 +759,34 @@ body {
 }
 .opt-btn.selected-neutral .opt-letter { color: #2c4cc0; }
 
+/* ── LANGUAGE TOGGLE ── */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 4px;
+}
+.lang-toggle button {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Source Sans 3', sans-serif;
+}
+.lang-toggle button.active {
+  background: var(--saffron);
+  color: white;
+}
+.hi-q { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 15px; line-height: 1.8; }
+
 /* Animations */
 @keyframes fadeUp {
   from { opacity:0; transform: translateY(16px); }
@@ -786,7 +814,11 @@ body {
     <h1>UPSC Civil Services Prelims</h1>
     <p>General Studies · Mock Practice Quiz</p>
   </div>
-  <div class="header-badge">IAS · IPS · IFS</div>
+  <div class="lang-toggle">
+    <button id="btnEn" class="active" onclick="setQuizLang('en')">EN</button>
+    <button id="btnHi" onclick="setQuizLang('hi')">हिंदी</button>
+  </div>
+  <a href="index.html" style="font-size:13px;color:rgba(255,255,255,0.5);text-decoration:none;margin-left:12px;">← Home</a>
 </header>
 
 <div class="container" id="app"></div>
@@ -799,177 +831,251 @@ const QUESTIONS = [
   // ── POLITY ──
   {
     id:1, subject:"Indian Polity", subjectClass:"polity", difficulty:"medium",
+    subjectHi:"भारतीय राजनीति",
     pyq:true, pyqYear:2023,
     q:"With reference to the Constitution of India, consider the following statements:\n1. No High Court shall have the jurisdiction in matters relating to the elections to the Panchayats and Municipalities.\n2. The Supreme Court of India has the power to review its own judgement or Order.\nWhich of the statements given above is/are correct?",
+    qHi:"भारत के संविधान के संदर्भ में, निम्नलिखित कथनों पर विचार करें:\n1. पंचायतों और नगर पालिकाओं के चुनावों से संबंधित मामलों में किसी भी उच्च न्यायालय का क्षेत्राधिकार नहीं होगा।\n2. भारत का सर्वोच्च न्यायालय अपने स्वयं के निर्णय या आदेश की समीक्षा करने की शक्ति रखता है।\nउपरोक्त में से कौन सा/से कथन सही है/हैं?",
     options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    optionsHi:["केवल 1","केवल 2","1 और 2 दोनों","न तो 1 और न ही 2"],
     answer:1,
-    explanation:"Article 243-O of the Constitution bars the jurisdiction of courts in matters relating to elections to Panchayats, not the High Courts alone. Courts (including High Courts) are barred from interference. However, Article 137 explicitly grants the Supreme Court the power to review any judgement or order made by it. Statement 1 is incorrect because it specifically says 'No High Court' — the restriction is broader. Statement 2 is correct. Hence only Statement 2 is correct."
+    explanation:"Article 243-O of the Constitution bars the jurisdiction of courts in matters relating to elections to Panchayats, not the High Courts alone. Courts (including High Courts) are barred from interference. However, Article 137 explicitly grants the Supreme Court the power to review any judgement or order made by it. Statement 1 is incorrect because it specifically says 'No High Court' — the restriction is broader. Statement 2 is correct. Hence only Statement 2 is correct.",
+    explanationHi:"संविधान का अनुच्छेद 243-O पंचायतों के चुनावों से संबंधित मामलों में न्यायालयों के क्षेत्राधिकार को प्रतिबंधित करता है, न कि केवल उच्च न्यायालयों को। न्यायालयों (उच्च न्यायालयों सहित) को हस्तक्षेप से प्रतिबंधित किया गया है। हालांकि, अनुच्छेद 137 स्पष्ट रूप से सर्वोच्च न्यायालय को अपने द्वारा दिए गए किसी भी निर्णय या आदेश की समीक्षा करने की शक्ति प्रदान करता है। कथन 1 गलत है क्योंकि प्रतिबंध व्यापक है। कथन 2 सही है।"
   },
   {
     id:2, subject:"Indian Polity", subjectClass:"polity", difficulty:"hard",
+    subjectHi:"भारतीय राजनीति",
     pyq:false,
     q:"Which of the following is NOT a constitutional body in India?",
+    qHi:"निम्नलिखित में से कौन सा भारत में एक संवैधानिक निकाय नहीं है?",
     options:["Union Public Service Commission","National Human Rights Commission","Election Commission of India","Finance Commission"],
+    optionsHi:["संघ लोक सेवा आयोग","राष्ट्रीय मानवाधिकार आयोग","भारत निर्वाचन आयोग","वित्त आयोग"],
     answer:1,
-    explanation:"The National Human Rights Commission (NHRC) is a statutory body established under the Protection of Human Rights Act, 1993 — not a constitutional body. In contrast, the Union Public Service Commission (Article 315), Election Commission (Article 324), and Finance Commission (Article 280) are all constitutional bodies established under specific provisions of the Indian Constitution. This distinction is critical for UPSC aspirants and frequently tested."
+    explanation:"The National Human Rights Commission (NHRC) is a statutory body established under the Protection of Human Rights Act, 1993 — not a constitutional body. In contrast, the Union Public Service Commission (Article 315), Election Commission (Article 324), and Finance Commission (Article 280) are all constitutional bodies established under specific provisions of the Indian Constitution.",
+    explanationHi:"राष्ट्रीय मानवाधिकार आयोग (NHRC) मानव अधिकार संरक्षण अधिनियम, 1993 के तहत स्थापित एक वैधानिक निकाय है — संवैधानिक निकाय नहीं। इसके विपरीत, संघ लोक सेवा आयोग (अनुच्छेद 315), निर्वाचन आयोग (अनुच्छेद 324), और वित्त आयोग (अनुच्छेद 280) सभी संवैधानिक निकाय हैं।"
   },
   {
     id:3, subject:"Indian Polity", subjectClass:"polity", difficulty:"medium",
+    subjectHi:"भारतीय राजनीति",
     pyq:true, pyqYear:2022,
     q:"Consider the following statements:\n1. The Speaker of the Lok Sabha can allow a 'no-confidence motion' against the Deputy Speaker.\n2. The Deputy Speaker has the same immunities as the Speaker of the Lok Sabha.\nWhich of the statements given above is/are correct?",
+    qHi:"निम्नलिखित कथनों पर विचार करें:\n1. लोकसभा अध्यक्ष, उपाध्यक्ष के विरुद्ध 'अविश्वास प्रस्ताव' की अनुमति दे सकते हैं।\n2. उपाध्यक्ष को लोकसभा अध्यक्ष के समान उन्मुक्तियाँ प्राप्त हैं।\nउपरोक्त में से कौन सा/से कथन सही है/हैं?",
     options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    optionsHi:["केवल 1","केवल 2","1 और 2 दोनों","न तो 1 और न ही 2"],
     answer:2,
-    explanation:"Both statements are correct. Under Article 179 of the Constitution, the Deputy Speaker can be removed by a resolution of the Lok Sabha, and the Speaker has the power to admit and allow discussion of such motions. Under Article 180, the Deputy Speaker performs all the functions of the Speaker when the Speaker's office is vacant or the Speaker is absent, and has the same constitutional immunities and privileges as the Speaker when acting in that capacity."
+    explanation:"Both statements are correct. Under Article 179 of the Constitution, the Deputy Speaker can be removed by a resolution of the Lok Sabha, and the Speaker has the power to admit and allow discussion of such motions. Under Article 180, the Deputy Speaker has the same constitutional immunities and privileges as the Speaker when acting in that capacity.",
+    explanationHi:"दोनों कथन सही हैं। अनुच्छेद 179 के तहत उपाध्यक्ष को लोकसभा के प्रस्ताव द्वारा हटाया जा सकता है। अनुच्छेद 180 के तहत उपाध्यक्ष को उसी क्षमता में कार्य करते समय अध्यक्ष के समान संवैधानिक उन्मुक्तियाँ और विशेषाधिकार प्राप्त हैं।"
   },
   {
     id:4, subject:"Indian Polity", subjectClass:"polity", difficulty:"easy",
+    subjectHi:"भारतीय राजनीति",
     pyq:false,
     q:"Which Article of the Indian Constitution provides for the formation of a new State or alteration of boundaries of existing States?",
+    qHi:"भारत के संविधान का कौन सा अनुच्छेद नए राज्य के निर्माण या मौजूदा राज्यों की सीमाओं में परिवर्तन का प्रावधान करता है?",
     options:["Article 1","Article 2","Article 3","Article 4"],
+    optionsHi:["अनुच्छेद 1","अनुच्छेद 2","अनुच्छेद 3","अनुच्छेद 4"],
     answer:2,
-    explanation:"Article 3 of the Indian Constitution empowers Parliament to form new States, increase or diminish the area of States, alter the boundaries of States, and alter the names of States. This is done by passing a simple majority bill. Article 1 defines India as a Union of States. Article 2 deals with Parliament's power to admit or establish new States. Article 4 provides that laws made under Articles 2 and 3 shall not be deemed constitutional amendments."
+    explanation:"Article 3 of the Indian Constitution empowers Parliament to form new States, increase or diminish the area of States, alter the boundaries of States, and alter the names of States. Article 1 defines India as a Union of States. Article 2 deals with Parliament's power to admit or establish new States. Article 4 provides that laws made under Articles 2 and 3 shall not be deemed constitutional amendments.",
+    explanationHi:"भारतीय संविधान का अनुच्छेद 3 संसद को नए राज्य बनाने, राज्यों के क्षेत्र को बढ़ाने या घटाने, राज्यों की सीमाओं को बदलने और राज्यों के नाम बदलने का अधिकार देता है। अनुच्छेद 1 भारत को राज्यों के संघ के रूप में परिभाषित करता है।"
   },
-
-  // ── HISTORY ──
   {
     id:5, subject:"Modern History", subjectClass:"history", difficulty:"medium",
+    subjectHi:"आधुनिक इतिहास",
     pyq:true, pyqYear:2021,
     q:"With reference to Indian history, the Members of the Constituent Assembly from the Princely States were:",
+    qHi:"भारतीय इतिहास के संदर्भ में, रियासतों से संविधान सभा के सदस्य थे:",
     options:["Elected by the Legislative Assemblies of the Princely States","Nominated by the Indian National Congress","Elected by the people of Princely States directly","Nominated by the rulers of the Princely States"],
+    optionsHi:["रियासतों की विधान सभाओं द्वारा निर्वाचित","भारतीय राष्ट्रीय कांग्रेस द्वारा मनोनीत","रियासतों की जनता द्वारा सीधे निर्वाचित","रियासतों के शासकों द्वारा मनोनीत"],
     answer:3,
-    explanation:"The members representing Princely States in the Constituent Assembly were nominated by the rulers (princes) of those states, not elected. The Indian Independence Act, 1947 gave Princely States the option to join the Constituent Assembly, and those who chose to do so nominated their representatives. This is in contrast to the British India provinces where members were elected by the Provincial Legislative Assemblies through indirect elections."
+    explanation:"The members representing Princely States in the Constituent Assembly were nominated by the rulers (princes) of those states, not elected. The Indian Independence Act, 1947 gave Princely States the option to join the Constituent Assembly, and those who chose to do so nominated their representatives.",
+    explanationHi:"संविधान सभा में रियासतों का प्रतिनिधित्व करने वाले सदस्य उन राज्यों के शासकों (राजाओं) द्वारा मनोनीत किए गए थे, निर्वाचित नहीं। भारतीय स्वतंत्रता अधिनियम, 1947 ने रियासतों को संविधान सभा में शामिल होने का विकल्प दिया था।"
   },
   {
     id:6, subject:"Ancient History & Culture", subjectClass:"history", difficulty:"hard",
+    subjectHi:"प्राचीन इतिहास एवं संस्कृति",
     pyq:true, pyqYear:2020,
     q:"With reference to the period of Gupta dynasty in ancient India, the towns known as 'Nagara' were:",
+    qHi:"प्राचीन भारत में गुप्त वंश के काल के संदर्भ में, 'नगर' के नाम से जाने जाने वाले नगर थे:",
     options:["Capitals of the Gupta empire","Commercial centres at river confluences","Fortified towns at strategic pass locations","Religious centres built around temples"],
+    optionsHi:["गुप्त साम्राज्य की राजधानियाँ","नदी संगमों पर वाणिज्यिक केंद्र","रणनीतिक दर्रों पर किलेबंद नगर","मंदिरों के चारों ओर बने धार्मिक केंद्र"],
     answer:1,
-    explanation:"In the Gupta period, 'Nagara' referred to major urban centers that served as provincial capitals or administrative headquarters of the Gupta empire. These were distinct from smaller market towns ('Nigama') or pilgrimage centers. The Gupta age saw significant urbanization with towns like Pataliputra, Ujjain, and Vaishali serving as major Nagaras. This administrative classification is frequently discussed in the context of Gupta administration in UPSC history syllabi."
+    explanation:"In the Gupta period, 'Nagara' referred to major urban centers that served as provincial capitals or administrative headquarters of the Gupta empire. These were distinct from smaller market towns ('Nigama') or pilgrimage centers.",
+    explanationHi:"गुप्त काल में 'नगर' उन प्रमुख शहरी केंद्रों को संदर्भित करता था जो गुप्त साम्राज्य की प्रांतीय राजधानियों या प्रशासनिक मुख्यालयों के रूप में कार्य करते थे। ये छोटे बाजार कस्बों ('निगम') या तीर्थ केंद्रों से अलग थे।"
   },
   {
     id:7, subject:"Modern History", subjectClass:"history", difficulty:"medium",
+    subjectHi:"आधुनिक इतिहास",
     pyq:false,
     q:"Which of the following events occurred FIRST in the Indian freedom struggle?",
+    qHi:"भारतीय स्वतंत्रता संग्राम में निम्नलिखित में से कौन सी घटना सबसे पहले हुई?",
     options:["Dandi March","Non-Cooperation Movement","Quit India Movement","Khilafat Movement"],
+    optionsHi:["दांडी मार्च","असहयोग आंदोलन","भारत छोड़ो आंदोलन","खिलाफत आंदोलन"],
     answer:3,
-    explanation:"The Khilafat Movement began in 1919–1920, making it the earliest among the given options. The Non-Cooperation Movement was launched by Gandhi in 1920 (closely aligned with Khilafat). The Dandi March occurred in 1930, and the Quit India Movement was launched in August 1942. The Khilafat Movement was led by Ali Brothers (Mohammad Ali and Shaukat Ali) to defend the Ottoman Caliphate, and Gandhi merged it with the Non-Cooperation Movement to unite Hindu-Muslim solidarity."
+    explanation:"The Khilafat Movement began in 1919–1920, making it the earliest among the given options. The Non-Cooperation Movement was launched by Gandhi in 1920. The Dandi March occurred in 1930, and the Quit India Movement was launched in August 1942.",
+    explanationHi:"खिलाफत आंदोलन 1919-1920 में शुरू हुआ, जो दिए गए विकल्पों में सबसे पहले था। असहयोग आंदोलन 1920 में शुरू हुआ। दांडी मार्च 1930 में हुआ और भारत छोड़ो आंदोलन अगस्त 1942 में शुरू हुआ।"
   },
-
-  // ── GEOGRAPHY ──
   {
     id:8, subject:"Geography", subjectClass:"geo", difficulty:"medium",
+    subjectHi:"भूगोल",
     pyq:true, pyqYear:2024,
     q:"Consider the following pairs:\nRiver — Country it passes through before entering India\n1. Indus — China\n2. Brahmaputra — China\n3. Mekong — Myanmar\nHow many of the above pairs are correctly matched?",
+    qHi:"निम्नलिखित युग्मों पर विचार करें:\nनदी — भारत में प्रवेश से पहले जिस देश से होकर गुजरती है\n1. सिंधु — चीन\n2. ब्रह्मपुत्र — चीन\n3. मेकांग — म्यांमार\nउपरोक्त में से कितने युग्म सही सुमेलित हैं?",
     options:["Only one","Only two","All three","None"],
+    optionsHi:["केवल एक","केवल दो","सभी तीन","कोई नहीं"],
     answer:2,
-    explanation:"All three pairs are correctly matched. The Indus originates in Tibet (China) near Lake Mansarovar and flows through China and then Pakistan-administered Kashmir before entering India. The Brahmaputra originates in Tibet (China) as the Yarlung Tsangpo and enters India through Arunachal Pradesh. The Mekong (known as Lancang in China) flows through China, Myanmar, Laos, Thailand, Cambodia, and Vietnam — it passes through Myanmar before reaching the sea, not India. All three pairs are correctly matched."
+    explanation:"All three pairs are correctly matched. The Indus originates in Tibet (China) and flows through China before entering India. The Brahmaputra originates in Tibet (China) as the Yarlung Tsangpo. The Mekong flows through China, Myanmar, and other Southeast Asian nations.",
+    explanationHi:"सभी तीन युग्म सही सुमेलित हैं। सिंधु तिब्बत (चीन) में उत्पन्न होती है और भारत में प्रवेश से पहले चीन से होकर बहती है। ब्रह्मपुत्र तिब्बत (चीन) में यारलुंग त्सांगपो के रूप में उत्पन्न होती है। मेकांग चीन, म्यांमार और अन्य दक्षिण-पूर्व एशियाई देशों से होकर बहती है।"
   },
   {
     id:9, subject:"Geography", subjectClass:"geo", difficulty:"easy",
+    subjectHi:"भूगोल",
     pyq:false,
     q:"The Deccan Plateau in India is bounded on the west by which mountain range?",
+    qHi:"भारत में दक्कन पठार पश्चिम में किस पर्वत श्रृंखला से घिरा हुआ है?",
     options:["Eastern Ghats","Satpura Range","Western Ghats","Vindhya Range"],
+    optionsHi:["पूर्वी घाट","सतपुड़ा श्रृंखला","पश्चिमी घाट","विंध्य श्रृंखला"],
     answer:2,
-    explanation:"The Deccan Plateau is bounded on the west by the Western Ghats, which run parallel to the western coast of India from Gujarat to Tamil Nadu. The Eastern Ghats form the eastern boundary of the Deccan Plateau, though they are more discontinuous. The Western Ghats are a UNESCO World Heritage Site and act as a water divide — rivers like the Godavari, Krishna, and Cauvery originate here and flow eastward across the Deccan Plateau."
+    explanation:"The Deccan Plateau is bounded on the west by the Western Ghats, which run parallel to the western coast of India from Gujarat to Tamil Nadu. The Eastern Ghats form the eastern boundary. The Western Ghats are a UNESCO World Heritage Site.",
+    explanationHi:"दक्कन पठार पश्चिम में पश्चिमी घाट से घिरा है, जो गुजरात से तमिलनाडु तक भारत के पश्चिमी तट के समानांतर चलता है। पूर्वी घाट पूर्वी सीमा बनाता है। पश्चिमी घाट एक यूनेस्को विश्व धरोहर स्थल है।"
   },
   {
     id:10, subject:"Geography", subjectClass:"geo", difficulty:"hard",
+    subjectHi:"भूगोल",
     pyq:true, pyqYear:2023,
     q:"With reference to 'Global Climate Change Alliance', which of the following statements is/are correct?\n1. It is an initiative of the European Union.\n2. It targets the Least Developed Countries and Small Island Developing States.\nSelect the correct answer:",
+    qHi:"'वैश्विक जलवायु परिवर्तन गठबंधन' के संदर्भ में, निम्नलिखित में से कौन सा/से कथन सही है/हैं?\n1. यह यूरोपीय संघ की एक पहल है।\n2. यह अल्प विकसित देशों और लघु द्वीप विकासशील राज्यों को लक्षित करता है।\nसही उत्तर चुनें:",
     options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    optionsHi:["केवल 1","केवल 2","1 और 2 दोनों","न तो 1 और न ही 2"],
     answer:2,
-    explanation:"Both statements are correct. The Global Climate Change Alliance (GCCA) was launched by the European Commission in 2007. It was specifically designed to support the Least Developed Countries (LDCs) and Small Island Developing States (SIDS), which are among the most vulnerable to climate change yet have contributed the least to greenhouse gas emissions. GCCA provides technical and financial assistance to help these nations adapt to climate change and integrate it into development strategies."
+    explanation:"Both statements are correct. The Global Climate Change Alliance (GCCA) was launched by the European Commission in 2007. It was specifically designed to support the Least Developed Countries (LDCs) and Small Island Developing States (SIDS).",
+    explanationHi:"दोनों कथन सही हैं। वैश्विक जलवायु परिवर्तन गठबंधन (GCCA) 2007 में यूरोपीय आयोग द्वारा शुरू किया गया था। इसे विशेष रूप से अल्प विकसित देशों (LDCs) और लघु द्वीप विकासशील राज्यों (SIDS) का समर्थन करने के लिए डिज़ाइन किया गया था।"
   },
-
-  // ── ECONOMY ──
   {
     id:11, subject:"Indian Economy", subjectClass:"eco", difficulty:"hard",
+    subjectHi:"भारतीय अर्थव्यवस्था",
     pyq:true, pyqYear:2022,
     q:"With reference to India's economy, consider the following statements:\n1. Commercial Paper is a short-term unsecured promissory note issued by financial and non-financial corporations.\n2. 'Yield Curve' shows the relationship between bond yields and maturities.\nWhich of the statements given above is/are correct?",
+    qHi:"भारत की अर्थव्यवस्था के संदर्भ में, निम्नलिखित कथनों पर विचार करें:\n1. कमर्शियल पेपर वित्तीय और गैर-वित्तीय निगमों द्वारा जारी एक अल्पकालिक असुरक्षित वचन पत्र है।\n2. 'यील्ड कर्व' बॉन्ड यील्ड और परिपक्वता के बीच संबंध दिखाता है।\nकौन सा/से कथन सही है/हैं?",
     options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    optionsHi:["केवल 1","केवल 2","1 और 2 दोनों","न तो 1 और न ही 2"],
     answer:2,
-    explanation:"Both statements are correct. Commercial Paper (CP) is indeed a short-term unsecured money market instrument issued by both financial and non-financial corporations to raise funds for a short duration. A Yield Curve is a graphical representation that shows the relationship between interest rates (yields) and different maturity dates for bonds of equivalent credit quality. In India, government securities yield curves are closely tracked by the RBI and financial institutions. Both are standard instruments in Indian money markets."
+    explanation:"Both statements are correct. Commercial Paper (CP) is indeed a short-term unsecured money market instrument. A Yield Curve is a graphical representation that shows the relationship between interest rates (yields) and different maturity dates for bonds of equivalent credit quality.",
+    explanationHi:"दोनों कथन सही हैं। कमर्शियल पेपर (CP) एक अल्पकालिक असुरक्षित मुद्रा बाजार उपकरण है। यील्ड कर्व एक ग्राफिकल प्रतिनिधित्व है जो समान क्रेडिट गुणवत्ता के बॉन्ड के लिए ब्याज दरों और विभिन्न परिपक्वता तिथियों के बीच संबंध दिखाता है।"
   },
   {
     id:12, subject:"Indian Economy", subjectClass:"eco", difficulty:"medium",
+    subjectHi:"भारतीय अर्थव्यवस्था",
     pyq:false,
     q:"The concept of 'Minimum Support Price' (MSP) in India is related to which sector?",
+    qHi:"भारत में 'न्यूनतम समर्थन मूल्य' (MSP) की अवधारणा किस क्षेत्र से संबंधित है?",
     options:["Industrial goods","Agricultural commodities","Export services","Banking sector deposits"],
+    optionsHi:["औद्योगिक वस्तुएं","कृषि जिंस","निर्यात सेवाएं","बैंकिंग क्षेत्र जमा"],
     answer:1,
-    explanation:"Minimum Support Price (MSP) is a government-set price floor for agricultural commodities in India. It is announced by the Government of India on the recommendation of the Commission for Agricultural Costs and Prices (CACP) before the sowing season. MSP ensures farmers receive a guaranteed minimum price for their crops, protecting them from price crashes. Currently, MSP is announced for 23 major crops including cereals, pulses, oilseeds, and commercial crops like cotton and sugarcane."
+    explanation:"Minimum Support Price (MSP) is a government-set price floor for agricultural commodities in India. Currently, MSP is announced for 23 major crops including cereals, pulses, oilseeds, and commercial crops like cotton and sugarcane.",
+    explanationHi:"न्यूनतम समर्थन मूल्य (MSP) भारत में कृषि जिंसों के लिए सरकार द्वारा निर्धारित न्यूनतम मूल्य है। वर्तमान में 23 प्रमुख फसलों के लिए MSP घोषित किया जाता है जिसमें अनाज, दलहन, तिलहन और कपास व गन्ने जैसी वाणिज्यिक फसलें शामिल हैं।"
   },
 
   // ── ENVIRONMENT ──
   {
     id:13, subject:"Environment & Ecology", subjectClass:"env", difficulty:"medium",
+    subjectHi:"पर्यावरण एवं पारिस्थितिकी",
     pyq:true, pyqYear:2023,
     q:"'Bioremediation' is a process used for which of the following purposes?",
+    qHi:"'बायोरेमेडिएशन' किस उद्देश्य के लिए उपयोग की जाने वाली प्रक्रिया है?",
     options:["Developing genetically modified organisms","Using organisms to remove or neutralize pollutants","Enhancing biodiversity in protected areas","Cultivating rare medicinal plants in laboratory conditions"],
+    optionsHi:["आनुवंशिक रूप से संशोधित जीव विकसित करना","प्रदूषकों को हटाने या निष्प्रभावी करने के लिए जीवों का उपयोग","संरक्षित क्षेत्रों में जैव विविधता बढ़ाना","प्रयोगशाला में दुर्लभ औषधीय पौधे उगाना"],
     answer:1,
-    explanation:"Bioremediation is a waste management technique that uses living organisms — primarily bacteria, fungi, algae, and plants — to neutralize or remove pollutants from a contaminated environment. It is widely used to clean up oil spills, heavy metal contamination, and industrial effluents. Phytoremediation is a specific type using plants. The process is eco-friendly and cost-effective compared to physical or chemical remediation methods. UPSC has increasingly focused on such environment-related biotechnology concepts."
+    explanation:"Bioremediation is a waste management technique that uses living organisms — primarily bacteria, fungi, algae, and plants — to neutralize or remove pollutants from a contaminated environment. It is widely used to clean up oil spills, heavy metal contamination, and industrial effluents. The process is eco-friendly and cost-effective.",
+    explanationHi:"बायोरेमेडिएशन एक अपशिष्ट प्रबंधन तकनीक है जो दूषित वातावरण से प्रदूषकों को निष्प्रभावी करने या हटाने के लिए जीवित जीवों — मुख्य रूप से बैक्टीरिया, कवक, शैवाल और पौधों — का उपयोग करती है। यह तेल रिसाव, भारी धातु प्रदूषण और औद्योगिक अपशिष्टों को साफ करने के लिए व्यापक रूप से उपयोग की जाती है।"
   },
   {
     id:14, subject:"Environment & Ecology", subjectClass:"env", difficulty:"hard",
+    subjectHi:"पर्यावरण एवं पारिस्थितिकी",
     pyq:false,
     q:"The 'Nagoya Protocol' which entered into force in 2014 deals with:",
+    qHi:"2014 में लागू हुआ 'नागोया प्रोटोकॉल' किससे संबंधित है?",
     options:["Reduction of carbon emissions from aviation","Access and benefit sharing of genetic resources","Protection of migratory bird species","Control of persistent organic pollutants"],
+    optionsHi:["विमानन से कार्बन उत्सर्जन में कमी","आनुवंशिक संसाधनों तक पहुंच और लाभ साझाकरण","प्रवासी पक्षी प्रजातियों की सुरक्षा","लगातार कार्बनिक प्रदूषकों का नियंत्रण"],
     answer:1,
-    explanation:"The Nagoya Protocol on Access to Genetic Resources and the Fair and Equitable Sharing of Benefits Arising from their Utilization is a supplementary agreement to the Convention on Biological Diversity (CBD). Adopted in 2010 in Nagoya, Japan, and entered into force in October 2014, it provides a framework for the fair sharing of benefits arising from the use of genetic resources. It aims to prevent biopiracy and ensures that genetic resources are accessed with proper consent from the providing country."
+    explanation:"The Nagoya Protocol on Access to Genetic Resources and the Fair and Equitable Sharing of Benefits deals with preventing biopiracy and ensures genetic resources are accessed with proper consent. Adopted in 2010 in Nagoya, Japan, it is a supplementary agreement to the Convention on Biological Diversity.",
+    explanationHi:"आनुवंशिक संसाधनों तक पहुंच और लाभों के उचित और न्यायसंगत साझाकरण पर नागोया प्रोटोकॉल जैव विविधता सम्मेलन (CBD) के लिए एक पूरक समझौता है। 2010 में नागोया, जापान में अपनाया गया, यह जैव-चोरी को रोकता है और सुनिश्चित करता है कि आनुवंशिक संसाधनों तक उचित सहमति से पहुंच हो।"
   },
 
   // ── SCIENCE & TECHNOLOGY ──
   {
     id:15, subject:"Science & Technology", subjectClass:"sci", difficulty:"medium",
+    subjectHi:"विज्ञान एवं प्रौद्योगिकी",
     pyq:true, pyqYear:2024,
     q:"Consider the following statements regarding 'mRNA Vaccine Technology':\n1. mRNA vaccines introduce a piece of genetic code that instructs cells to produce an antigen.\n2. mRNA integrates into the human cell's DNA permanently.\nWhich of the statements given above is/are correct?",
+    qHi:"'mRNA वैक्सीन तकनीक' के संबंध में निम्नलिखित कथनों पर विचार करें:\n1. mRNA टीके आनुवंशिक कोड का एक टुकड़ा डालते हैं जो कोशिकाओं को एंटीजन उत्पन्न करने का निर्देश देता है।\n2. mRNA मानव कोशिका के DNA में स्थायी रूप से एकीकृत हो जाता है।\nकौन सा/से कथन सही है/हैं?",
     options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    optionsHi:["केवल 1","केवल 2","1 और 2 दोनों","न तो 1 और न ही 2"],
     answer:0,
-    explanation:"Only Statement 1 is correct. mRNA (messenger RNA) vaccines work by introducing a synthetic piece of mRNA that provides instructions to the body's cells to produce an antigen — in the case of COVID-19 vaccines, the spike protein of the SARS-CoV-2 virus. The immune system then recognizes this protein and builds a defense. Statement 2 is incorrect: mRNA does NOT integrate into the human DNA. The mRNA breaks down within days after entering the cell, without ever entering the cell nucleus."
+    explanation:"Only Statement 1 is correct. mRNA vaccines work by introducing synthetic mRNA that instructs cells to produce an antigen. Statement 2 is incorrect: mRNA does NOT integrate into human DNA. The mRNA breaks down within days after entering the cell, without ever entering the cell nucleus.",
+    explanationHi:"केवल कथन 1 सही है। mRNA टीके कृत्रिम mRNA डालकर काम करते हैं जो कोशिकाओं को एंटीजन बनाने का निर्देश देता है। कथन 2 गलत है: mRNA मानव DNA में एकीकृत नहीं होता। mRNA कोशिका में प्रवेश करने के कुछ दिनों के भीतर टूट जाता है।"
   },
 
   // ── INTERNATIONAL RELATIONS ──
   {
     id:16, subject:"International Relations", subjectClass:"ir", difficulty:"medium",
+    subjectHi:"अंतर्राष्ट्रीय संबंध",
     pyq:true, pyqYear:2021,
     q:"The 'Wassenaar Arrangement' is:",
+    qHi:"'वासेनार अरेंजमेंट' है:",
     options:["A nuclear non-proliferation treaty among South Asian nations","A multilateral export control regime for conventional arms and dual-use goods","A climate change agreement between G-7 nations","A financial stability framework under the World Bank"],
+    optionsHi:["दक्षिण एशियाई देशों के बीच एक परमाणु अप्रसार संधि","पारंपरिक हथियारों और दोहरे उपयोग वाली वस्तुओं के लिए एक बहुपक्षीय निर्यात नियंत्रण व्यवस्था","G-7 देशों के बीच जलवायु परिवर्तन समझौता","विश्व बैंक के तहत एक वित्तीय स्थिरता ढांचा"],
     answer:1,
-    explanation:"The Wassenaar Arrangement on Export Controls for Conventional Arms and Dual-Use Goods and Technologies is a multilateral export control regime. Established in 1996 and headquartered in Vienna, Austria, it aims to prevent destabilizing accumulations of arms and dual-use goods. India was admitted to the Wassenaar Arrangement in December 2017, a milestone in India's recognition as a responsible nuclear and arms-trade state. It works alongside other export control regimes like NSG, MTCR, and the Australia Group."
+    explanation:"The Wassenaar Arrangement on Export Controls for Conventional Arms and Dual-Use Goods and Technologies is a multilateral export control regime. Established in 1996 and headquartered in Vienna, Austria. India was admitted in December 2017.",
+    explanationHi:"पारंपरिक हथियारों और दोहरे उपयोग वाली वस्तुओं और प्रौद्योगिकियों के निर्यात नियंत्रण पर वासेनार अरेंजमेंट एक बहुपक्षीय निर्यात नियंत्रण व्यवस्था है। 1996 में स्थापित और वियना, ऑस्ट्रिया में मुख्यालय। भारत दिसंबर 2017 में इसमें शामिल हुआ।"
   },
   {
     id:17, subject:"International Relations", subjectClass:"ir", difficulty:"hard",
+    subjectHi:"अंतर्राष्ट्रीय संबंध",
     pyq:false,
     q:"With reference to India's nuclear doctrine, 'No First Use' (NFU) policy means India:",
+    qHi:"भारत के परमाणु सिद्धांत के संदर्भ में, 'नो फर्स्ट यूज' (NFU) नीति का अर्थ है कि भारत:",
     options:["Will not develop nuclear weapons","Will use nuclear weapons only as retaliation to a nuclear strike on Indian territory","Will not conduct nuclear tests under any circumstances","Will share nuclear technology only with NPT signatories"],
+    optionsHi:["परमाणु हथियार विकसित नहीं करेगा","भारतीय क्षेत्र पर परमाणु हमले के जवाब में ही परमाणु हथियारों का उपयोग करेगा","किसी भी परिस्थिति में परमाणु परीक्षण नहीं करेगा","केवल NPT हस्ताक्षरकर्ताओं के साथ परमाणु तकनीक साझा करेगा"],
     answer:1,
-    explanation:"India's 'No First Use' (NFU) nuclear doctrine, first articulated in 1999 and reaffirmed in 2003, means India will NOT be the first to use nuclear weapons in any conflict. However, India reserves the right to massive retaliation if nuclear weapons are used against India or Indian forces anywhere. NFU is a core tenet of India's nuclear policy. India is one of the few nuclear-armed states with an explicit NFU doctrine, alongside China. The doctrine also mentions 'credible minimum deterrence' as its foundation."
+    explanation:"India's 'No First Use' (NFU) nuclear doctrine means India will NOT be the first to use nuclear weapons in any conflict. However, India reserves the right to massive retaliation if nuclear weapons are used against India or Indian forces anywhere.",
+    explanationHi:"भारत की 'नो फर्स्ट यूज' (NFU) परमाणु नीति का अर्थ है कि भारत किसी भी संघर्ष में पहले परमाणु हथियारों का उपयोग नहीं करेगा। हालांकि, भारत कहीं भी भारत या भारतीय सेना के खिलाफ परमाणु हथियारों के उपयोग पर भारी जवाबी कार्रवाई का अधिकार सुरक्षित रखता है।"
   },
 
   // ── ART & CULTURE ──
   {
     id:18, subject:"Art & Culture", subjectClass:"history", difficulty:"hard",
+    subjectHi:"कला एवं संस्कृति",
     pyq:true, pyqYear:2020,
     q:"With reference to the 'Nayanmars' in ancient India, consider the following statements:\n1. The Nayanmars were Tamil Shaivite saints whose compositions are known as 'Tevaram'.\n2. The literary works of the Nayanmars were compiled and preserved in the 'Tirumurai'.\nWhich of the statements is/are correct?",
+    qHi:"प्राचीन भारत में 'नयनमारों' के संदर्भ में, निम्नलिखित कथनों पर विचार करें:\n1. नयनमार तमिल शैव संत थे जिनकी रचनाएँ 'तेवारम' के नाम से जानी जाती हैं।\n2. नयनमारों की साहित्यिक कृतियों को 'तिरुमुरई' में संकलित और संरक्षित किया गया था।\nकौन सा/से कथन सही है/हैं?",
     options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    optionsHi:["केवल 1","केवल 2","1 और 2 दोनों","न तो 1 और न ही 2"],
     answer:2,
-    explanation:"Both statements are correct. The Nayanmars (also spelled Nayanars) were 63 Tamil poet-saints who were devotees of Shiva, active primarily between the 6th and 9th centuries CE. Their devotional hymns are collectively called 'Tevaram' (from the 7th–8th centuries, by three principal saints: Appar, Sambandar, and Sundarar). All the devotional works of the Nayanmars were compiled into a 12-volume canon called the 'Tirumurai' by Nambiyandar Nambi in the 10th century. This Bhakti movement had profound socio-religious impact on South India."
+    explanation:"Both statements are correct. The Nayanmars were 63 Tamil poet-saints who were devotees of Shiva. Their devotional hymns are collectively called 'Tevaram'. All their works were compiled into a 12-volume canon called the 'Tirumurai' in the 10th century.",
+    explanationHi:"दोनों कथन सही हैं। नयनमार 63 तमिल कवि-संत थे जो शिव के भक्त थे। उनके भक्ति भजनों को सामूहिक रूप से 'तेवारम' कहा जाता है। उनकी सभी रचनाओं को 10वीं शताब्दी में 'तिरुमुरई' नामक 12-खंड संग्रह में संकलित किया गया था।"
   },
   {
     id:19, subject:"Indian Economy", subjectClass:"eco", difficulty:"medium",
+    subjectHi:"भारतीय अर्थव्यवस्था",
     pyq:false,
     q:"The 'Fiscal Responsibility and Budget Management (FRBM) Act' in India was enacted primarily to:",
+    qHi:"भारत में 'राजकोषीय उत्तरदायित्व और बजट प्रबंधन (FRBM) अधिनियम' मुख्य रूप से किस उद्देश्य से बनाया गया था?",
     options:["Regulate foreign direct investment inflows","Reduce India's fiscal deficit and public debt over time","Regulate the functioning of public sector banks","Monitor inflation and interest rate policy"],
+    optionsHi:["प्रत्यक्ष विदेशी निवेश को नियंत्रित करना","भारत के राजकोषीय घाटे और सार्वजनिक ऋण को समय के साथ कम करना","सार्वजनिक क्षेत्र के बैंकों के कामकाज को नियंत्रित करना","मुद्रास्फीति और ब्याज दर नीति की निगरानी करना"],
     answer:1,
-    explanation:"The Fiscal Responsibility and Budget Management (FRBM) Act was enacted in 2003 with the primary objective of ensuring long-term fiscal sustainability by setting targets for reduction of fiscal deficit and public debt. The Act mandates the government to present a Medium Term Fiscal Policy Statement and Fiscal Policy Strategy Statement along with the Union Budget. It was amended in 2018 based on the N.K. Singh Committee recommendations to introduce a 'debt rule' alongside the fiscal deficit target of 3% of GDP."
+    explanation:"The FRBM Act was enacted in 2003 to ensure long-term fiscal sustainability by setting targets for reduction of fiscal deficit and public debt. It was amended in 2018 based on the N.K. Singh Committee recommendations.",
+    explanationHi:"FRBM अधिनियम 2003 में राजकोषीय घाटे और सार्वजनिक ऋण को कम करने के लक्ष्य निर्धारित करके दीर्घकालिक राजकोषीय स्थिरता सुनिश्चित करने के लिए बनाया गया था। इसे 2018 में N.K. सिंह समिति की सिफारिशों के आधार पर संशोधित किया गया।"
   },
   {
     id:20, subject:"Geography", subjectClass:"geo", difficulty:"medium",
+    subjectHi:"भूगोल",
     pyq:true, pyqYear:2022,
     q:"Consider the following statements about the 'Western Disturbances' that affect India:\n1. They are extra-tropical cyclones that originate in the Mediterranean Sea.\n2. They cause winter rains in northern India, which are crucial for Rabi crop cultivation.\nWhich of the statements given above is/are correct?",
+    qHi:"भारत को प्रभावित करने वाले 'पश्चिमी विक्षोभ' के बारे में निम्नलिखित कथनों पर विचार करें:\n1. वे भूमध्य सागर में उत्पन्न होने वाले अतिरिक्त-उष्णकटिबंधीय चक्रवात हैं।\n2. वे उत्तर भारत में शीतकालीन वर्षा का कारण बनते हैं, जो रबी फसल की खेती के लिए महत्वपूर्ण है।\nकौन सा/से कथन सही है/हैं?",
     options:["1 only","2 only","Both 1 and 2","Neither 1 nor 2"],
+    optionsHi:["केवल 1","केवल 2","1 और 2 दोनों","न तो 1 और न ही 2"],
     answer:2,
-    explanation:"Both statements are correct. Western Disturbances are low-pressure systems (extra-tropical cyclones) that originate in the Mediterranean Sea region. They travel eastward, gathering moisture from the Caspian Sea and Black Sea, and reach the Indian subcontinent via Afghanistan and Pakistan. In India, they bring winter precipitation to the plains of Punjab, Haryana, and UP, and snowfall in Jammu & Kashmir, Himachal Pradesh, and Uttarakhand. This winter rainfall is vital for Rabi crops (wheat, mustard, barley) sown in October-November."
+    explanation:"Both statements are correct. Western Disturbances originate in the Mediterranean Sea region and bring winter precipitation to northern India. This winter rainfall is vital for Rabi crops (wheat, mustard, barley) sown in October-November.",
+    explanationHi:"दोनों कथन सही हैं। पश्चिमी विक्षोभ भूमध्य सागर क्षेत्र में उत्पन्न होते हैं और उत्तर भारत में शीतकालीन वर्षा लाते हैं। यह शीतकालीन वर्षा अक्टूबर-नवंबर में बोई जाने वाली रबी फसलों (गेहूं, सरसों, जौ) के लिए महत्वपूर्ण है।"
   }
 ];
 
@@ -992,6 +1098,31 @@ let state = {
   negatives: 0,
   skipped: 0
 };
+
+// ── LANGUAGE ──────────────────────────────────────────────────────────────────
+let quizLang = localStorage.getItem('prepsaathi_lang') || 'en';
+
+function setQuizLang(lang){
+  quizLang = lang;
+  localStorage.setItem('prepsaathi_lang', lang);
+  document.getElementById('btnEn').classList.toggle('active', lang==='en');
+  document.getElementById('btnHi').classList.toggle('active', lang==='hi');
+  render();
+}
+
+// Set initial toggle state on load
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(quizLang === 'hi'){
+    document.getElementById('btnHi').classList.add('active');
+    document.getElementById('btnEn').classList.remove('active');
+  }
+});
+
+// Helper: get question text in current language
+function getQ(q){ return quizLang==='hi' && q.qHi ? q.qHi : q.q; }
+function getOpts(q){ return quizLang==='hi' && q.optionsHi ? q.optionsHi : q.options; }
+function getSubject(q){ return quizLang==='hi' && q.subjectHi ? q.subjectHi : q.subject; }
+function getExplanation(q){ return quizLang==='hi' && q.explanationHi ? q.explanationHi : q.explanation; }
 
 function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
@@ -1059,25 +1190,26 @@ function renderQuiz(){
   const optLetters = ['A','B','C','D'];
   const selectedAns = state.answers[q.id];
 
-  const optionsHTML = q.options.map((opt,i)=>{
+  const optionsHTML = getOpts(q).map((opt,i)=>{
     let cls = 'opt-btn';
-    // Highlight whichever option is currently selected — always changeable
     if(selectedAns !== null && selectedAns !== undefined && selectedAns === i){
       cls += ' selected-neutral';
     }
+    const optClass = quizLang==='hi' ? ' class="hi-q"' : '';
     return `<button class="${cls}" onclick="selectAnswer(${q.id},${i})">
       <span class="opt-letter">${optLetters[i]}.</span>
-      <span style="flex:1">${opt}</span>
+      <span style="flex:1"${optClass}>${opt}</span>
     </button>`;
   }).join('');
 
   const pyqBanner = q.pyq ? `
     <div class="pyq-banner">
       <span class="pyq-badge">📄 PYQ</span>
-      <span>This question appeared in <strong>UPSC CSE — ${q.pyqYear}</strong></span>
+      <span>${quizLang==='hi' ? `यह प्रश्न <strong>UPSC CSE — ${q.pyqYear}</strong> में आया था` : `This question appeared in <strong>UPSC CSE — ${q.pyqYear}</strong>`}</span>
     </div>` : '';
 
-  const questionLines = q.q.split('\n').map(l => l.trim()).filter(Boolean).join('<br>');
+  const questionText = getQ(q).split('\n').map(l => l.trim()).filter(Boolean).join('<br>');
+  const questionLines = `<span${quizLang==='hi' ? ' class="hi-q"' : ''}>${questionText}</span>`;
 
   const hasSelection = selectedAns !== null && selectedAns !== undefined;
   const isLastQ = state.current === total - 1;
@@ -1096,7 +1228,7 @@ function renderQuiz(){
       ${pyqBanner}
       <div class="q-meta">
         <span class="q-num">Q.${state.current+1}</span>
-        <span class="q-subject-badge" style="background:${sColor.bg};color:${sColor.color}">${q.subject}</span>
+        <span class="q-subject-badge" style="background:${sColor.bg};color:${sColor.color}">${getSubject(q)}</span>
         <span class="diff-badge ${diffClass}">${q.difficulty.charAt(0).toUpperCase()+q.difficulty.slice(1)}</span>
       </div>
       <div class="question-text">${questionLines}</div>
@@ -1160,7 +1292,7 @@ function renderResults(){
         </div>
         <div class="explanation-box">
           <strong>📖 Explanation</strong>
-          ${q.explanation}
+          ${getExplanation(q)}
         </div>
       </div>
     </div>`;
