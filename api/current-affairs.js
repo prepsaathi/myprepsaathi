@@ -58,7 +58,7 @@ Return ONLY a raw JSON object. No markdown. No backticks. No text outside the JS
 Replace ALL placeholders with real, accurate, UPSC-quality content. Use UPSC question styles like "Consider the following statements", "Which of the following is/are correct", "Select the correct answer using codes below". All Hindi in Devanagari script only. Return ONLY the JSON.`;
 
   const reqBody = JSON.stringify({
-    model: 'claude-haiku-4-5-20251001',
+    model: 'claude-sonnet-4-6',
     max_tokens: 8000,
     messages: [{ role: 'user', content: prompt }]
   });
