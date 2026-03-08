@@ -261,19 +261,10 @@ async function loadQuiz(){
   let step=0;
   const t=setInterval(()=>{ step=Math.min(step+1,4); renderLoading(step); },2500);
   try{
-    // Call 1: summary + highlights + sections
-    const res1=await fetch('/api/current-affairs?type=summary');
-    if(!res1.ok){ clearInterval(t); const e=await res1.json().catch(()=>({error:'Server error'})); renderError(e.error||'Server error'); return; }
-    const summaryData=await res1.json();
-
-    // Call 2: 10 questions
-    const res2=await fetch('/api/current-affairs?type=questions');
+    const res1=await fetch(`/api/current-affairs?type=summary`);
     clearInterval(t);
-    if(!res2.ok){ const e=await res2.json().catch(()=>({error:'Server error'})); renderError(e.error||'Server error'); return; }
-    const questionsData=await res2.json();
-
-    // Merge
-    quizData={ ...summaryData, questions: questionsData.questions };
+    if(!res1.ok){ const e=await res1.json().catch(()=>({error:"Server error"})); renderError(e.error||"Server error"); return; }
+    quizData=await res1.json();
     renderPage();
   }catch(err){
     clearInterval(t);
