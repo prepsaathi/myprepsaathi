@@ -1,9 +1,36 @@
-// api/current-affairs.js — PrepSaathi FINAL
-// English-only JSON from Claude, Hindi added separately
+// api/current-affairs.js — PrepSaathi with Supabase Daily Caching
 
 const https = require('https');
 
-function claude(key, prompt, maxTok) {
+// ── SUPABASE HELPERS ────────────────────────────────────────────────────────
+function supabaseRequest(method, path, body, secretKey, supabaseUrl) {
+  const data = body ? JSON.stringify(body) : null;
+  return new Promise((resolve, reject) => {
+    const url = new URL(supabaseUrl);
+    const options = {
+      hostname: url.hostname,
+      path: `/rest/v1/${path}`,
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': secretKey,
+        'Authorization': `Bearer ${secretKey}`,
+        'Prefer': method === 'POST' ? 'return=representation' : undefined
+      }
+    };
+    if (data) options.headers['Content-Length'] = Buffer.byteLength(data);
+    const r = https.request(options, (resp) => {
+      let d = ''; resp.on('data', c => d += c);
+      resp.on('end', () => resolve({ status: resp.statusCode, body: d }));
+    });
+    r.on('error', reject);
+    if (data) r.write(data);
+    r.end();
+  });
+}
+
+// ── CLAUDE HELPER ───────────────────────────────────────────────────────────
+function callClaude(key, prompt, maxTok) {
   const body = JSON.stringify({
     model: 'claude-sonnet-4-6',
     max_tokens: maxTok,
@@ -24,21 +51,29 @@ function claude(key, prompt, maxTok) {
   });
 }
 
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Content-Type', 'application/json');
-  if (req.method === 'OPTIONS') return res.status(200).end();
+function parseJSON(text) {
+  return JSON.parse(
+    text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim()
+  );
+}
 
-  const KEY = process.env.ANTHROPIC_API_KEY;
-  if (!KEY) return res.status(500).json({ error: 'API key not configured.' });
+// ── GET TODAY'S DATE IN IST ─────────────────────────────────────────────────
+function getTodayIST() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }); // YYYY-MM-DD
+}
 
-  const today = new Date().toLocaleDateString('en-IN', {
+function getTodayLabel() {
+  return new Date().toLocaleDateString('en-IN', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Kolkata'
   });
+}
 
-  try {
-    // ── STEP 1: English content only (no Hindi at all) ──────────────────────
-    const r1 = await claude(KEY, `UPSC current affairs expert. Today: ${today}.
+// ── GENERATE FRESH CONTENT FROM CLAUDE ─────────────────────────────────────
+async function generateContent(anthropicKey) {
+  const today = getTodayLabel();
+
+  const r1 = await callClaude(anthropicKey,
+    `UPSC current affairs expert. Today: ${today}.
 Return ONLY this JSON (English only, no Hindi, keep each string short):
 {
   "summary": "5 sentences on today UPSC current affairs covering polity economy IR environment. Start: Today's current affairs covers",
@@ -66,45 +101,72 @@ Return ONLY this JSON (English only, no Hindi, keep each string short):
 }
 Fill with real UPSC content. JSON only, no markdown.`, 1500);
 
-    if (r1.status !== 200) {
-      return res.status(502).json({ error: r1.data?.error?.message || 'Claude error' });
+  if (r1.status !== 200) throw new Error(r1.data?.error?.message || 'Claude error');
+  const content = parseJSON(r1.data.content[0].text);
+
+  // Hindi translation of summary only
+  const r2 = await callClaude(anthropicKey,
+    `Translate ONLY to Hindi Devanagari. Return ONLY the translation:\n\n${content.summary}`, 300);
+  content.summaryHi = r2.data.content[0].text.trim();
+
+  // Add Hindi placeholders for sections/highlights/questions
+  content.sections = content.sections.map(s => ({
+    ...s, headingHi: s.heading, contentHi: s.content
+  }));
+  content.highlights = content.highlights.map(h => ({
+    ...h, titleHi: h.title, bodyHi: h.body
+  }));
+  content.questions = content.questions.map(q => ({
+    ...q, qHi: q.q, optionsHi: q.options,
+    explanationHi: q.explanation, subjectHi: q.subject
+  }));
+
+  content.date = getTodayLabel();
+  return content;
+}
+
+// ── MAIN HANDLER ────────────────────────────────────────────────────────────
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
+
+  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'Anthropic API key not configured.' });
+  if (!SUPABASE_URL || !SUPABASE_KEY) return res.status(500).json({ error: 'Supabase not configured.' });
+
+  const todayIST = getTodayIST(); // e.g. 2025-03-19
+
+  try {
+    // ── STEP 1: Check Supabase cache ──────────────────────────────────────
+    const cached = await supabaseRequest(
+      'GET', `daily_content?date=eq.${todayIST}&limit=1`,
+      null, SUPABASE_KEY, SUPABASE_URL
+    );
+
+    if (cached.status === 200) {
+      const rows = JSON.parse(cached.body);
+      if (rows.length > 0) {
+        console.log('Cache HIT for', todayIST);
+        return res.status(200).json(rows[0].content);
+      }
     }
 
-    const raw = r1.data.content[0].text.trim()
-      .replace(/^```json\s*/i, '').replace(/^```/, '').replace(/```$/, '').trim();
-    const content = JSON.parse(raw);
+    // ── STEP 2: Cache MISS — generate fresh content ───────────────────────
+    console.log('Cache MISS for', todayIST, '— generating...');
+    const content = await generateContent(ANTHROPIC_KEY);
 
-    // ── STEP 2: Translate summary to Hindi only ─────────────────────────────
-    const r2 = await claude(KEY,
-      `Translate ONLY the following English text to Hindi Devanagari. Return ONLY the Hindi translation, no other text:\n\n${content.summary}`,
-      300
+    // ── STEP 3: Save to Supabase ──────────────────────────────────────────
+    await supabaseRequest(
+      'POST', 'daily_content',
+      { date: todayIST, content },
+      SUPABASE_KEY, SUPABASE_URL
     );
-    const summaryHi = r2.data.content[0].text.trim();
 
-    // ── BUILD FINAL RESPONSE ────────────────────────────────────────────────
-    // Add placeholder Hindi fields (frontend shows EN by default, Hi toggle shows translated summary)
-    content.summaryHi = summaryHi;
-    content.date = today;
-
-    // Add Hindi placeholders for sections/highlights/questions
-    content.sections = content.sections.map(s => ({
-      ...s,
-      headingHi: s.heading,
-      contentHi: s.content
-    }));
-    content.highlights = content.highlights.map(h => ({
-      ...h,
-      titleHi: h.title,
-      bodyHi: h.body
-    }));
-    content.questions = content.questions.map(q => ({
-      ...q,
-      qHi: q.q,
-      optionsHi: q.options,
-      explanationHi: q.explanation,
-      subjectHi: q.subject
-    }));
-
+    console.log('Saved to Supabase for', todayIST);
     return res.status(200).json(content);
 
   } catch (err) {
