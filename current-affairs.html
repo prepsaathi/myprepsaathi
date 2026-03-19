@@ -203,9 +203,11 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 </div>
 
 <script>
-// ── LANGUAGE ──────────────────────────────────────────────────────────────────
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let quizData = null;
 let lang = localStorage.getItem('prepsaathi_lang') || 'en';
 
+// ── LANGUAGE ──────────────────────────────────────────────────────────────────
 function setLang(l) {
   lang = l;
   localStorage.setItem('prepsaathi_lang', l);
@@ -221,9 +223,6 @@ function setLang(l) {
   document.getElementById('backBtn').innerHTML = l === 'hi' ? '← होम' : '← Home';
 }
 setLang(lang);
-
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let quizData = null;
 let userAnswers = {};
 let submitted = false;
 let quizMode = false;
