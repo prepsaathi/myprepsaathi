@@ -9,13 +9,11 @@
 :root{
   --navy:#0d1b2a;--navy2:#1b2d42;--saffron:#e87722;--saffron2:#f59530;
   --gold:#c9a84c;--gold2:#e8c97a;--white:#f8f5ef;--white2:#ede8df;
-  --green:#22723a;--green2:#2fa052;--green-bg:#e8f5ed;
-  --red:#c0392b;--red-bg:#fdecea;--muted:#7a8694;--border:#e8e0d4;
-  --shadow:0 8px 32px rgba(13,27,42,0.12);
+  --green:#22723a;--green-bg:#e8f5ed;--red:#c0392b;--red-bg:#fdecea;
+  --muted:#7a8694;--border:#e8e0d4;--shadow:0 8px 32px rgba(13,27,42,0.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--navy);padding-top:112px;}
-.hi-q{font-family:'Noto Sans Devanagari',sans-serif;}
 
 /* LANG BAR */
 .lang-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--navy);padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,0.25);}
@@ -41,7 +39,7 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 .spinner{width:48px;height:48px;border:4px solid var(--white2);border-top-color:var(--saffron);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 20px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-card h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:8px;}
-.loading-card p{color:var(--muted);font-size:14px;line-height:1.7;}
+.loading-card p{color:var(--muted);font-size:14px;}
 .loading-steps{display:flex;flex-direction:column;gap:8px;margin-top:20px;text-align:left;max-width:320px;margin-left:auto;margin-right:auto;}
 .loading-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
 .loading-step.done{color:var(--green);}
@@ -59,7 +57,7 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 /* DATE BANNER */
 .date-banner{background:linear-gradient(135deg,var(--navy2),var(--navy));border-radius:14px;padding:24px 28px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;border-left:5px solid var(--saffron);}
 .date-banner h2{font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);color:var(--white);margin-bottom:4px;}
-.date-banner p{font-size:13px;color:var(--gold2);letter-spacing:1px;}
+.date-banner p{font-size:13px;color:var(--gold2);}
 .date-pills{display:flex;gap:8px;flex-wrap:wrap;}
 .date-pill{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;}
 
@@ -67,56 +65,59 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* SUMMARY CARD */
-.summary-card{background:white;border-radius:14px;border:1.5px solid var(--border);padding:28px;margin-bottom:12px;box-shadow:var(--shadow);}
-.summary-overview{font-size:15px;line-height:1.9;color:#2a3a4a;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border);}
-.summary-overview.hi{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;line-height:2.2;}
-.source-note{font-size:11px;color:var(--muted);margin-top:12px;font-style:italic;}
+/* SUMMARY */
+.summary-card{background:white;border-radius:14px;border:1.5px solid var(--border);padding:28px;margin-bottom:28px;box-shadow:var(--shadow);}
+.summary-text{font-size:15px;line-height:1.9;color:#2a3a4a;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border);font-family:'Source Sans 3',sans-serif;}
+.summary-text.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;line-height:2.2;}
+.source-note{font-size:11px;color:var(--muted);margin-top:16px;font-style:italic;}
 
-/* SECTION BREAKDOWN */
-.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:4px;}
+/* BREAKDOWN GRID */
+.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
 .breakdown-item{background:var(--white);border-radius:10px;border:1.5px solid var(--border);padding:16px 18px;}
 .breakdown-item h4{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
-.breakdown-item p{font-size:13px;line-height:1.7;color:#3a4a5a;}
-.breakdown-item p.hi{font-family:'Noto Sans Devanagari',sans-serif;font-size:12.5px;line-height:1.9;}
+.breakdown-item .item-text{font-size:13px;line-height:1.7;color:#3a4a5a;font-family:'Source Sans 3',sans-serif;}
+.breakdown-item .item-text.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:12.5px;line-height:2;}
 .tag-polity h4{color:#2c4cc0;}.tag-economy h4{color:#8b1a1a;}.tag-env h4{color:#1a6655;}
 .tag-ir h4{color:#8b4000;}.tag-science h4{color:#5a1ab5;}.tag-governance h4{color:#2a5a2a;}
 .tag-history h4{color:#8b4500;}.tag-geography h4{color:#1a6630;}
 
 /* HIGHLIGHTS */
 .highlights-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px;}
-.highlight-card{background:white;border-radius:12px;border:1.5px solid var(--border);padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:transform 0.15s;}
-.highlight-card:hover{transform:translateY(-2px);}
+.highlight-card{background:white;border-radius:12px;border:1.5px solid var(--border);padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
 .hl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .hl-tag{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;text-transform:uppercase;}
-.tag-polity .hl-tag,.hl-tag.tag-polity{background:#e8eeff;color:#2c4cc0;}
-.tag-economy .hl-tag,.hl-tag.tag-economy{background:#fce8e8;color:#8b1a1a;}
-.tag-env .hl-tag,.hl-tag.tag-env{background:#e0f4f0;color:#1a6655;}
-.tag-ir .hl-tag,.hl-tag.tag-ir{background:#fff0e8;color:#8b4000;}
-.tag-science .hl-tag,.hl-tag.tag-science{background:#f0e8ff;color:#5a1ab5;}
-.tag-governance .hl-tag,.hl-tag.tag-governance{background:#e8f0e8;color:#2a5a2a;}
-.tag-history .hl-tag,.hl-tag.tag-history{background:#fef0e0;color:#8b4500;}
-.tag-geography .hl-tag,.hl-tag.tag-geography{background:#e0f5e8;color:#1a6630;}
+.hl-tag.tag-polity{background:#e8eeff;color:#2c4cc0;}
+.hl-tag.tag-economy{background:#fce8e8;color:#8b1a1a;}
+.hl-tag.tag-env{background:#e0f4f0;color:#1a6655;}
+.hl-tag.tag-ir{background:#fff0e8;color:#8b4000;}
+.hl-tag.tag-science{background:#f0e8ff;color:#5a1ab5;}
+.hl-tag.tag-governance{background:#e8f0e8;color:#2a5a2a;}
 .hl-source{font-size:10px;font-weight:700;color:var(--muted);background:var(--white2);padding:2px 7px;border-radius:4px;}
-.hl-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.4;}
-.hl-body{font-size:13px;color:#4a5a6a;line-height:1.6;}
+.hl-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.4;font-family:'Source Sans 3',sans-serif;}
+.hl-title.devanagari{font-family:'Noto Sans Devanagari',sans-serif;}
+.hl-body{font-size:13px;color:#4a5a6a;line-height:1.6;font-family:'Source Sans 3',sans-serif;}
+.hl-body.devanagari{font-family:'Noto Sans Devanagari',sans-serif;line-height:1.9;}
 
 /* QUIZ CTA */
 .quiz-cta-wrap{text-align:center;padding:32px 0 16px;}
 .btn-start-quiz{background:linear-gradient(135deg,var(--saffron),var(--saffron2));color:white;border:none;padding:18px 48px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(232,119,34,0.35);transition:all 0.2s;display:inline-flex;align-items:center;gap:10px;}
-.btn-start-quiz:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,119,34,0.45);}
+.btn-start-quiz:hover{transform:translateY(-2px);}
 .quiz-cta-sub{margin-top:10px;font-size:13px;color:var(--muted);}
+.quiz-cta-sub.devanagari{font-family:'Noto Sans Devanagari',sans-serif;}
 
-/* QUIZ SECTION */
-.quiz-section{max-height:0;overflow:hidden;transition:max-height 0.6s ease;}
-.quiz-section.open{max-height:9999px;}
+/* QUIZ PAGE — hidden by default */
+#quizPage{display:none;}
+#summaryPage{display:block;}
 
-/* TIMER */
+/* QUIZ HEADER WITH TIMER */
 .quiz-header{background:linear-gradient(135deg,var(--navy2),var(--navy));border-radius:14px 14px 0 0;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;border-left:5px solid var(--gold);}
 .quiz-header-text h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);}
+.quiz-header-text h3.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:17px;}
 .quiz-header-text p{font-size:12px;color:var(--gold2);margin-top:2px;}
+.quiz-header-text p.devanagari{font-family:'Noto Sans Devanagari',sans-serif;}
 .timer-box{background:rgba(255,255,255,0.1);border:2px solid var(--gold);border-radius:12px;padding:10px 20px;text-align:center;min-width:100px;}
 .timer-label{font-size:10px;color:var(--gold2);letter-spacing:1px;font-weight:700;margin-bottom:2px;}
+.timer-label.devanagari{font-family:'Noto Sans Devanagari',sans-serif;letter-spacing:0;}
 .timer-value{font-size:24px;font-weight:700;color:white;font-family:'Playfair Display',serif;letter-spacing:2px;}
 .timer-box.warning{border-color:#ff6b6b;animation:timerPulse 1s infinite;}
 .timer-box.warning .timer-value{color:#ff6b6b;}
@@ -126,57 +127,53 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 
 /* QUESTION */
 .q-card{border-bottom:1px solid var(--border);padding:24px 28px;}
-.q-card:last-of-type{border-bottom:none;}
 .q-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
 .q-num{font-size:12px;font-weight:700;color:var(--muted);background:var(--white2);padding:3px 10px;border-radius:6px;}
 .q-subject{font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:6px;text-transform:uppercase;}
-.q-text{font-size:15px;line-height:1.75;color:var(--navy);margin-bottom:16px;font-weight:600;}
-.q-text.hi{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;line-height:1.95;}
+.q-subject.devanagari{font-family:'Noto Sans Devanagari',sans-serif;letter-spacing:0;font-size:10px;}
+.q-text{font-size:15px;line-height:1.75;color:var(--navy);margin-bottom:16px;font-weight:600;font-family:'Source Sans 3',sans-serif;}
+.q-text.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;line-height:2;}
 .options{display:flex;flex-direction:column;gap:8px;}
-.opt-btn{display:flex;align-items:flex-start;gap:12px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-family:'Source Sans 3',sans-serif;font-size:14px;text-align:left;width:100%;transition:all 0.15s;color:var(--navy);}
+.opt-btn{display:flex;align-items:flex-start;gap:12px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:14px;text-align:left;width:100%;transition:all 0.15s;color:var(--navy);font-family:'Source Sans 3',sans-serif;}
+.opt-btn.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:13px;line-height:1.8;}
 .opt-btn:hover:not(:disabled){background:#f0f4ff;border-color:#99aadd;}
 .opt-btn.selected{background:#eef2ff;border-color:#5a7bd0;}
 .opt-btn.correct{background:var(--green-bg);border-color:var(--green);color:var(--green);}
 .opt-btn.wrong{background:var(--red-bg);border-color:var(--red);color:var(--red);}
 .opt-btn:disabled{cursor:default;}
-.opt-btn.hi-q{font-family:'Noto Sans Devanagari',sans-serif;}
-.opt-letter{font-weight:700;font-size:13px;min-width:20px;margin-top:1px;}
+.opt-letter{font-weight:700;font-size:13px;min-width:20px;margin-top:1px;font-family:'Source Sans 3',sans-serif;}
 
-/* EXPLANATION — hidden until submit */
-.explanation{background:#fffbf0;border:1.5px solid #f0d98a;border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.7;color:#4a3a10;display:none;margin-top:10px;}
-.explanation.hi{font-family:'Noto Sans Devanagari',sans-serif;font-size:13px;line-height:1.9;}
+/* EXPLANATION — STRICTLY hidden until submit */
+.explanation{background:#fffbf0;border:1.5px solid #f0d98a;border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.7;color:#4a3a10;margin-top:10px;font-family:'Source Sans 3',sans-serif;display:none;}
+.explanation.devanagari{font-family:'Noto Sans Devanagari',sans-serif;line-height:2;}
+.explanation.show{display:block;}
 
-/* SCORE BANNER */
+/* SCORE */
 .score-banner{background:linear-gradient(135deg,var(--navy2),var(--navy));border-radius:12px;padding:28px;margin:24px 28px 28px;text-align:center;display:none;}
 .score-banner.visible{display:block;}
 .score-big{font-family:'Playfair Display',serif;font-size:52px;color:var(--gold2);line-height:1;margin-bottom:6px;}
 .score-sub{color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:12px;}
 .score-grade{font-size:18px;font-weight:700;color:white;margin-bottom:16px;}
-.btn-retake{background:var(--saffron);color:white;border:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.score-grade.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:15px;}
+.btn-retake{background:var(--saffron);color:white;border:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin:4px;}
 
 /* SUBMIT */
 .submit-wrap{padding:20px 28px;border-top:1px solid var(--border);}
 .btn-submit{background:linear-gradient(135deg,var(--saffron),var(--saffron2));color:white;border:none;padding:14px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(232,119,34,0.3);transition:all 0.15s;width:100%;}
-.btn-submit:hover{transform:translateY(-1px);}
-.btn-submit:disabled{opacity:0.5;cursor:default;transform:none;}
-
-/* LANG TOGGLE */
-.en-only{display:block !important;}
-.hi-only{display:none !important;}
-body.hi .en-only{display:none !important;}
-body.hi .hi-only{display:block !important;}
+.btn-submit.devanagari{font-family:'Noto Sans Devanagari',sans-serif;}
+.btn-submit:disabled{opacity:0.5;cursor:default;}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 .fade-up{animation:fadeUp 0.4s ease forwards;}
 
 @media(max-width:600px){
   .q-card{padding:18px 16px;}
-  .summary-card{padding:18px;}
+  .summary-card,.quiz-header{padding:18px 16px;}
   .highlights-grid,.breakdown-grid{grid-template-columns:1fr;}
   .score-banner{margin:16px;}
   .submit-wrap{padding:16px;}
-  .btn-start-quiz{padding:15px 32px;font-size:15px;}
-  .quiz-header{flex-direction:column;gap:12px;}
+  .btn-start-quiz{padding:15px 28px;font-size:15px;}
+  .quiz-header{flex-direction:column;gap:12px;border-radius:14px 14px 0 0;}
 }
 </style>
 </head>
@@ -194,12 +191,11 @@ body.hi .hi-only{display:block !important;}
   <div class="nav-logo">
     <div class="nav-logo-icon">📰</div>
     <div class="nav-logo-text">
-      <strong class="en-only">Daily Current Affairs</strong>
-      <strong class="hi-only hi-q">दैनिक समसामयिक मामले</strong>
-      <small>PIB · AIR News · The Hindu</small>
+      <strong id="navTitle">Daily Current Affairs</strong>
+      <small>PIB · AIR News · Govt Sources</small>
     </div>
   </div>
-  <a href="index.html" class="header-back">← <span class="en-only">Home</span><span class="hi-only hi-q">होम</span></a>
+  <a href="index.html" class="header-back" id="backBtn">← Home</a>
 </header>
 
 <div class="container">
@@ -209,114 +205,155 @@ body.hi .hi-only{display:block !important;}
 <script>
 // ── LANGUAGE ──────────────────────────────────────────────────────────────────
 let lang = localStorage.getItem('prepsaathi_lang') || 'en';
-function setLang(l){
+
+function setLang(l) {
   lang = l;
   localStorage.setItem('prepsaathi_lang', l);
-  document.body.classList.toggle('hi', l==='hi');
-  document.getElementById('btnEn').classList.toggle('active', l==='en');
-  document.getElementById('btnHi').classList.toggle('active', l==='hi');
+  document.getElementById('btnEn').classList.toggle('active', l === 'en');
+  document.getElementById('btnHi').classList.toggle('active', l === 'hi');
+  // Re-render current view
+  if (quizData) {
+    if (quizMode) renderQuizPage();
+    else renderSummaryPage();
+  }
+  // Update nav
+  document.getElementById('navTitle').textContent = l === 'hi' ? 'दैनिक समसामयिक मामले' : 'Daily Current Affairs';
+  document.getElementById('backBtn').innerHTML = l === 'hi' ? '← होम' : '← Home';
 }
 setLang(lang);
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let quizData=null, userAnswers={}, submitted=false, quizOpen=false;
-let timerInterval=null, timerSeconds=15*60; // 15 minutes
+let quizData = null;
+let userAnswers = {};
+let submitted = false;
+let quizMode = false;
+let timerInterval = null;
+let timerSeconds = 15 * 60;
+
+const tagColorMap = {
+  'Polity':'tag-polity','Economy':'tag-economy','Environment':'tag-env',
+  'IR':'tag-ir','Science':'tag-science','Governance':'tag-governance',
+  'History':'tag-history','Geography':'tag-geography'
+};
+
+const subjectHiMap = {
+  'Polity':'राजनीति','Economy':'अर्थव्यवस्था','Environment':'पर्यावरण',
+  'IR':'अंतर्राष्ट्रीय संबंध','Science':'विज्ञान','Governance':'शासन',
+  'History':'इतिहास','Geography':'भूगोल'
+};
 
 // ── TIMER ─────────────────────────────────────────────────────────────────────
-function startTimer(){
-  timerSeconds = 15*60;
+function startTimer() {
+  timerSeconds = 15 * 60;
   updateTimerDisplay();
-  timerInterval = setInterval(()=>{
+  timerInterval = setInterval(() => {
     timerSeconds--;
     updateTimerDisplay();
-    if(timerSeconds<=0){
-      clearInterval(timerInterval);
-      if(!submitted) submitQuiz(true); // auto submit when time up
-    }
-  },1000);
+    if (timerSeconds <= 0) { clearInterval(timerInterval); submitQuiz(true); }
+  }, 1000);
 }
 
-function updateTimerDisplay(){
+function stopTimer() { if (timerInterval) clearInterval(timerInterval); }
+
+function updateTimerDisplay() {
   const el = document.getElementById('timerValue');
   const box = document.getElementById('timerBox');
-  if(!el) return;
-  const m = Math.floor(timerSeconds/60);
-  const s = timerSeconds%60;
+  if (!el) return;
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
   el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  if(timerSeconds <= 120) { // last 2 mins — warning
-    box.classList.add('warning');
-  }
-}
-
-function stopTimer(){
-  if(timerInterval) clearInterval(timerInterval);
+  if (box && timerSeconds <= 120) box.classList.add('warning');
 }
 
 // ── LOADING ───────────────────────────────────────────────────────────────────
-function renderLoading(step=0){
-  const steps=[
-    {en:'Fetching from PIB & AIR News…',hi:'PIB और AIR से समाचार ला रहे हैं…'},
-    {en:'Analysing UPSC-relevant events…',hi:'UPSC प्रासंगिक घटनाएं विश्लेषण…'},
-    {en:'Writing summary & highlights…',hi:'सारांश और मुख्य बातें लिख रहे हैं…'},
-    {en:'Generating 10 Prelims questions…',hi:'10 प्रारंभिक प्रश्न तैयार हो रहे हैं…'},
-    {en:'Translating to Hindi…',hi:'हिंदी में अनुवाद हो रहा है…'},
+function renderLoading(step = 0) {
+  const steps = [
+    { en:'Fetching from PIB & AIR News…', hi:'PIB और AIR से समाचार ला रहे हैं…' },
+    { en:'Analysing UPSC-relevant events…', hi:'UPSC प्रासंगिक घटनाएं विश्लेषण…' },
+    { en:'Writing summary & highlights…', hi:'सारांश और मुख्य बातें लिख रहे हैं…' },
+    { en:'Generating 10 Prelims questions…', hi:'10 प्रारंभिक प्रश्न तैयार हो रहे हैं…' },
+    { en:'Translating to Hindi…', hi:'हिंदी में अनुवाद हो रहा है…' },
   ];
-  document.getElementById('app').innerHTML=`
+  const hi = lang === 'hi';
+  document.getElementById('app').innerHTML = `
     <div class="loading-card fade-up">
       <div class="spinner"></div>
-      <h3 class="en-only">Building Today's Current Affairs…</h3>
-      <h3 class="hi-only hi-q">आज का करेंट अफेयर्स तैयार हो रहा है…</h3>
-      <p class="en-only">Fetching from PIB, AIR News & official government sources.</p>
-      <p class="hi-only hi-q">PIB, AIR न्यूज़ और सरकारी स्रोतों से प्राप्त हो रहा है।</p>
+      <h3>${hi ? 'आज का करेंट अफेयर्स तैयार हो रहा है…' : "Building Today's Current Affairs…"}</h3>
+      <p style="margin-top:8px">${hi ? 'PIB, AIR न्यूज़ और सरकारी स्रोतों से प्राप्त हो रहा है।' : 'Fetching from PIB, AIR News & official government sources.'}</p>
       <div class="loading-steps">
-        ${steps.map((s,i)=>`
+        ${steps.map((s,i) => `
           <div class="loading-step ${i<step?'done':i===step?'active':''}">
             <div class="step-dot"></div>
-            <span class="en-only">${i<step?'✓ ':''}${s.en}</span>
-            <span class="hi-only hi-q">${i<step?'✓ ':''}${s.hi}</span>
+            <span${hi?' style="font-family:Noto Sans Devanagari,sans-serif"':''}>${i<step?'✓ ':''}${hi?s.hi:s.en}</span>
           </div>`).join('')}
       </div>
     </div>`;
 }
 
-function renderError(msg){
-  document.getElementById('app').innerHTML=`
+function renderError(msg) {
+  const hi = lang === 'hi';
+  document.getElementById('app').innerHTML = `
     <div class="error-card fade-up">
-      <h3>⚠️ <span class="en-only">Could not load today's quiz</span><span class="hi-only hi-q">आज का क्विज़ लोड नहीं हो सका</span></h3>
-      <p class="en-only">${msg}</p>
-      <p class="hi-only hi-q">कृपया कुछ देर बाद पुनः प्रयास करें।</p>
-      <button class="btn-retry" onclick="loadQuiz()">🔄 Try Again</button>
+      <h3>⚠️ ${hi ? 'आज का क्विज़ लोड नहीं हो सका' : "Could not load today's quiz"}</h3>
+      <p>${msg}</p>
+      <button class="btn-retry" onclick="loadQuiz()">🔄 ${hi?'पुनः प्रयास करें':'Try Again'}</button>
     </div>`;
 }
 
 // ── FETCH ─────────────────────────────────────────────────────────────────────
-async function loadQuiz(){
-  userAnswers={};submitted=false;quizOpen=false;stopTimer();
+async function loadQuiz() {
+  userAnswers = {}; submitted = false; quizMode = false; stopTimer();
   renderLoading(0);
-  let step=0;
-  const t=setInterval(()=>{ step=Math.min(step+1,4); renderLoading(step); },2500);
-  try{
-    const res=await fetch('/api/current-affairs');
+  let step = 0;
+  const t = setInterval(() => { step = Math.min(step+1, 4); renderLoading(step); }, 2500);
+  try {
+    const res = await fetch('/api/current-affairs');
     clearInterval(t);
-    if(!res.ok){ const e=await res.json().catch(()=>({error:'Server error'})); renderError(e.error||'Server error'); return; }
-    quizData=await res.json();
-    renderPage();
-  }catch(err){
+    if (!res.ok) { const e = await res.json().catch(() => ({error:'Server error'})); renderError(e.error||'Server error'); return; }
+    quizData = await res.json();
+    renderSummaryPage();
+  } catch(err) {
     clearInterval(t);
     renderError('Network error — please check your connection.');
   }
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function renderPage(){
-  const d=quizData;
-  const tagColorMap={'Polity':'tag-polity','Economy':'tag-economy','Environment':'tag-env','IR':'tag-ir','Science':'tag-science','Governance':'tag-governance','History':'tag-history','Geography':'tag-geography'};
+// ── SUMMARY PAGE ──────────────────────────────────────────────────────────────
+function renderSummaryPage() {
+  quizMode = false;
+  const d = quizData;
+  const hi = lang === 'hi';
 
-  const dateBanner=`
+  const summary = hi ? (d.summaryHi || d.summary) : d.summary;
+  const isHiSummary = hi && d.summaryHi;
+
+  const breakdownHTML = (d.sections || []).map(s => {
+    const tc = tagColorMap[s.tag] || 'tag-polity';
+    const heading = hi ? (s.headingHi || s.heading) : s.heading;
+    const content = hi ? (s.contentHi || s.content) : s.content;
+    const isHi = hi && s.contentHi;
+    return `<div class="breakdown-item ${tc}">
+      <h4>${s.icon||'📌'} ${heading}</h4>
+      <p class="item-text${isHi?' devanagari':''}">${content}</p>
+    </div>`;
+  }).join('');
+
+  const hlHTML = (d.highlights || []).map(hl => {
+    const tc = tagColorMap[hl.tag] || 'tag-polity';
+    const title = hi ? (hl.titleHi || hl.title) : hl.title;
+    const body = hi ? (hl.bodyHi || hl.body) : hl.body;
+    const isHi = hi && hl.titleHi;
+    return `<div class="highlight-card">
+      <div class="hl-top"><span class="hl-tag ${tc}">${hl.tag}</span><span class="hl-source">${hl.source||'PIB'}</span></div>
+      <div class="hl-title${isHi?' devanagari':''}">${title}</div>
+      <div class="hl-body${isHi?' devanagari':''}">${body}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
     <div class="date-banner fade-up">
       <div>
-        <h2 class="en-only">📰 Today's Current Affairs</h2>
-        <h2 class="hi-only hi-q">📰 आज के समसामयिक मामले</h2>
+        <h2>${hi ? '📰 आज के समसामयिक मामले' : "📰 Today's Current Affairs"}</h2>
         <p>${d.date||''}</p>
       </div>
       <div class="date-pills">
@@ -324,180 +361,154 @@ function renderPage(){
         <span class="date-pill">📻 AIR News</span>
         <span class="date-pill">🏛️ Govt Sources</span>
       </div>
-    </div>`;
+    </div>
 
-  const breakdownHTML=(d.sections||[]).map(s=>{
-    const tc=tagColorMap[s.tag]||'tag-polity';
-    return `<div class="breakdown-item ${tc}">
-      <h4>${s.icon||'📌'} <span class="en-only">${s.heading}</span><span class="hi-only hi-q">${s.headingHi||s.heading}</span></h4>
-      <p class="en-only">${s.content}</p>
-      <p class="hi hi-only">${s.contentHi||s.content}</p>
-    </div>`;
-  }).join('');
-
-  const summary=`
-    <div class="section-label en-only">📝 Today's Summary — PIB & AIR Sources</div>
-    <div class="section-label hi-only hi-q">📝 आज का सारांश — PIB और AIR स्रोत</div>
+    <div class="section-label">${hi ? '📝 आज का सारांश — PIB और AIR स्रोत' : '📝 Today\'s Summary — PIB & AIR Sources'}</div>
     <div class="summary-card fade-up">
-      <p class="summary-overview en-only">${d.summary||''}</p>
-      <p class="summary-overview hi hi-only">${d.summaryHi||d.summary||''}</p>
-      ${breakdownHTML?`<div class="breakdown-grid">${breakdownHTML}</div>`:''}
-      <p class="source-note">Source: Press Information Bureau (PIB) · All India Radio (AIR) · Ministry official releases</p>
-    </div>`;
+      <p class="summary-text${isHiSummary?' devanagari':''}">${summary}</p>
+      ${breakdownHTML ? `<div class="breakdown-grid">${breakdownHTML}</div>` : ''}
+      <p class="source-note">Source: Press Information Bureau (PIB) · All India Radio (AIR) · RBI · MEA · MoEF · Ministry press releases</p>
+    </div>
 
-  const hlHTML=(d.highlights||[]).map(hl=>{
-    const tc=tagColorMap[hl.tag]||'tag-polity';
-    return `<div class="highlight-card">
-      <div class="hl-top"><span class="hl-tag ${tc}">${hl.tag}</span><span class="hl-source">${hl.source}</span></div>
-      <div class="hl-title en-only">${hl.title}</div>
-      <div class="hl-title hi-only hi-q">${hl.titleHi||hl.title}</div>
-      <div class="hl-body en-only">${hl.body}</div>
-      <div class="hl-body hi-only hi-q">${hl.bodyHi||hl.body}</div>
-    </div>`;
-  }).join('');
+    <div class="section-label">${hi ? '🔑 मुख्य बातें' : '🔑 Key Highlights'}</div>
+    <div class="highlights-grid fade-up">${hlHTML}</div>
 
-  const highlights=`
-    <div class="section-label en-only">🔑 Key Highlights</div>
-    <div class="section-label hi-only hi-q">🔑 मुख्य बातें</div>
-    <div class="highlights-grid fade-up">${hlHTML}</div>`;
-
-  const quizCta=`
-    <div class="quiz-cta-wrap fade-up" id="quizCtaWrap">
-      <button class="btn-start-quiz" onclick="openQuiz()">
-        ❓ <span class="en-only">Take Today's 10-Question Quiz</span>
-        <span class="hi-only hi-q">आज का 10 प्रश्न क्विज़ दें</span>
+    <div class="quiz-cta-wrap fade-up">
+      <button class="btn-start-quiz" onclick="goToQuiz()">
+        ❓ ${hi ? 'आज का 10 प्रश्न क्विज़ दें' : "Take Today's 10-Question Quiz"}
       </button>
-      <p class="quiz-cta-sub en-only">15 min timer · UPSC Prelims pattern · Explanations after submission</p>
-      <p class="quiz-cta-sub hi-only hi-q">15 मिनट · UPSC प्रारंभिक पैटर्न · जमा के बाद व्याख्या</p>
+      <p class="quiz-cta-sub${hi?' devanagari':''}">
+        ${hi ? '15 मिनट · UPSC प्रारंभिक पैटर्न · जमा के बाद व्याख्या' : '15 min timer · UPSC Prelims pattern · Explanations after submission'}
+      </p>
     </div>`;
+}
 
-  const qHTML=(d.questions||[]).map((q,i)=>{
-    const tc=tagColorMap[q.subject]||'tag-polity';
-    const optsEN=q.options.map((o,j)=>`
-      <button class="opt-btn" id="opt-en-${i}-${j}" onclick="selectAnswer(${i},${j})">
+// ── GO TO QUIZ PAGE ───────────────────────────────────────────────────────────
+function goToQuiz() {
+  userAnswers = {};
+  submitted = false;
+  renderQuizPage();
+  startTimer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── QUIZ PAGE ─────────────────────────────────────────────────────────────────
+function renderQuizPage() {
+  quizMode = true;
+  const d = quizData;
+  const hi = lang === 'hi';
+
+  const qHTML = (d.questions || []).map((q, i) => {
+    const tc = tagColorMap[q.subject] || 'tag-polity';
+    const subjectLabel = hi ? (q.subjectHi || subjectHiMap[q.subject] || q.subject) : q.subject;
+    const qText = hi ? (q.qHi || q.q) : q.q;
+    const opts = hi ? (q.optionsHi || q.options) : q.options;
+    const expText = hi ? (q.explanationHi || q.explanation) : q.explanation;
+    const isHi = hi && (q.qHi || q.optionsHi);
+
+    const optsHTML = opts.map((o, j) => `
+      <button class="opt-btn${isHi?' devanagari':''}" id="opt-${i}-${j}" onclick="selectAnswer(${i},${j})">
         <span class="opt-letter">${['A','B','C','D'][j]}.</span><span>${o}</span>
       </button>`).join('');
-    const optsHI=(q.optionsHi||q.options).map((o,j)=>`
-      <button class="opt-btn hi-q" id="opt-hi-${i}-${j}" onclick="selectAnswer(${i},${j})">
-        <span class="opt-letter">${['A','B','C','D'][j]}.</span><span>${o}</span>
-      </button>`).join('');
+
     return `
       <div class="q-card" id="qcard-${i}">
         <div class="q-top">
           <span class="q-num">Q.${i+1}</span>
-          <span class="q-subject ${tc} en-only">${q.subject}</span>
-          <span class="q-subject ${tc} hi-only hi-q">${q.subjectHi||q.subject}</span>
+          <span class="q-subject ${tc}${hi?' devanagari':''}">${subjectLabel}</span>
         </div>
-        <div class="q-text en-only">${q.q}</div>
-        <div class="q-text hi hi-only">${q.qHi||q.q}</div>
-        <div class="options en-only">${optsEN}</div>
-        <div class="options hi-only">${optsHI}</div>
-        <div class="explanation en-only" id="exp-en-${i}">📖 <strong>Explanation:</strong> ${q.explanation}</div>
-        <div class="explanation hi hi-only" id="exp-hi-${i}">📖 <strong>व्याख्या:</strong> ${q.explanationHi||q.explanation}</div>
+        <div class="q-text${isHi?' devanagari':''}">${qText}</div>
+        <div class="options">${optsHTML}</div>
+        <div class="explanation${hi?' devanagari':''}" id="exp-${i}">📖 <strong>${hi?'व्याख्या':'Explanation'}:</strong> ${expText}</div>
       </div>`;
   }).join('');
 
-  const quiz=`
-    <div class="quiz-section" id="quizSection">
-      <div class="quiz-header">
-        <div class="quiz-header-text">
-          <h3 class="en-only">❓ Today's Current Affairs Quiz</h3>
-          <h3 class="hi-only hi-q">❓ आज का समसामयिक क्विज़</h3>
-          <p class="en-only">10 Questions · UPSC Prelims Pattern · No Negative Marking</p>
-          <p class="hi-only hi-q">10 प्रश्न · UPSC प्रारंभिक परीक्षा पैटर्न · कोई नकारात्मक अंकन नहीं</p>
-        </div>
-        <div class="timer-box" id="timerBox">
-          <div class="timer-label en-only">TIME LEFT</div>
-          <div class="timer-label hi-only hi-q">समय शेष</div>
-          <div class="timer-value" id="timerValue">15:00</div>
-        </div>
+  document.getElementById('app').innerHTML = `
+    <div style="margin-bottom:16px">
+      <button onclick="backToSummary()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;">
+        ← ${hi ? 'सारांश पर वापस जाएं' : 'Back to Summary'}
+      </button>
+    </div>
+    <div class="quiz-header">
+      <div class="quiz-header-text">
+        <h3${hi?' class="devanagari"':''}>${hi ? '❓ आज का समसामयिक क्विज़' : "❓ Today's Current Affairs Quiz"}</h3>
+        <p${hi?' class="devanagari"':''}>${hi ? '10 प्रश्न · UPSC प्रारंभिक पैटर्न · कोई नकारात्मक अंकन नहीं' : '10 Questions · UPSC Prelims Pattern · No Negative Marking'}</p>
       </div>
-      <div class="quiz-body">
-        ${qHTML}
-        <div class="score-banner" id="scoreBanner"></div>
-        <div class="submit-wrap">
-          <button class="btn-submit" id="submitBtn" onclick="submitQuiz(false)">
-            <span class="en-only">✅ Submit & See Results</span>
-            <span class="hi-only hi-q">✅ जमा करें और परिणाम देखें</span>
-          </button>
-        </div>
+      <div class="timer-box" id="timerBox">
+        <div class="timer-label${hi?' devanagari':''}">${hi?'समय शेष':'TIME LEFT'}</div>
+        <div class="timer-value" id="timerValue">15:00</div>
+      </div>
+    </div>
+    <div class="quiz-body">
+      ${qHTML}
+      <div class="score-banner" id="scoreBanner"></div>
+      <div class="submit-wrap">
+        <button class="btn-submit${hi?' devanagari':''}" id="submitBtn" onclick="submitQuiz(false)">
+          ✅ ${hi ? 'जमा करें और परिणाम देखें' : 'Submit & See Results'}
+        </button>
       </div>
     </div>`;
-
-  document.getElementById('app').innerHTML=dateBanner+summary+highlights+quizCta+quiz;
 }
 
-// ── OPEN QUIZ ─────────────────────────────────────────────────────────────────
-function openQuiz(){
-  const section=document.getElementById('quizSection');
-  const ctaWrap=document.getElementById('quizCtaWrap');
-  if(!section) return;
-  quizOpen=true;
-  section.classList.add('open');
-  if(ctaWrap) ctaWrap.style.display='none';
-  startTimer();
-  setTimeout(()=>{ section.scrollIntoView({behavior:'smooth',block:'start'}); },100);
+function backToSummary() {
+  stopTimer();
+  submitted = false;
+  userAnswers = {};
+  renderSummaryPage();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ── SELECT ANSWER ─────────────────────────────────────────────────────────────
-function selectAnswer(qIdx,optIdx){
-  if(submitted) return;
-  userAnswers[qIdx]=optIdx;
-  for(let j=0;j<4;j++){
-    ['en','hi'].forEach(l=>{
-      const b=document.getElementById(`opt-${l}-${qIdx}-${j}`);
-      if(b) b.classList.toggle('selected',j===optIdx);
-    });
+function selectAnswer(qIdx, optIdx) {
+  if (submitted) return;
+  userAnswers[qIdx] = optIdx;
+  for (let j = 0; j < 4; j++) {
+    const b = document.getElementById(`opt-${qIdx}-${j}`);
+    if (b) b.classList.toggle('selected', j === optIdx);
   }
 }
 
 // ── SUBMIT QUIZ ───────────────────────────────────────────────────────────────
-function submitQuiz(autoSubmit=false){
-  submitted=true;
+function submitQuiz(autoSubmit = false) {
+  submitted = true;
   stopTimer();
-  const btn=document.getElementById('submitBtn');
-  if(btn) btn.disabled=true;
+  const btn = document.getElementById('submitBtn');
+  if (btn) btn.disabled = true;
 
-  let correct=0;
-  quizData.questions.forEach((q,i)=>{
-    const ua=userAnswers[i];
-    const ca=q.answer;
-    for(let j=0;j<4;j++){
-      ['en','hi'].forEach(l=>{
-        const b=document.getElementById(`opt-${l}-${i}-${j}`);
-        if(!b) return;
-        b.disabled=true;
-        b.classList.remove('selected');
-        if(j===ca) b.classList.add('correct');
-        else if(j===ua&&ua!==ca) b.classList.add('wrong');
-      });
+  let correct = 0;
+  quizData.questions.forEach((q, i) => {
+    const ua = userAnswers[i];
+    const ca = q.answer;
+    for (let j = 0; j < 4; j++) {
+      const b = document.getElementById(`opt-${i}-${j}`);
+      if (!b) return;
+      b.disabled = true;
+      b.classList.remove('selected');
+      if (j === ca) b.classList.add('correct');
+      else if (j === ua && ua !== ca) b.classList.add('wrong');
     }
-    // Show explanations NOW — both EN and HI, lang toggle handles visibility
-    const expEn=document.getElementById(`exp-en-${i}`);
-    const expHi=document.getElementById(`exp-hi-${i}`);
-    if(expEn) expEn.style.display='block';
-    if(expHi) expHi.style.display='block';
-    if(ua===ca) correct++;
+    // Show explanation ONLY now
+    const exp = document.getElementById(`exp-${i}`);
+    if (exp) exp.classList.add('show');
+    if (ua === ca) correct++;
   });
 
-  const total=quizData.questions.length;
-  const pct=Math.round((correct/total)*100);
-  const grade=pct>=80?'🏆 Excellent — IAS Calibre!':pct>=60?'🎯 Good — Keep practising!':pct>=40?'📚 Fair — Review today\'s highlights':'💪 Keep reading daily!';
-  const gradeHi=pct>=80?'🏆 उत्कृष्ट — IAS स्तर!':pct>=60?'🎯 अच्छा — अभ्यास जारी रखें!':pct>=40?'📚 ठीक — मुख्य बातें दोहराएं':'💪 रोज पढ़ते रहें!';
-  const timeMsg=autoSubmit?'<br><small style="color:rgba(255,255,255,0.6)">⏰ Auto-submitted — time up!</small>':'';
+  const hi = lang === 'hi';
+  const total = quizData.questions.length;
+  const pct = Math.round((correct / total) * 100);
+  const grade = pct>=80 ? '🏆 Excellent — IAS Calibre!' : pct>=60 ? '🎯 Good — Keep practising!' : pct>=40 ? "📚 Fair — Review today's highlights" : '💪 Keep reading daily!';
+  const gradeHi = pct>=80 ? '🏆 उत्कृष्ट — IAS स्तर!' : pct>=60 ? '🎯 अच्छा — अभ्यास जारी रखें!' : pct>=40 ? '📚 ठीक — मुख्य बातें दोहराएं' : '💪 रोज पढ़ते रहें!';
+  const timeMsg = autoSubmit ? `<br><small style="color:rgba(255,255,255,0.6)">⏰ ${hi?'समय समाप्त — स्वतः जमा':'Auto-submitted — time up!'}</small>` : '';
 
-  const banner=document.getElementById('scoreBanner');
-  banner.innerHTML=`
+  const banner = document.getElementById('scoreBanner');
+  banner.innerHTML = `
     <div class="score-big">${correct}/${total}</div>
     <div class="score-sub">${pct}% accuracy · Today's Current Affairs${timeMsg}</div>
-    <div class="score-grade en-only">${grade}</div>
-    <div class="score-grade hi-only hi-q">${gradeHi}</div>
-    <button class="btn-retake" onclick="loadQuiz()">
-      <span class="en-only">🔄 Try Again</span>
-      <span class="hi-only hi-q">🔄 दोबारा प्रयास करें</span>
-    </button>`;
+    <div class="score-grade${hi?' devanagari':''}">${hi ? gradeHi : grade}</div>
+    <button class="btn-retake" onclick="goToQuiz()">🔄 ${hi?'दोबारा प्रयास करें':'Try Again'}</button>
+    <button class="btn-retake" onclick="backToSummary()" style="background:var(--navy2)">📰 ${hi?'सारांश देखें':'View Summary'}</button>`;
   banner.classList.add('visible');
-  setTimeout(()=>banner.scrollIntoView({behavior:'smooth',block:'center'}),200);
+  setTimeout(() => banner.scrollIntoView({ behavior:'smooth', block:'center' }), 200);
 }
 
 loadQuiz();
