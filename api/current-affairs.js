@@ -1,4 +1,4 @@
-// api/current-affairs.js — PrepSaathi with Supabase Daily Caching
+// api/current-affairs.js — PrepSaathi with Supabase Daily Caching + 10 Questions
 
 const https = require('https');
 
@@ -11,12 +11,11 @@ function supabaseRequest(method, path, body, secretKey, supabaseUrl) {
       hostname: url.hostname,
       path: `/rest/v1/${path}`,
       method,
-      headers: {
+      headers: Object.assign({
         'Content-Type': 'application/json',
         'apikey': secretKey,
-        'Authorization': `Bearer ${secretKey}`,
-        ...(method === 'POST' ? { 'Prefer': 'return=representation' } : {})
-      }
+        'Authorization': `Bearer ${secretKey}`
+      }, method === 'POST' ? { 'Prefer': 'return=representation' } : {})
     };
     if (data) options.headers['Content-Length'] = Buffer.byteLength(data);
     const r = https.request(options, (resp) => {
@@ -57,9 +56,8 @@ function parseJSON(text) {
   );
 }
 
-// ── GET TODAY'S DATE IN IST ─────────────────────────────────────────────────
 function getTodayIST() {
-  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }); // YYYY-MM-DD
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 }
 
 function getTodayLabel() {
@@ -68,57 +66,60 @@ function getTodayLabel() {
   });
 }
 
-// ── GENERATE FRESH CONTENT FROM CLAUDE ─────────────────────────────────────
+// ── GENERATE FRESH CONTENT ──────────────────────────────────────────────────
 async function generateContent(anthropicKey) {
   const today = getTodayLabel();
 
-  const r1 = await callClaude(anthropicKey,
-    `UPSC current affairs expert. Today: ${today}.
-Return ONLY this JSON (English only, no Hindi, keep each string short):
-{
-  "summary": "5 sentences on today UPSC current affairs covering polity economy IR environment. Start: Today's current affairs covers",
-  "sections": [
-    {"tag":"Polity","heading":"Polity & Governance","icon":"⚖️","content":"1 sentence polity news today."},
-    {"tag":"Economy","heading":"Economy & Finance","icon":"📈","content":"1 sentence economy news today."},
-    {"tag":"IR","heading":"International Relations","icon":"🌏","content":"1 sentence IR news today."},
-    {"tag":"Environment","heading":"Environment","icon":"🌿","content":"1 sentence environment news today."},
-    {"tag":"Science","heading":"Science & Tech","icon":"🔬","content":"1 sentence science news today."}
-  ],
-  "highlights": [
-    {"title":"short title","body":"1 sentence.","tag":"Polity","source":"PIB"},
-    {"title":"short title","body":"1 sentence.","tag":"Economy","source":"AIR"},
-    {"title":"short title","body":"1 sentence.","tag":"IR","source":"PIB"},
-    {"title":"short title","body":"1 sentence.","tag":"Environment","source":"AIR"},
-    {"title":"short title","body":"1 sentence.","tag":"Science","source":"PIB"}
-  ],
-  "questions": [
-    {"q":"UPSC MCQ 1","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Polity","source":"PIB"},
-    {"q":"UPSC MCQ 2","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Economy","source":"AIR"},
-    {"q":"UPSC MCQ 3","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Environment","source":"PIB"},
-    {"q":"UPSC MCQ 4","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"IR","source":"AIR"},
-    {"q":"UPSC MCQ 5","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Science","source":"PIB"}
-  ]
-}
-Fill with real UPSC content. JSON only, no markdown.`, 1500);
+  // Both calls run in parallel
+  const [r1, rQ] = await Promise.all([
 
-  if (r1.status !== 200) throw new Error(r1.data?.error?.message || 'Claude error');
+    // Call 1: Summary + sections + highlights
+    callClaude(anthropicKey,
+`You are a UPSC current affairs expert. Today: ${today}.
+Generate content based STRICTLY on these official Indian government sources only:
+- PIB (Press Information Bureau) — pib.gov.in
+- AIR News (All India Radio) — newsonair.gov.in
+- PRS Legislative Research — prsindia.org
+- MoEF (Ministry of Environment, Forest & Climate Change)
+- RBI (Reserve Bank of India) press releases
+- MEA (Ministry of External Affairs) press releases
+- Any other official Ministry/Department press releases
+
+DO NOT use newspaper sources, private media, or unverified sources.
+Return ONLY this JSON (English only, short strings, no markdown):
+{"summary":"5 sentences on today UPSC-relevant news from PIB and AIR covering polity economy IR environment science. Mention actual schemes, policies, bills from official sources. Start: Today's current affairs covers","sections":[{"tag":"Polity","heading":"Polity & Governance","icon":"⚖️","content":"1 sentence from PIB/PRS on polity/governance today."},{"tag":"Economy","heading":"Economy & Finance","icon":"📈","content":"1 sentence from RBI/Finance Ministry on economy today."},{"tag":"IR","heading":"International Relations","icon":"🌏","content":"1 sentence from MEA on India foreign relations today."},{"tag":"Environment","heading":"Environment","icon":"🌿","content":"1 sentence from MoEF on environment today."},{"tag":"Science","heading":"Science & Tech","icon":"🔬","content":"1 sentence from DST/ISRO/official source on science today."}],"highlights":[{"title":"short headline","body":"1 sentence with key fact or figure.","tag":"Polity","source":"PIB"},{"title":"short headline","body":"1 sentence with key fact.","tag":"Economy","source":"RBI"},{"title":"short headline","body":"1 sentence.","tag":"IR","source":"MEA"},{"title":"short headline","body":"1 sentence.","tag":"Environment","source":"MoEF"},{"title":"short headline","body":"1 sentence.","tag":"Science","source":"PIB"}]}
+Use only verified government source content. JSON only.`, 1200),
+
+    // Call 2: 10 UPSC Prelims questions
+    callClaude(anthropicKey,
+`You are a UPSC Prelims expert. Today: ${today}.
+Generate 10 UPSC Prelims MCQs strictly based on news from these official sources:
+PIB, AIR News, PRS Legislative Research, MoEF, RBI, MEA, official Ministry press releases.
+Use authentic UPSC question styles: "Consider the following statements", "Which is/are correct", "Select using codes below".
+Each question must test factual knowledge from today's government announcements, policies, schemes, or official data.
+Assign source from: PIB / AIR / PRS / MoEF / RBI / MEA
+Return ONLY this JSON (no markdown):
+{"questions":[{"q":"Q1","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence with the key fact from official source.","subject":"Polity","source":"PIB"},{"q":"Q2","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Economy","source":"RBI"},{"q":"Q3","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Environment","source":"MoEF"},{"q":"Q4","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"IR","source":"MEA"},{"q":"Q5","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Science","source":"PIB"},{"q":"Q6","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Polity","source":"PRS"},{"q":"Q7","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Economy","source":"AIR"},{"q":"Q8","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Geography","source":"PIB"},{"q":"Q9","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"History","source":"AIR"},{"q":"Q10","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Governance","source":"PRS"}]}
+Real UPSC-style questions from official sources only. JSON only.`, 1800)
+  ]);
+
+  if (r1.status !== 200) throw new Error(r1.data?.error?.message || 'Claude summary error');
+  if (rQ.status !== 200) throw new Error(rQ.data?.error?.message || 'Claude questions error');
+
   const content = parseJSON(r1.data.content[0].text);
+  const qData = parseJSON(rQ.data.content[0].text);
+  content.questions = qData.questions;
 
-  // Hindi translation of summary only
+  // Hindi translation of summary
   const r2 = await callClaude(anthropicKey,
     `Translate ONLY to Hindi Devanagari. Return ONLY the translation:\n\n${content.summary}`, 300);
   content.summaryHi = r2.data.content[0].text.trim();
 
-  // Add Hindi placeholders for sections/highlights/questions
-  content.sections = content.sections.map(s => ({
-    ...s, headingHi: s.heading, contentHi: s.content
-  }));
-  content.highlights = content.highlights.map(h => ({
-    ...h, titleHi: h.title, bodyHi: h.body
-  }));
+  // Add Hindi placeholders
+  content.sections = content.sections.map(s => ({ ...s, headingHi: s.heading, contentHi: s.content }));
+  content.highlights = content.highlights.map(h => ({ ...h, titleHi: h.title, bodyHi: h.body }));
   content.questions = content.questions.map(q => ({
-    ...q, qHi: q.q, optionsHi: q.options,
-    explanationHi: q.explanation, subjectHi: q.subject
+    ...q, qHi: q.q, optionsHi: q.options, explanationHi: q.explanation, subjectHi: q.subject
   }));
 
   content.date = getTodayLabel();
@@ -138,10 +139,10 @@ module.exports = async function handler(req, res) {
   if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'Anthropic API key not configured.' });
   if (!SUPABASE_URL || !SUPABASE_KEY) return res.status(500).json({ error: 'Supabase not configured.' });
 
-  const todayIST = getTodayIST(); // e.g. 2025-03-19
+  const todayIST = getTodayIST();
 
   try {
-    // ── STEP 1: Check Supabase cache ──────────────────────────────────────
+    // ── Check cache ──────────────────────────────────────────────────────
     const cached = await supabaseRequest(
       'GET', `daily_content?date=eq.${todayIST}&limit=1`,
       null, SUPABASE_KEY, SUPABASE_URL
@@ -150,23 +151,19 @@ module.exports = async function handler(req, res) {
     if (cached.status === 200) {
       const rows = JSON.parse(cached.body);
       if (rows.length > 0) {
-        console.log('Cache HIT for', todayIST);
+        console.log('Cache HIT:', todayIST);
         return res.status(200).json(rows[0].content);
       }
     }
 
-    // ── STEP 2: Cache MISS — generate fresh content ───────────────────────
-    console.log('Cache MISS for', todayIST, '— generating...');
+    // ── Cache miss — generate fresh ──────────────────────────────────────
+    console.log('Cache MISS:', todayIST, '— generating...');
     const content = await generateContent(ANTHROPIC_KEY);
 
-    // ── STEP 3: Save to Supabase ──────────────────────────────────────────
-    await supabaseRequest(
-      'POST', 'daily_content',
-      { date: todayIST, content },
-      SUPABASE_KEY, SUPABASE_URL
-    );
+    // ── Save to Supabase ─────────────────────────────────────────────────
+    await supabaseRequest('POST', 'daily_content', { date: todayIST, content }, SUPABASE_KEY, SUPABASE_URL);
+    console.log('Saved to Supabase:', todayIST);
 
-    console.log('Saved to Supabase for', todayIST);
     return res.status(200).json(content);
 
   } catch (err) {
