@@ -15,7 +15,7 @@ function supabaseRequest(method, path, body, secretKey, supabaseUrl) {
         'Content-Type': 'application/json',
         'apikey': secretKey,
         'Authorization': `Bearer ${secretKey}`,
-        'Prefer': method === 'POST' ? 'return=representation' : undefined
+        ...(method === 'POST' ? { 'Prefer': 'return=representation' } : {})
       }
     };
     if (data) options.headers['Content-Length'] = Buffer.byteLength(data);
