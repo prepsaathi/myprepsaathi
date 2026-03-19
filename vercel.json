@@ -11,7 +11,7 @@
   "crons": [
     {
       "path": "/api/current-affairs",
-      "schedule": "30 0 * * *"
+      "schedule": "30 12 * * *"
     }
   ]
 }
