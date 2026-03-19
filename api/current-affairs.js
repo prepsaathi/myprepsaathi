@@ -88,7 +88,7 @@ Generate content based STRICTLY on these official Indian government sources only
 DO NOT use newspaper sources, private media, or unverified sources.
 Return ONLY this JSON (English only, short strings, no markdown):
 {"summary":"5 sentences on today UPSC-relevant news from PIB and AIR covering polity economy IR environment science. Mention actual schemes, policies, bills from official sources. Start: Today's current affairs covers","sections":[{"tag":"Polity","heading":"Polity & Governance","icon":"⚖️","content":"1 sentence from PIB/PRS on polity/governance today."},{"tag":"Economy","heading":"Economy & Finance","icon":"📈","content":"1 sentence from RBI/Finance Ministry on economy today."},{"tag":"IR","heading":"International Relations","icon":"🌏","content":"1 sentence from MEA on India foreign relations today."},{"tag":"Environment","heading":"Environment","icon":"🌿","content":"1 sentence from MoEF on environment today."},{"tag":"Science","heading":"Science & Tech","icon":"🔬","content":"1 sentence from DST/ISRO/official source on science today."}],"highlights":[{"title":"short headline","body":"1 sentence with key fact or figure.","tag":"Polity","source":"PIB"},{"title":"short headline","body":"1 sentence with key fact.","tag":"Economy","source":"RBI"},{"title":"short headline","body":"1 sentence.","tag":"IR","source":"MEA"},{"title":"short headline","body":"1 sentence.","tag":"Environment","source":"MoEF"},{"title":"short headline","body":"1 sentence.","tag":"Science","source":"PIB"}]}
-Use only verified government source content. JSON only.`, 1200),
+Use only verified government source content. JSON only.`, 1500),
 
     // Call 2: 10 UPSC Prelims questions
     callClaude(anthropicKey,
@@ -100,7 +100,7 @@ Each question must test factual knowledge from today's government announcements,
 Assign source from: PIB / AIR / PRS / MoEF / RBI / MEA
 Return ONLY this JSON (no markdown):
 {"questions":[{"q":"Q1","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence with the key fact from official source.","subject":"Polity","source":"PIB"},{"q":"Q2","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Economy","source":"RBI"},{"q":"Q3","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Environment","source":"MoEF"},{"q":"Q4","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"IR","source":"MEA"},{"q":"Q5","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Science","source":"PIB"},{"q":"Q6","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Polity","source":"PRS"},{"q":"Q7","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Economy","source":"AIR"},{"q":"Q8","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Geography","source":"PIB"},{"q":"Q9","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"History","source":"AIR"},{"q":"Q10","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Governance","source":"PRS"}]}
-Real UPSC-style questions from official sources only. JSON only.`, 1800)
+Real UPSC-style questions from official sources only. JSON only.`, 2500)
   ]);
 
   if (r1.status !== 200) throw new Error(r1.data?.error?.message || 'Claude summary error');
