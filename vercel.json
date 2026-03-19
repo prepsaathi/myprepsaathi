@@ -1,13 +1,4 @@
 {
-  "functions": {
-    "api/current-affairs.js": {
-      "maxDuration": 60
-    },
-    "api/upload-hindu.js": {
-      "maxDuration": 60,
-      "memory": 1024
-    }
-  },
   "crons": [
     {
       "path": "/api/current-affairs",
