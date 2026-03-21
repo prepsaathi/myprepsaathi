@@ -115,62 +115,49 @@ Real UPSC-style questions from official sources only. JSON only.`, 2500)
     'IR':'अंतर्राष्ट्रीय संबंध','Science':'विज्ञान','Governance':'शासन',
     'History':'इतिहास','Geography':'भूगोल'
   };
+  const subjectHiHeadings = {
+    'Polity':'राजनीति और शासन','Economy':'अर्थव्यवस्था और वित्त',
+    'IR':'अंतर्राष्ट्रीय संबंध','Environment':'पर्यावरण','Science':'विज्ञान और प्रौद्योगिकी'
+  };
 
-  // ── HINDI TRANSLATIONS — 3 parallel small calls ──────────────────────────
-  const summaryInput = content.summary;
-  const sectionsInput = content.sections.map(s => ({ tag: s.tag, heading: s.heading, content: s.content }));
-  const highlightsInput = content.highlights.map(h => ({ title: h.title, body: h.body }));
-  const questionsInput = content.questions.map(q => ({ q: q.q, options: q.options, explanation: q.explanation }));
+  // ── HINDI TRANSLATION — single focused call ─────────────────────────────
+  const rHindi = await callClaude(anthropicKey,
+    `Translate these English texts to Hindi Devanagari. Return ONLY this JSON, no markdown:
+{
+  "summaryHi": "${content.summary.replace(/"/g, '\"').substring(0, 300)}",
+  "sectionsHi": [
+    ${content.sections.map(s => `{"contentHi": "translate: ${s.content.replace(/"/g, '\"').substring(0, 100)}"}`).join(',
+    ')}
+  ],
+  "questionsHi": [
+    ${content.questions.map(q => `{"qHi": "translate: ${q.q.replace(/"/g, '\"').substring(0, 120)}", "expHi": "translate: ${q.explanation.replace(/"/g, '\"').substring(0, 80)}", "optsHi": [${q.options.map(o => `"translate: ${o.replace(/"/g, '\"').substring(0, 60)}"`).join(', ')}]}`).join(',
+    ')}
+  ]
+}
+Replace every "translate: ..." value with actual Hindi translation. JSON only.`, 3000);
 
-  const [rSummary, rSections, rQuestions] = await Promise.all([
-    // Translate summary
-    callClaude(anthropicKey,
-      `Translate to Hindi Devanagari. Return ONLY the Hindi translation, nothing else:\n\n${summaryInput}`, 400),
-    // Translate sections + highlights
-    callClaude(anthropicKey,
-      `Translate all string values to Hindi Devanagari. Keep JSON keys in English. Return ONLY valid JSON, no markdown:\n${JSON.stringify({ sections: sectionsInput, highlights: highlightsInput })}`, 1200),
-    // Translate questions separately
-    callClaude(anthropicKey,
-      `Translate all string values to Hindi Devanagari. Keep JSON keys in English. Return ONLY valid JSON, no markdown:\n${JSON.stringify({ questions: questionsInput })}`, 2000)
-  ]);
-
-  // Apply summary translation
-  content.summaryHi = rSummary.data.content[0].text.trim();
-
-  // Apply sections + highlights translation
   try {
-    const t1 = JSON.parse(rSections.data.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim());
+    const hi = JSON.parse(rHindi.data.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim());
+    content.summaryHi = hi.summaryHi || content.summary;
     content.sections = content.sections.map((s, i) => ({
       ...s,
-      headingHi: (t1.sections && t1.sections[i]?.heading) || s.heading,
-      contentHi: (t1.sections && t1.sections[i]?.content) || s.content
+      headingHi: subjectHiHeadings[s.tag] || s.heading,
+      contentHi: (hi.sectionsHi && hi.sectionsHi[i]?.contentHi) || s.content
     }));
-    content.highlights = content.highlights.map((h, i) => ({
-      ...h,
-      titleHi: (t1.highlights && t1.highlights[i]?.title) || h.title,
-      bodyHi: (t1.highlights && t1.highlights[i]?.body) || h.body
-    }));
-  } catch(e) {
-    console.error('Sections/highlights Hindi failed:', e.message);
-    content.sections = content.sections.map(s => ({ ...s, headingHi: s.heading, contentHi: s.content }));
     content.highlights = content.highlights.map(h => ({ ...h, titleHi: h.title, bodyHi: h.body }));
-  }
-
-  // Apply questions translation
-  try {
-    const t2 = JSON.parse(rQuestions.data.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim());
     content.questions = content.questions.map((q, i) => ({
       ...q,
-      qHi: (t2.questions && t2.questions[i]?.q) || q.q,
-      optionsHi: (t2.questions && t2.questions[i]?.options) || q.options,
-      explanationHi: (t2.questions && t2.questions[i]?.explanation) || q.explanation,
+      qHi: (hi.questionsHi && hi.questionsHi[i]?.qHi) || q.q,
+      optionsHi: (hi.questionsHi && hi.questionsHi[i]?.optsHi) || q.options,
+      explanationHi: (hi.questionsHi && hi.questionsHi[i]?.expHi) || q.explanation,
       subjectHi: subjectHiMap[q.subject] || q.subject
     }));
   } catch(e) {
-    console.error('Questions Hindi failed:', e.message);
-    content.questions = content.questions.map(q => ({
-      ...q, qHi: q.q, optionsHi: q.options, explanationHi: q.explanation, subjectHi: subjectHiMap[q.subject] || q.subject
-    }));
+    console.error('Hindi translation failed, using English fallback:', e.message);
+    content.summaryHi = content.summary;
+    content.sections = content.sections.map(s => ({ ...s, headingHi: subjectHiHeadings[s.tag]||s.heading, contentHi: s.content }));
+    content.highlights = content.highlights.map(h => ({ ...h, titleHi: h.title, bodyHi: h.body }));
+    content.questions = content.questions.map(q => ({ ...q, qHi: q.q, optionsHi: q.options, explanationHi: q.explanation, subjectHi: subjectHiMap[q.subject]||q.subject }));
   }
 
   content.date = getTodayLabel();
