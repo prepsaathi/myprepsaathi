@@ -110,17 +110,68 @@ Real UPSC-style questions from official sources only. JSON only.`, 2500)
   const qData = parseJSON(rQ.data.content[0].text);
   content.questions = qData.questions;
 
-  // Hindi translation of summary
-  const r2 = await callClaude(anthropicKey,
-    `Translate ONLY to Hindi Devanagari. Return ONLY the translation:\n\n${content.summary}`, 300);
-  content.summaryHi = r2.data.content[0].text.trim();
+  const subjectHiMap = {
+    'Polity':'राजनीति','Economy':'अर्थव्यवस्था','Environment':'पर्यावरण',
+    'IR':'अंतर्राष्ट्रीय संबंध','Science':'विज्ञान','Governance':'शासन',
+    'History':'इतिहास','Geography':'भूगोल'
+  };
 
-  // Add Hindi placeholders
-  content.sections = content.sections.map(s => ({ ...s, headingHi: s.heading, contentHi: s.content }));
-  content.highlights = content.highlights.map(h => ({ ...h, titleHi: h.title, bodyHi: h.body }));
-  content.questions = content.questions.map(q => ({
-    ...q, qHi: q.q, optionsHi: q.options, explanationHi: q.explanation, subjectHi: q.subject
-  }));
+  // ── HINDI TRANSLATIONS — 3 parallel small calls ──────────────────────────
+  const summaryInput = content.summary;
+  const sectionsInput = content.sections.map(s => ({ tag: s.tag, heading: s.heading, content: s.content }));
+  const highlightsInput = content.highlights.map(h => ({ title: h.title, body: h.body }));
+  const questionsInput = content.questions.map(q => ({ q: q.q, options: q.options, explanation: q.explanation }));
+
+  const [rSummary, rSections, rQuestions] = await Promise.all([
+    // Translate summary
+    callClaude(anthropicKey,
+      `Translate to Hindi Devanagari. Return ONLY the Hindi translation, nothing else:\n\n${summaryInput}`, 400),
+    // Translate sections + highlights
+    callClaude(anthropicKey,
+      `Translate all string values to Hindi Devanagari. Keep JSON keys in English. Return ONLY valid JSON, no markdown:\n${JSON.stringify({ sections: sectionsInput, highlights: highlightsInput })}`, 1200),
+    // Translate questions separately
+    callClaude(anthropicKey,
+      `Translate all string values to Hindi Devanagari. Keep JSON keys in English. Return ONLY valid JSON, no markdown:\n${JSON.stringify({ questions: questionsInput })}`, 2000)
+  ]);
+
+  // Apply summary translation
+  content.summaryHi = rSummary.data.content[0].text.trim();
+
+  // Apply sections + highlights translation
+  try {
+    const t1 = JSON.parse(rSections.data.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim());
+    content.sections = content.sections.map((s, i) => ({
+      ...s,
+      headingHi: (t1.sections && t1.sections[i]?.heading) || s.heading,
+      contentHi: (t1.sections && t1.sections[i]?.content) || s.content
+    }));
+    content.highlights = content.highlights.map((h, i) => ({
+      ...h,
+      titleHi: (t1.highlights && t1.highlights[i]?.title) || h.title,
+      bodyHi: (t1.highlights && t1.highlights[i]?.body) || h.body
+    }));
+  } catch(e) {
+    console.error('Sections/highlights Hindi failed:', e.message);
+    content.sections = content.sections.map(s => ({ ...s, headingHi: s.heading, contentHi: s.content }));
+    content.highlights = content.highlights.map(h => ({ ...h, titleHi: h.title, bodyHi: h.body }));
+  }
+
+  // Apply questions translation
+  try {
+    const t2 = JSON.parse(rQuestions.data.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim());
+    content.questions = content.questions.map((q, i) => ({
+      ...q,
+      qHi: (t2.questions && t2.questions[i]?.q) || q.q,
+      optionsHi: (t2.questions && t2.questions[i]?.options) || q.options,
+      explanationHi: (t2.questions && t2.questions[i]?.explanation) || q.explanation,
+      subjectHi: subjectHiMap[q.subject] || q.subject
+    }));
+  } catch(e) {
+    console.error('Questions Hindi failed:', e.message);
+    content.questions = content.questions.map(q => ({
+      ...q, qHi: q.q, optionsHi: q.options, explanationHi: q.explanation, subjectHi: subjectHiMap[q.subject] || q.subject
+    }));
+  }
 
   content.date = getTodayLabel();
   return content;
