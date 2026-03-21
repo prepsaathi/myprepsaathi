@@ -203,8 +203,13 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 </div>
 
 <script>
-// ── STATE ─────────────────────────────────────────────────────────────────────
+// ── STATE — all declared first ────────────────────────────────────────────────
 let quizData = null;
+let userAnswers = {};
+let submitted = false;
+let quizMode = false;
+let timerInterval = null;
+let timerSeconds = 15 * 60;
 let lang = localStorage.getItem('prepsaathi_lang') || 'en';
 
 // ── LANGUAGE ──────────────────────────────────────────────────────────────────
@@ -213,21 +218,15 @@ function setLang(l) {
   localStorage.setItem('prepsaathi_lang', l);
   document.getElementById('btnEn').classList.toggle('active', l === 'en');
   document.getElementById('btnHi').classList.toggle('active', l === 'hi');
-  // Re-render current view
+  document.getElementById('navTitle').textContent = l === 'hi' ? 'दैनिक समसामयिक मामले' : 'Daily Current Affairs';
+  document.getElementById('backBtn').innerHTML = l === 'hi' ? '← होम' : '← Home';
+  // Re-render current view with new lang
   if (quizData) {
     if (quizMode) renderQuizPage();
     else renderSummaryPage();
   }
-  // Update nav
-  document.getElementById('navTitle').textContent = l === 'hi' ? 'दैनिक समसामयिक मामले' : 'Daily Current Affairs';
-  document.getElementById('backBtn').innerHTML = l === 'hi' ? '← होम' : '← Home';
 }
 setLang(lang);
-let userAnswers = {};
-let submitted = false;
-let quizMode = false;
-let timerInterval = null;
-let timerSeconds = 15 * 60;
 
 const tagColorMap = {
   'Polity':'tag-polity','Economy':'tag-economy','Environment':'tag-env',
