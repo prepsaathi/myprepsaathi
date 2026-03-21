@@ -418,7 +418,7 @@ function renderQuizPage() {
         </div>
         <div class="q-text${isHi?' devanagari':''}">${qText}</div>
         <div class="options">${optsHTML}</div>
-        <div class="explanation${hi?' devanagari':''}" id="exp-${i}">📖 <strong>${hi?'व्याख्या':'Explanation'}:</strong> ${expText}</div>
+        <div class="explanation${hi?' devanagari':''}" id="exp-${i}" style="display:none">📖 <strong>${hi?'व्याख्या':'Explanation'}:</strong> ${expText}</div>
       </div>`;
   }).join('');
 
