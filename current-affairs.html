@@ -249,7 +249,7 @@ function setLang(l) {
       const gradeHi = pct>=80?'🏆 उत्कृष्ट — IAS स्तर!':pct>=60?'🎯 अच्छा — अभ्यास जारी रखें!':pct>=40?'📚 ठीक — मुख्य बातें दोहराएं':'💪 रोज पढ़ते रहें!';
       const banner = document.getElementById('scoreBanner');
       if (banner) {
-        banner.innerHTML = '<div class="score-big">'+correct+'/'+total+'</div><div class="score-sub">'+pct+'% accuracy · Today's Current Affairs</div><div class="score-grade'+(hi?' devanagari':'')+'">'+( hi?gradeHi:grade)+'</div><button class="btn-retake" onclick="goToQuiz()">🔄 '+(hi?'दोबारा प्रयास करें':'Try Again')+'</button><button class="btn-retake" onclick="backToSummary()" style="background:var(--navy2)">📰 '+(hi?'सारांश देखें':'View Summary')+'</button>';
+        banner.innerHTML = '<div class="score-big">'+correct+'/'+total+'</div><div class="score-sub">'+pct+'% accuracy · Today\'s Current Affairs</div><div class="score-grade'+(hi?' devanagari':'')+'">'+( hi?gradeHi:grade)+'</div><button class="btn-retake" onclick="goToQuiz()">🔄 '+(hi?'दोबारा प्रयास करें':'Try Again')+'</button><button class="btn-retake" onclick="backToSummary()" style="background:var(--navy2)">📰 '+(hi?'सारांश देखें':'View Summary')+'</button>';
         banner.classList.add('visible');
       }
       const sb = document.getElementById('submitBtn');
