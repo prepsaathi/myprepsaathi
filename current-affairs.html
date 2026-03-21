@@ -245,7 +245,6 @@ function setLang(l) {
       const total = quizData.questions.length;
       const correct = quizData.questions.filter((q,i) => userAnswers[i]===q.answer).length;
       const pct = Math.round((correct/total)*100);
-      const hi = l==='hi';
       const grade = pct>=80?'🏆 Excellent — IAS Calibre!':pct>=60?'🎯 Good — Keep practising!':pct>=40?"📚 Fair — Review today's highlights":'💪 Keep reading daily!';
       const gradeHi = pct>=80?'🏆 उत्कृष्ट — IAS स्तर!':pct>=60?'🎯 अच्छा — अभ्यास जारी रखें!':pct>=40?'📚 ठीक — मुख्य बातें दोहराएं':'💪 रोज पढ़ते रहें!';
       const banner = document.getElementById('scoreBanner');
