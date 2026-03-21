@@ -216,14 +216,59 @@ let lang = localStorage.getItem('prepsaathi_lang') || 'en';
 function setLang(l) {
   lang = l;
   localStorage.setItem('prepsaathi_lang', l);
-  document.getElementById('btnEn').classList.toggle('active', l === 'en');
-  document.getElementById('btnHi').classList.toggle('active', l === 'hi');
-  document.getElementById('navTitle').textContent = l === 'hi' ? 'दैनिक समसामयिक मामले' : 'Daily Current Affairs';
-  document.getElementById('backBtn').innerHTML = l === 'hi' ? '← होम' : '← Home';
-  // Re-render current view with new lang
-  if (quizData) {
-    if (quizMode) renderQuizPage();
-    else renderSummaryPage();
+  document.getElementById('btnEn').classList.toggle('active', l==='en');
+  document.getElementById('btnHi').classList.toggle('active', l==='hi');
+  document.getElementById('navTitle').textContent = l==='hi' ? 'दैनिक समसामयिक मामले' : 'Daily Current Affairs';
+  document.getElementById('backBtn').innerHTML = l==='hi' ? '← होम' : '← Home';
+  if (!quizData) return;
+
+  if (quizMode && submitted) {
+    // Submitted — re-render but restore full state
+    renderQuizPage();
+    setTimeout(() => {
+      const hi = l === 'hi';
+      quizData.questions.forEach((q, i) => {
+        const ua = userAnswers[i];
+        const ca = q.answer;
+        for (let j = 0; j < 4; j++) {
+          const b = document.getElementById('opt-'+i+'-'+j);
+          if (!b) continue;
+          b.disabled = true;
+          b.classList.remove('selected');
+          if (j===ca) b.classList.add('correct');
+          else if (j===ua && ua!==ca) b.classList.add('wrong');
+        }
+        const exp = document.getElementById('exp-'+i);
+        if (exp) exp.classList.add('show');
+      });
+      // Restore score banner
+      const total = quizData.questions.length;
+      const correct = quizData.questions.filter((q,i) => userAnswers[i]===q.answer).length;
+      const pct = Math.round((correct/total)*100);
+      const hi = l==='hi';
+      const grade = pct>=80?'🏆 Excellent — IAS Calibre!':pct>=60?'🎯 Good — Keep practising!':pct>=40?"📚 Fair — Review today's highlights":'💪 Keep reading daily!';
+      const gradeHi = pct>=80?'🏆 उत्कृष्ट — IAS स्तर!':pct>=60?'🎯 अच्छा — अभ्यास जारी रखें!':pct>=40?'📚 ठीक — मुख्य बातें दोहराएं':'💪 रोज पढ़ते रहें!';
+      const banner = document.getElementById('scoreBanner');
+      if (banner) {
+        banner.innerHTML = '<div class="score-big">'+correct+'/'+total+'</div><div class="score-sub">'+pct+'% accuracy · Today's Current Affairs</div><div class="score-grade'+(hi?' devanagari':'')+'">'+( hi?gradeHi:grade)+'</div><button class="btn-retake" onclick="goToQuiz()">🔄 '+(hi?'दोबारा प्रयास करें':'Try Again')+'</button><button class="btn-retake" onclick="backToSummary()" style="background:var(--navy2)">📰 '+(hi?'सारांश देखें':'View Summary')+'</button>';
+        banner.classList.add('visible');
+      }
+      const sb = document.getElementById('submitBtn');
+      if (sb) sb.disabled = true;
+      const tb = document.getElementById('timerBox');
+      if (tb) tb.style.display='none';
+    }, 50);
+  } else if (quizMode && !submitted) {
+    // Quiz open not submitted — re-render and restore selections
+    renderQuizPage();
+    setTimeout(() => {
+      Object.entries(userAnswers).forEach(([qi, oi]) => {
+        const b = document.getElementById('opt-'+qi+'-'+oi);
+        if (b) b.classList.add('selected');
+      });
+    }, 50);
+  } else {
+    renderSummaryPage();
   }
 }
 setLang(lang);
