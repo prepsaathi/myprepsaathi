@@ -405,10 +405,13 @@ function renderQuizPage() {
     const expText = hi ? (q.explanationHi || q.explanation) : q.explanation;
     const isHi = hi && (q.qHi || q.optionsHi);
 
-    const optsHTML = opts.map((o, j) => `
-      <button class="opt-btn${isHi?' devanagari':''}" id="opt-${i}-${j}" onclick="selectAnswer(${i},${j})">
-        <span class="opt-letter">${['A','B','C','D'][j]}.</span><span>${o}</span>
-      </button>`).join('');
+    const optsHTML = opts.map((o, j) => {
+      // Remove "A)" "B)" etc prefix if Claude added it in options
+      const cleanOpt = String(o).replace(/^[A-D]\)\s*/i, '').trim();
+      return `<button class="opt-btn${isHi?' devanagari':''}" id="opt-${i}-${j}" onclick="selectAnswer(${i},${j})">
+        <span class="opt-letter">${['A','B','C','D'][j]}.</span><span>${cleanOpt}</span>
+      </button>`;
+    }).join('');
 
     return `
       <div class="q-card" id="qcard-${i}">
