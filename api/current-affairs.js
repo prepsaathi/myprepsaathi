@@ -141,11 +141,12 @@ Real UPSC questions only. JSON only.`, 2500)
     ...content.sections.map(s => translate(s.content))
   ]);
 
-  const [
-    ...highlightTexts
-  ] = await Promise.all([
-    ...content.highlights.map(h => translate(h.title)),
-  ]);
+  const highlightTitles = await Promise.all(
+    content.highlights.map(h => translate(h.title))
+  );
+  const highlightBodies = await Promise.all(
+    content.highlights.map(h => translate(h.body))
+  );
 
   const questionTexts = await Promise.all(
     content.questions.map(q => translate(q.q))
@@ -166,8 +167,8 @@ Real UPSC questions only. JSON only.`, 2500)
 
   content.highlights = content.highlights.map((h, i) => ({
     ...h,
-    titleHi: highlightTexts[i] || h.title,
-    bodyHi: h.body
+    titleHi: highlightTitles[i] || h.title,
+    bodyHi: highlightBodies[i] || h.body
   }));
 
   content.questions = content.questions.map((q, i) => ({
