@@ -121,35 +121,30 @@ Real UPSC-style questions from official sources only. JSON only.`, 2500)
   };
 
   // ── HINDI TRANSLATION — single focused call ─────────────────────────────
+  // Build translation prompt safely
+  const translationData = {
+    summary: content.summary,
+    sections: content.sections.map(s => s.content),
+    questions: content.questions.map(q => ({ q: q.q, opts: q.options, exp: q.explanation }))
+  };
   const rHindi = await callClaude(anthropicKey,
-    `Translate these English texts to Hindi Devanagari. Return ONLY this JSON, no markdown:
-{
-  "summaryHi": "${content.summary.replace(/"/g, '\"').substring(0, 300)}",
-  "sectionsHi": [
-    ${content.sections.map(s => `{"contentHi": "translate: ${s.content.replace(/"/g, '\"').substring(0, 100)}"}`).join(',
-    ')}
-  ],
-  "questionsHi": [
-    ${content.questions.map(q => `{"qHi": "translate: ${q.q.replace(/"/g, '\"').substring(0, 120)}", "expHi": "translate: ${q.explanation.replace(/"/g, '\"').substring(0, 80)}", "optsHi": [${q.options.map(o => `"translate: ${o.replace(/"/g, '\"').substring(0, 60)}"`).join(', ')}]}`).join(',
-    ')}
-  ]
-}
-Replace every "translate: ..." value with actual Hindi translation. JSON only.`, 3000);
+    'Translate all text values to Hindi Devanagari. Keep all JSON keys in English. Return ONLY valid JSON, no markdown, no extra text:\n' +
+    JSON.stringify(translationData), 3000);
 
   try {
     const hi = JSON.parse(rHindi.data.content[0].text.trim().replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim());
-    content.summaryHi = hi.summaryHi || content.summary;
+    content.summaryHi = hi.summary || content.summary;
     content.sections = content.sections.map((s, i) => ({
       ...s,
       headingHi: subjectHiHeadings[s.tag] || s.heading,
-      contentHi: (hi.sectionsHi && hi.sectionsHi[i]?.contentHi) || s.content
+      contentHi: (hi.sections && hi.sections[i]) || s.content
     }));
     content.highlights = content.highlights.map(h => ({ ...h, titleHi: h.title, bodyHi: h.body }));
     content.questions = content.questions.map((q, i) => ({
       ...q,
-      qHi: (hi.questionsHi && hi.questionsHi[i]?.qHi) || q.q,
-      optionsHi: (hi.questionsHi && hi.questionsHi[i]?.optsHi) || q.options,
-      explanationHi: (hi.questionsHi && hi.questionsHi[i]?.expHi) || q.explanation,
+      qHi: (hi.questions && hi.questions[i]?.q) || q.q,
+      optionsHi: (hi.questions && hi.questions[i]?.opts) || q.options,
+      explanationHi: (hi.questions && hi.questions[i]?.exp) || q.explanation,
       subjectHi: subjectHiMap[q.subject] || q.subject
     }));
   } catch(e) {
