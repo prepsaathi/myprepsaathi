@@ -325,14 +325,18 @@ function renderSummaryPage() {
   const summary = hi ? (d.summaryHi || d.summary) : d.summary;
   const isHiSummary = hi && d.summaryHi;
 
+  const sectionHiHeadings = {
+    'Polity': 'राजनीति और शासन', 'Economy': 'अर्थव्यवस्था और वित्त',
+    'IR': 'अंतर्राष्ट्रीय संबंध', 'Environment': 'पर्यावरण',
+    'Science': 'विज्ञान और प्रौद्योगिकी'
+  };
   const breakdownHTML = (d.sections || []).map(s => {
     const tc = tagColorMap[s.tag] || 'tag-polity';
-    const heading = hi ? (s.headingHi || s.heading) : s.heading;
-    const content = hi ? (s.contentHi || s.content) : s.content;
-    const isHi = hi && s.contentHi;
+    const heading = hi ? (sectionHiHeadings[s.tag] || s.heading) : s.heading;
+    const sContent = hi ? (s.contentHi && s.contentHi !== s.content ? s.contentHi : s.content) : s.content;
     return `<div class="breakdown-item ${tc}">
       <h4>${s.icon||'📌'} ${heading}</h4>
-      <p class="item-text${isHi?' devanagari':''}">${content}</p>
+      <p class="item-text">${sContent}</p>
     </div>`;
   }).join('');
 
@@ -398,14 +402,17 @@ function renderQuizPage() {
 
   const qHTML = (d.questions || []).map((q, i) => {
     const tc = tagColorMap[q.subject] || 'tag-polity';
-    const subjectLabel = hi ? (q.subjectHi || subjectHiMap[q.subject] || q.subject) : q.subject;
-    const qText = hi ? (q.qHi || q.q) : q.q;
-    const opts = hi ? (q.optionsHi || q.options) : q.options;
-    const expText = hi ? (q.explanationHi || q.explanation) : q.explanation;
-    const isHi = hi && (q.qHi || q.optionsHi);
+    const subjectLabel = hi ? (subjectHiMap[q.subject] || q.subject) : q.subject;
+    // Use Hindi if available AND different from English
+    const hasHiQ = hi && q.qHi && q.qHi !== q.q;
+    const hasHiOpts = hi && q.optionsHi && q.optionsHi[0] !== q.options[0];
+    const hasHiExp = hi && q.explanationHi && q.explanationHi !== q.explanation;
+    const qText = hasHiQ ? q.qHi : q.q;
+    const opts = hasHiOpts ? q.optionsHi : q.options;
+    const expText = hasHiExp ? q.explanationHi : q.explanation;
+    const isHi = hi && (hasHiQ || hasHiOpts);
 
     const optsHTML = opts.map((o, j) => {
-      // Remove "A)" "B)" etc prefix if Claude added it in options
       const cleanOpt = String(o).replace(/^[A-D]\)\s*/i, '').trim();
       return `<button class="opt-btn${isHi?' devanagari':''}" id="opt-${i}-${j}" onclick="selectAnswer(${i},${j})">
         <span class="opt-letter">${['A','B','C','D'][j]}.</span><span>${cleanOpt}</span>
