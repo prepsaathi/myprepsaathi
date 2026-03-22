@@ -185,34 +185,49 @@ async function processFile(file){
     showStatus('uploadStatus','error','❌ Please upload a PDF file only.');
     return;
   }
+
+  const maxSize = 4 * 1024 * 1024; // 4MB limit for Vercel
   if(file.size > 20 * 1024 * 1024){
     showStatus('uploadStatus','error','❌ File too large. Max size is 20MB.');
     return;
   }
 
-  document.getElementById('uploadZoneTitle').textContent = `📄 ${file.name}`;
+  document.getElementById('uploadZoneTitle').textContent = `📄 ${file.name} (${(file.size/1024/1024).toFixed(1)}MB)`;
   showProgress(true, 'Reading PDF…', 20);
 
   // Read PDF as base64
   const base64 = await fileToBase64(file);
-  showProgress(true, 'Sending to Claude AI…', 50);
+  
+  // Check if base64 is too large for Vercel (4.5MB limit)
+  const base64Size = base64.length * 0.75; // approximate bytes
+  if(base64Size > 4 * 1024 * 1024) {
+    // Send only first portion of PDF (first ~3MB worth)
+    const maxChars = Math.floor((3.5 * 1024 * 1024) / 0.75);
+    const truncatedBase64 = base64.substring(0, maxChars);
+    showProgress(true, 'PDF large — sending first section to Claude…', 40);
+    await sendToAPI(truncatedBase64, file.name + ' (partial)');
+  } else {
+    showProgress(true, 'Sending to Claude AI…', 50);
+    await sendToAPI(base64, file.name);
+  }
+}
 
-  // Send to our upload API
+async function sendToAPI(base64, filename) {
   try {
     showProgress(true, 'Claude is reading The Hindu…', 65);
     const resp = await fetch('/api/upload-hindu', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pdf: base64, filename: file.name })
+      body: JSON.stringify({ pdf: base64, filename })
     });
-    showProgress(true, 'Generating quiz questions…', 85);
+    showProgress(true, 'Generating summary & questions…', 85);
     const data = await resp.json();
     showProgress(true, 'Done!', 100);
 
     if(!resp.ok) throw new Error(data.error || 'Upload failed');
 
     setTimeout(()=>showProgress(false),1000);
-    showStatus('uploadStatus','success',`✅ Success! Today's current affairs generated from ${file.name}.\n\nStudents can now access: Today's detailed summary, 5 section-wise highlights, and 10 UPSC questions based on The Hindu.\n\nClick "Open Current Affairs Page" below to preview.`);
+    showStatus('uploadStatus','success',`✅ Success! Today's current affairs generated from ${filename}.\n\nPreview: ${data.preview?.summary||''}\n\nClick "Open Current Affairs Page" below to verify.`);
     document.getElementById('statusDot').className = 'status-dot green';
     document.getElementById('statusText').textContent = '✅ Today\'s content is live from The Hindu PDF.';
 
