@@ -110,10 +110,10 @@ JSON only.`;
 
   // 4 parallel calls — EN content + HI content + EN questions + HI questions
   const [rEN, rHI, rQEN, rQHI] = await Promise.all([
-    callClaude(anthropicKey, basePrompt('en'), 2000),
-    callClaude(anthropicKey, basePrompt('hi'), 2000),
-    callClaude(anthropicKey, questionsPrompt, 2500),
-    callClaude(anthropicKey, questionsHiPrompt, 2500)
+    callClaude(anthropicKey, basePrompt('en'), 2500),
+    callClaude(anthropicKey, basePrompt('hi'), 2500),
+    callClaude(anthropicKey, questionsPrompt, 3000),
+    callClaude(anthropicKey, questionsHiPrompt, 3000)
   ]);
 
   if (rEN.status !== 200) throw new Error(rEN.data?.error?.message || 'Claude EN error');
