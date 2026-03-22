@@ -110,8 +110,8 @@ JSON only.`;
 
   // 4 parallel calls — EN content + HI content + EN questions + HI questions
   const [rEN, rHI, rQEN, rQHI] = await Promise.all([
-    callClaude(anthropicKey, enPrompt, 2500),
-    callClaude(anthropicKey, hiPrompt, 2500),
+    callClaude(anthropicKey, basePrompt('en'), 2500),
+    callClaude(anthropicKey, basePrompt('hi'), 2500),
     callClaude(anthropicKey, questionsPrompt, 3000),
     callClaude(anthropicKey, questionsHiPrompt, 3000)
   ]);
