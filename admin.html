@@ -144,11 +144,11 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 <script>
 // ── PASSWORD ──────────────────────────────────────────────────────────────────
 // Change this password to whatever you want!
-const ADMIN_PASSWORD = '@YTP_D1502D_PTY@';
+const ADMIN_PASSWORD = 'YOUR_PASSWORD_HERE'; // <-- GitHub pe isko apna password se replace karo
 
-function doLogin(){
-  const pwd = document.getElementById('pwdInput').value;
-  if(pwd === ADMIN_PASSWORD){
+function doLogin(pwd){
+  const password = pwd || document.getElementById('pwdInput').value;
+  if(password === ADMIN_PASSWORD){
     sessionStorage.setItem('ps_admin', '1');
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
@@ -156,6 +156,14 @@ function doLogin(){
     document.getElementById('errMsg').style.display = 'block';
     document.getElementById('pwdInput').value = '';
   }
+}
+
+// Auto-login from URL key (secret homepage trigger)
+const urlKey = new URLSearchParams(window.location.search).get('key');
+if(urlKey) {
+  try { doLogin(atob(urlKey)); } catch(e) {}
+  // Clean URL
+  window.history.replaceState({}, '', 'admin.html');
 }
 
 function doLogout(){
