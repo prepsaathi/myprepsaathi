@@ -49,26 +49,39 @@ function callClaude(key, prompt, maxTok) {
   });
 }
 
-function translate(text) {
-  if (!text || text.trim().length === 0) return Promise.resolve(text);
-  const encoded = encodeURIComponent(text.substring(0, 500));
+async function translateAllToHindi(key, data) {
+  const prompt = 'You are a UPSC Hindi translator. Translate these texts to accurate Hindi Devanagari.' +
+    ' Use proper UPSC terminology: Strike=हमला/प्रहार, Treaty=संधि, Sovereign=संप्रभु, Parliament=संसद,' +
+    ' Amendment=संशोधन, Inflation=मुद्रास्फीति, Bilateral=द्विपक्षीय, Sanctions=प्रतिबंध,' +
+    ' Ceasefire=युद्धविराम, Nuclear=परमाणु, Satellite=उपग्रह, Mission=अभियान, Summit=शिखर सम्मेलन.' +
+    ' Return ONLY a JSON object with same keys but Hindi values. No markdown.\n' +
+    JSON.stringify(data);
+
+  const body = JSON.stringify({
+    model: 'claude-sonnet-4-6', max_tokens: 3000,
+    messages: [{ role: 'user', content: prompt }]
+  });
+
   return new Promise((resolve) => {
     const r = https.request({
-      hostname: 'api.mymemory.translated.net',
-      path: '/get?q=' + encoded + '&langpair=en|hi',
-      method: 'GET'
+      hostname: 'api.anthropic.com', path: '/v1/messages', method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', 'x-api-key': key,
+        'anthropic-version': '2023-06-01', 'Content-Length': Buffer.byteLength(body)
+      }
     }, (resp) => {
       let d = ''; resp.on('data', c => d += c);
       resp.on('end', () => {
         try {
           const json = JSON.parse(d);
-          const translated = json.responseData && json.responseData.translatedText;
-          resolve(translated && translated !== text ? translated : text);
-        } catch(e) { resolve(text); }
+          const t = json.content[0].text.trim()
+            .replace(/^```json\s*/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+          resolve(JSON.parse(t));
+        } catch(e) { console.error('Translation failed:', e.message); resolve(data); }
       });
     });
-    r.on('error', () => resolve(text));
-    r.end();
+    r.on('error', () => resolve(data));
+    r.write(body); r.end();
   });
 }
 
@@ -184,37 +197,45 @@ module.exports = async function handler(req, res) {
     const qData = parseJSON(rQ.data.content[0].text);
     content.questions = qData.questions;
 
-    // Translate to Hindi
-    const [summaryHi, ...sectionContentsHi] = await Promise.all([
-      translate(content.summary),
-      ...content.sections.map(function(s) { return translate(s.content); })
-    ]);
+    // Translate to Hindi using Claude (context-aware)
+    const toTranslate = {
+      summary: content.summary,
+      sections: content.sections.map(function(s) { return s.content; }),
+      hlTitles: content.highlights.map(function(h) { return h.title; }),
+      hlBodies: content.highlights.map(function(h) { return h.body; }),
+      questions: content.questions.map(function(q) { return q.q; }),
+      explanations: content.questions.map(function(q) { return q.explanation; }),
+      staticNews: (content.staticConnects||[]).map(function(s) { return s.news; }),
+      staticLinks: (content.staticConnects||[]).map(function(s) { return s.staticLink; })
+    };
 
-    const highlightTitles = await Promise.all(content.highlights.map(function(h) { return translate(h.title); }));
-    const highlightBodies = await Promise.all(content.highlights.map(function(h) { return translate(h.body); }));
-    const questionTexts = await Promise.all(content.questions.map(function(q) { return translate(q.q); }));
-    const explanationTexts = await Promise.all(content.questions.map(function(q) { return translate(q.explanation); }));
-    const staticNewsHi = await Promise.all((content.staticConnects||[]).map(function(s) { return translate(s.news); }));
-    const staticLinkHi = await Promise.all((content.staticConnects||[]).map(function(s) { return translate(s.staticLink); }));
+    const translated = await translateAllToHindi(ANTHROPIC_KEY, toTranslate);
 
-    content.summaryHi = summaryHi;
+    content.summaryHi = translated.summary || content.summary;
     content.sections = content.sections.map(function(s, i) {
-      return Object.assign({}, s, { headingHi: sectionHiHeadings[s.tag] || s.heading, contentHi: sectionContentsHi[i] || s.content });
+      return Object.assign({}, s, {
+        headingHi: sectionHiHeadings[s.tag] || s.heading,
+        contentHi: (translated.sections && translated.sections[i]) || s.content
+      });
     });
     content.highlights = content.highlights.map(function(h, i) {
-      return Object.assign({}, h, { titleHi: highlightTitles[i] || h.title, bodyHi: highlightBodies[i] || h.body });
+      return Object.assign({}, h, {
+        titleHi: (translated.hlTitles && translated.hlTitles[i]) || h.title,
+        bodyHi: (translated.hlBodies && translated.hlBodies[i]) || h.body
+      });
     });
     content.questions = content.questions.map(function(q, i) {
       return Object.assign({}, q, {
-        qHi: questionTexts[i] || q.q, optionsHi: q.options,
-        explanationHi: explanationTexts[i] || q.explanation,
+        qHi: (translated.questions && translated.questions[i]) || q.q,
+        optionsHi: q.options,
+        explanationHi: (translated.explanations && translated.explanations[i]) || q.explanation,
         subjectHi: subjectHiMap[q.subject] || q.subject
       });
     });
     content.staticConnects = (content.staticConnects||[]).map(function(s, i) {
       return Object.assign({}, s, {
-        newsHi: staticNewsHi[i] || s.news,
-        staticLinkHi: staticLinkHi[i] || s.staticLink,
+        newsHi: (translated.staticNews && translated.staticNews[i]) || s.news,
+        staticLinkHi: (translated.staticLinks && translated.staticLinks[i]) || s.staticLink,
         subjectHi: subjectHiMap[s.subject] || s.subject
       });
     });
