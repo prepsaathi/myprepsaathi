@@ -79,7 +79,26 @@ body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--
 .breakdown-item .item-text.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:12.5px;line-height:2;}
 .tag-polity h4{color:#2c4cc0;}.tag-economy h4{color:#8b1a1a;}.tag-env h4{color:#1a6655;}
 .tag-ir h4{color:#8b4000;}.tag-science h4{color:#5a1ab5;}.tag-governance h4{color:#2a5a2a;}
-.tag-history h4{color:#8b4500;}.tag-geography h4{color:#1a6630;}
+.tag-history h4{color:#8b4500;}.tag-geography h4{color:#1a6630;}.tag-culture h4{color:#6b1a6b;}
+
+/* STATIC CONNECT */
+.static-connect-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px;}
+.static-card{background:white;border-radius:12px;border:1.5px solid #e0d4f5;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #7c3aed;}
+.static-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.static-icon{font-size:18px;}
+.static-subject{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;text-transform:uppercase;}
+.static-subject.tag-polity{background:#e8eeff;color:#2c4cc0;}
+.static-subject.tag-economy{background:#fce8e8;color:#8b1a1a;}
+.static-subject.tag-env{background:#e0f4f0;color:#1a6655;}
+.static-subject.tag-ir{background:#fff0e8;color:#8b4000;}
+.static-subject.tag-science{background:#f0e8ff;color:#5a1ab5;}
+.static-subject.tag-history{background:#fef0e0;color:#8b4500;}
+.static-subject.tag-geography{background:#e0f5e8;color:#1a6630;}
+.static-subject.tag-culture{background:#f5e8ff;color:#6b1a6b;}
+.static-news{font-size:13px;color:#4a5a6a;line-height:1.6;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed #e0d4f5;}
+.static-link{font-size:13px;color:#5a3a8a;line-height:1.6;font-weight:600;}
+.static-news.devanagari,.static-link.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:12.5px;line-height:1.9;}
+.hl-tag.tag-culture{background:#f5e8ff;color:#6b1a6b;}
 
 /* HIGHLIGHTS */
 .highlights-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px;}
@@ -275,7 +294,7 @@ setLang(lang);
 const tagColorMap = {
   'Polity':'tag-polity','Economy':'tag-economy','Environment':'tag-env',
   'IR':'tag-ir','Science':'tag-science','Governance':'tag-governance',
-  'History':'tag-history','Geography':'tag-geography'
+  'History':'tag-history','Geography':'tag-geography','Art & Culture':'tag-culture'
 };
 
 const subjectHiMap = {
@@ -317,6 +336,23 @@ function renderLoading(step = 0) {
     { en:'Translating to Hindi…', hi:'हिंदी में अनुवाद हो रहा है…' },
   ];
   const hi = lang === 'hi';
+  // STATIC CONNECT HTML
+  const staticHTML = (d.staticConnects || []).map(sc => {
+    const tc = tagColorMap[sc.subject] || 'tag-polity';
+    const newsText = hi ? (sc.newsHi || sc.news) : sc.news;
+    const linkText = hi ? (sc.staticLinkHi || sc.staticLink) : sc.staticLink;
+    const subjectLabel = hi ? (sc.subjectHi || sc.subject) : sc.subject;
+    const isHi = hi && sc.newsHi;
+    return `<div class="static-card">
+      <div class="static-top">
+        <span class="static-icon">${sc.icon||'🔗'}</span>
+        <span class="static-subject ${tc}">${subjectLabel}</span>
+      </div>
+      <div class="static-news${isHi?' devanagari':''}">📰 ${newsText}</div>
+      <div class="static-link${isHi?' devanagari':''}">🎯 ${linkText}</div>
+    </div>`;
+  }).join('');
+
   document.getElementById('app').innerHTML = `
     <div class="loading-card fade-up">
       <div class="spinner"></div>
@@ -372,7 +408,8 @@ function renderSummaryPage() {
   const sectionHiHeadings = {
     'Polity': 'राजनीति और शासन', 'Economy': 'अर्थव्यवस्था और वित्त',
     'IR': 'अंतर्राष्ट्रीय संबंध', 'Environment': 'पर्यावरण',
-    'Science': 'विज्ञान और प्रौद्योगिकी'
+    'Science': 'विज्ञान और प्रौद्योगिकी', 'Geography': 'भूगोल',
+    'History': 'इतिहास', 'Art & Culture': 'कला और संस्कृति'
   };
   const breakdownHTML = (d.sections || []).map(s => {
     const tc = tagColorMap[s.tag] || 'tag-polity';
@@ -418,6 +455,11 @@ function renderSummaryPage() {
 
     <div class="section-label">${hi ? '🔑 मुख्य बातें' : '🔑 Key Highlights'}</div>
     <div class="highlights-grid fade-up">${hlHTML}</div>
+
+    ${staticHTML ? `
+    <div class="section-label">${hi ? '🔗 स्टेटिक कनेक्ट — समाचार से UPSC सिलेबस तक' : '🔗 Static Connect — From News to UPSC Syllabus'}</div>
+    <div class="static-connect-grid fade-up">${staticHTML}</div>
+    ` : ''}
 
     <div class="quiz-cta-wrap fade-up">
       <button class="btn-start-quiz" onclick="goToQuiz()">
