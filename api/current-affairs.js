@@ -1,8 +1,7 @@
-// api/current-affairs.js — PrepSaathi with Supabase Daily Caching
+// api/current-affairs.js — PrepSaathi
 
 const https = require('https');
 
-// ── SUPABASE ────────────────────────────────────────────────────────────────
 function supabaseRequest(method, path, body, secretKey, supabaseUrl) {
   const data = body ? JSON.stringify(body) : null;
   return new Promise((resolve, reject) => {
@@ -28,7 +27,6 @@ function supabaseRequest(method, path, body, secretKey, supabaseUrl) {
   });
 }
 
-// ── CLAUDE ──────────────────────────────────────────────────────────────────
 function callClaude(key, prompt, maxTok) {
   const body = JSON.stringify({
     model: 'claude-sonnet-4-6',
@@ -79,79 +77,97 @@ const sectionHiHeadings = {
   'History':'इतिहास','Art & Culture':'कला और संस्कृति'
 };
 
-// ── GENERATE CONTENT — English + Hindi in parallel ──────────────────────────
 async function generateContent(anthropicKey) {
   const today = getTodayLabel();
 
-  const basePrompt = (lang) => {
-    const isHi = lang === 'hi';
-    return `You are a UPSC current affairs expert. Today: ${today}.
-Generate content based on official Indian government sources: PIB, AIR News, PRS, MoEF, RBI, MEA.
-Also include Geography, History and Art & Culture static connects from today's news.
-${isHi ? 'Write ALL text values in Hindi Devanagari script. Use proper UPSC Hindi: Strike=हमला, Treaty=संधि, Parliament=संसद, Amendment=संशोधन, Bilateral=द्विपक्षीय, Sanctions=प्रतिबंध, Ceasefire=युद्धविराम, Summit=शिखर सम्मेलन, Satellite=उपग्रह.' : 'Write ALL text values in English.'}
-Return ONLY this JSON (no markdown):
-{"summary":"6 sentences on today UPSC news. Start: ${isHi ? 'आज के समसामयिक मामलों में' : "Today's current affairs covers"}","sections":[{"tag":"Polity","heading":"${isHi?'राजनीति और शासन':'Polity & Governance'}","icon":"⚖️","content":"1 sentence polity news."},{"tag":"Economy","heading":"${isHi?'अर्थव्यवस्था और वित्त':'Economy & Finance'}","icon":"📈","content":"1 sentence economy news."},{"tag":"IR","heading":"${isHi?'अंतर्राष्ट्रीय संबंध':'International Relations'}","icon":"🌏","content":"1 sentence IR news."},{"tag":"Environment","heading":"${isHi?'पर्यावरण':'Environment'}","icon":"🌿","content":"1 sentence environment news."},{"tag":"Science","heading":"${isHi?'विज्ञान और प्रौद्योगिकी':'Science & Tech'}","icon":"🔬","content":"1 sentence science news."},{"tag":"Geography","heading":"${isHi?'भूगोल':'Geography'}","icon":"🗺️","content":"1 sentence geography connect."},{"tag":"History","heading":"${isHi?'इतिहास':'History'}","icon":"🏛️","content":"1 sentence history connect."},{"tag":"Art & Culture","heading":"${isHi?'कला और संस्कृति':'Art & Culture'}","icon":"🎭","content":"1 sentence culture connect."}],"highlights":[{"title":"headline","body":"1 sentence.","tag":"Polity","source":"PIB"},{"title":"headline","body":"1 sentence.","tag":"Economy","source":"RBI"},{"title":"headline","body":"1 sentence.","tag":"IR","source":"MEA"},{"title":"headline","body":"1 sentence.","tag":"Environment","source":"MoEF"},{"title":"headline","body":"1 sentence.","tag":"Science","source":"PIB"}],"staticConnects":[{"news":"news event.","staticLink":"UPSC syllabus connection.","subject":"Polity","icon":"⚖️"},{"news":"news.","staticLink":"connection.","subject":"Geography","icon":"🗺️"},{"news":"news.","staticLink":"connection.","subject":"History","icon":"🏛️"},{"news":"news.","staticLink":"connection.","subject":"Art & Culture","icon":"🎭"},{"news":"news.","staticLink":"connection.","subject":"Economy","icon":"📈"}]}
-JSON only.`;
-  };
+  // CALL 1 — English summary + sections + highlights + staticConnects
+  const summaryPrompt = 'UPSC expert. Today: ' + today + '. Sources: PIB,AIR,RBI,MEA,MoEF.\n' +
+    'Return ONLY valid JSON, no markdown, no extra text:\n' +
+    '{"summary":"5 sentences on todays UPSC news. Start: Todays current affairs covers",' +
+    '"sections":[' +
+    '{"tag":"Polity","heading":"Polity & Governance","icon":"⚖️","content":"1 sentence."},' +
+    '{"tag":"Economy","heading":"Economy & Finance","icon":"📈","content":"1 sentence."},' +
+    '{"tag":"IR","heading":"International Relations","icon":"🌏","content":"1 sentence."},' +
+    '{"tag":"Environment","heading":"Environment","icon":"🌿","content":"1 sentence."},' +
+    '{"tag":"Science","heading":"Science & Tech","icon":"🔬","content":"1 sentence."},' +
+    '{"tag":"Geography","heading":"Geography","icon":"🗺️","content":"1 sentence geography connect."},' +
+    '{"tag":"History","heading":"History","icon":"🏛️","content":"1 sentence history connect."},' +
+    '{"tag":"Art & Culture","heading":"Art & Culture","icon":"🎭","content":"1 sentence culture connect."}],' +
+    '"highlights":[' +
+    '{"title":"title","body":"1 sentence.","tag":"Polity","source":"PIB"},' +
+    '{"title":"title","body":"1 sentence.","tag":"Economy","source":"RBI"},' +
+    '{"title":"title","body":"1 sentence.","tag":"IR","source":"MEA"},' +
+    '{"title":"title","body":"1 sentence.","tag":"Environment","source":"MoEF"},' +
+    '{"title":"title","body":"1 sentence.","tag":"Science","source":"PIB"}],' +
+    '"staticConnects":[' +
+    '{"news":"news.","staticLink":"UPSC syllabus link.","subject":"Polity","icon":"⚖️"},' +
+    '{"news":"news.","staticLink":"link.","subject":"Geography","icon":"🗺️"},' +
+    '{"news":"news.","staticLink":"link.","subject":"History","icon":"🏛️"},' +
+    '{"news":"news.","staticLink":"link.","subject":"Art & Culture","icon":"🎭"},' +
+    '{"news":"news.","staticLink":"link.","subject":"Economy","icon":"📈"}]}';
 
-  const questionsPrompt = `You are a UPSC Prelims expert. Today: ${today}.
-Generate 10 UPSC Prelims MCQs from PIB, AIR, MoEF, RBI, MEA.
-Use styles: "Consider the following statements", "Which is/are correct", "Select using codes".
-Return ONLY this JSON (no markdown):
-{"questions":[{"q":"Q1","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Polity","source":"PIB"},{"q":"Q2","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Economy","source":"RBI"},{"q":"Q3","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Environment","source":"MoEF"},{"q":"Q4","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"IR","source":"MEA"},{"q":"Q5","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Science","source":"PIB"},{"q":"Q6","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Geography","source":"PIB"},{"q":"Q7","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"History","source":"AIR"},{"q":"Q8","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Polity","source":"PRS"},{"q":"Q9","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Economy","source":"AIR"},{"q":"Q10","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Art & Culture","source":"PIB"}]}
-JSON only.`;
+  // CALL 2 — English questions
+  const questionsPrompt = 'UPSC Prelims expert. Today: ' + today + '. Sources: PIB,AIR,MoEF,RBI,MEA.\n' +
+    'Generate 10 MCQs. Use: Consider the following statements / Which is correct / Select using codes.\n' +
+    'Return ONLY valid JSON, no markdown:\n' +
+    '{"questions":[' +
+    '{"q":"Q1","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Polity","source":"PIB"},' +
+    '{"q":"Q2","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Economy","source":"RBI"},' +
+    '{"q":"Q3","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Environment","source":"MoEF"},' +
+    '{"q":"Q4","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"IR","source":"MEA"},' +
+    '{"q":"Q5","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Science","source":"PIB"},' +
+    '{"q":"Q6","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Geography","source":"PIB"},' +
+    '{"q":"Q7","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"History","source":"AIR"},' +
+    '{"q":"Q8","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Polity","source":"PRS"},' +
+    '{"q":"Q9","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Economy","source":"AIR"},' +
+    '{"q":"Q10","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Art & Culture","source":"PIB"}]}';
 
-  const questionsHiPrompt = `You are a UPSC Prelims expert. Today: ${today}.
-Generate 10 UPSC Prelims MCQs. Write ALL text in Hindi Devanagari.
-Use UPSC Hindi: Strike=हमला, Treaty=संधि, Parliament=संसद, Bilateral=द्विपक्षीय.
-Return ONLY this JSON (no markdown):
-{"questions":[{"q":"प्रश्न 1","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence Hindi.","subject":"Polity"},{"q":"प्रश्न 2","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Economy"},{"q":"प्रश्न 3","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"Environment"},{"q":"प्रश्न 4","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"IR"},{"q":"प्रश्न 5","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Science"},{"q":"प्रश्न 6","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Geography"},{"q":"प्रश्न 7","options":["A","B","C","D"],"answer":2,"explanation":"1 sentence.","subject":"History"},{"q":"प्रश्न 8","options":["A","B","C","D"],"answer":0,"explanation":"1 sentence.","subject":"Polity"},{"q":"प्रश्न 9","options":["A","B","C","D"],"answer":3,"explanation":"1 sentence.","subject":"Economy"},{"q":"प्रश्न 10","options":["A","B","C","D"],"answer":1,"explanation":"1 sentence.","subject":"Art & Culture"}]}
-JSON only.`;
+  // CALL 3 — Hindi summary only (small, focused)
+  const hiSummaryPrompt = 'Translate to Hindi Devanagari. Use UPSC terms: Strike=हमला, Treaty=संधि, Parliament=संसद, Summit=शिखर सम्मेलन, Bilateral=द्विपक्षीय, Sanctions=प्रतिबंध. Return ONLY the Hindi translation, nothing else.';
 
-  // 4 parallel calls — EN content + HI content + EN questions + HI questions
-  const [rEN, rHI, rQEN, rQHI] = await Promise.all([
-    callClaude(anthropicKey, basePrompt('en'), 2500),
-    callClaude(anthropicKey, basePrompt('hi'), 2500),
-    callClaude(anthropicKey, questionsPrompt, 3000),
-    callClaude(anthropicKey, questionsHiPrompt, 3000)
+  // Run summary + questions in parallel first
+  const [rS, rQ] = await Promise.all([
+    callClaude(anthropicKey, summaryPrompt, 2500),
+    callClaude(anthropicKey, questionsPrompt, 3000)
   ]);
 
-  if (rEN.status !== 200) throw new Error(rEN.data?.error?.message || 'Claude EN error');
-  if (rHI.status !== 200) throw new Error(rHI.data?.error?.message || 'Claude HI error');
-  if (rQEN.status !== 200) throw new Error(rQEN.data?.error?.message || 'Claude Q EN error');
-  if (rQHI.status !== 200) throw new Error(rQHI.data?.error?.message || 'Claude Q HI error');
+  if (rS.status !== 200) throw new Error(rS.data?.error?.message || 'Claude summary error');
+  if (rQ.status !== 200) throw new Error(rQ.data?.error?.message || 'Claude questions error');
 
-  const enData = parseJSON(rEN.data.content[0].text);
-  const hiData = parseJSON(rHI.data.content[0].text);
-  const qEN = parseJSON(rQEN.data.content[0].text);
-  const qHI = parseJSON(rQHI.data.content[0].text);
+  const enData = parseJSON(rS.data.content[0].text);
+  const qData = parseJSON(rQ.data.content[0].text);
 
-  // Merge EN + HI
+  // Now translate ONLY the summary (small call)
+  const rHi = await callClaude(anthropicKey,
+    hiSummaryPrompt + '\n\n' + enData.summary, 500);
+  const summaryHi = rHi.data.content[0].text.trim();
+
+  // Build final content — Hindi section headings hardcoded, content in English with Hindi heading
   const content = {
     date: getTodayLabel(),
     summary: enData.summary,
-    summaryHi: hiData.summary,
-    sections: enData.sections.map((s, i) => ({
+    summaryHi: summaryHi,
+    sections: enData.sections.map(s => ({
       ...s,
       headingHi: sectionHiHeadings[s.tag] || s.heading,
-      contentHi: (hiData.sections && hiData.sections[i]?.content) || s.content
+      contentHi: s.content // same English content — accurate better than wrong translation
     })),
-    highlights: enData.highlights.map((h, i) => ({
+    highlights: enData.highlights.map(h => ({
       ...h,
-      titleHi: (hiData.highlights && hiData.highlights[i]?.title) || h.title,
-      bodyHi: (hiData.highlights && hiData.highlights[i]?.body) || h.body
+      titleHi: h.title,
+      bodyHi: h.body
     })),
-    staticConnects: (enData.staticConnects || []).map((s, i) => ({
+    staticConnects: (enData.staticConnects || []).map(s => ({
       ...s,
-      newsHi: (hiData.staticConnects && hiData.staticConnects[i]?.news) || s.news,
-      staticLinkHi: (hiData.staticConnects && hiData.staticConnects[i]?.staticLink) || s.staticLink,
+      newsHi: s.news,
+      staticLinkHi: s.staticLink,
       subjectHi: subjectHiMap[s.subject] || s.subject
     })),
-    questions: qEN.questions.map((q, i) => ({
+    questions: qData.questions.map(q => ({
       ...q,
-      qHi: (qHI.questions && qHI.questions[i]?.q) || q.q,
+      qHi: q.q,
       optionsHi: q.options,
-      explanationHi: (qHI.questions && qHI.questions[i]?.explanation) || q.explanation,
+      explanationHi: q.explanation,
       subjectHi: subjectHiMap[q.subject] || q.subject
     }))
   };
@@ -159,7 +175,6 @@ JSON only.`;
   return content;
 }
 
-// ── MAIN HANDLER ────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
@@ -175,7 +190,6 @@ module.exports = async function handler(req, res) {
   const todayIST = getTodayIST();
 
   try {
-    // Check cache
     const cached = await supabaseRequest(
       'GET', 'daily_content?date=eq.' + todayIST + '&limit=1',
       null, SUPABASE_KEY, SUPABASE_URL
@@ -189,13 +203,11 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // Generate fresh
     console.log('Cache MISS — generating...');
     const content = await generateContent(ANTHROPIC_KEY);
 
-    // Save to Supabase
-    await supabaseRequest('POST', 'daily_content', { date: todayIST, content }, SUPABASE_KEY, SUPABASE_URL);
-    console.log('Saved:', todayIST);
+    await supabaseRequest('POST', 'daily_content',
+      { date: todayIST, content }, SUPABASE_KEY, SUPABASE_URL);
 
     return res.status(200).json(content);
 
