@@ -125,7 +125,7 @@ async function generateContent(anthropicKey) {
   // CALL 3 — Hindi summary only (small, focused)
   const hiSummaryPrompt = 'Translate to Hindi Devanagari. Use UPSC terms: Strike=हमला, Treaty=संधि, Parliament=संसद, Summit=शिखर सम्मेलन, Bilateral=द्विपक्षीय, Sanctions=प्रतिबंध. Return ONLY the Hindi translation, nothing else.';
 
-  // Run summary + questions in parallel first
+  // Run summary + questions in parallel
   const [rS, rQ] = await Promise.all([
     callClaude(anthropicKey, summaryPrompt, 2500),
     callClaude(anthropicKey, questionsPrompt, 3000)
@@ -137,25 +137,53 @@ async function generateContent(anthropicKey) {
   const enData = parseJSON(rS.data.content[0].text);
   const qData = parseJSON(rQ.data.content[0].text);
 
-  // Now translate ONLY the summary (small call)
-  const rHi = await callClaude(anthropicKey,
-    hiSummaryPrompt + '\n\n' + enData.summary, 500);
-  const summaryHi = rHi.data.content[0].text.trim();
+  // UPSC Hindi terms for accurate translation
+  const hiTerms = 'UPSC Hindi: Strike=हमला, Treaty=संधि, Parliament=संसद, Summit=शिखर सम्मेलन, Bilateral=द्विपक्षीय, Sanctions=प्रतिबंध, Nuclear=परमाणु, Amendment=संशोधन, Inflation=मुद्रास्फीति. ';
 
-  // Build final content — Hindi section headings hardcoded, content in English with Hindi heading
+  // Build numbered text for batch translation
+  const sectionsText = enData.sections.map((s,i) => (i+1)+'. '+s.content).join('\n');
+  const hlText = enData.highlights.map((h,i) => (i+1)+'. '+h.title+': '+h.body).join('\n');
+  const qTexts = qData.questions.map((q,i) => (i+1)+'. '+q.q).join('\n');
+  const expTexts = qData.questions.map((q,i) => (i+1)+'. '+q.explanation).join('\n');
+
+  // 5 parallel small translation calls
+  const [rSum, rSec, rHl, rQHi, rExp] = await Promise.all([
+    callClaude(anthropicKey, hiTerms+'Translate to Hindi Devanagari. Return ONLY Hindi text:\n\n'+enData.summary, 400),
+    callClaude(anthropicKey, hiTerms+'Translate each numbered line to Hindi. Return ONLY numbered Hindi lines:\n\n'+sectionsText, 600),
+    callClaude(anthropicKey, hiTerms+'Translate each numbered line to Hindi. Return ONLY numbered Hindi lines:\n\n'+hlText, 600),
+    callClaude(anthropicKey, hiTerms+'Translate each numbered UPSC question to Hindi. Return ONLY numbered Hindi lines:\n\n'+qTexts, 1500),
+    callClaude(anthropicKey, hiTerms+'Translate each numbered line to Hindi. Return ONLY numbered Hindi lines:\n\n'+expTexts, 800)
+  ]);
+
+  function parseLines(text, count) {
+    const lines = text.trim().split('\n').filter(l => l.trim());
+    return Array.from({length: count}, (_, i) => (lines[i] || '').replace(/^\d+\.\s*/, '').trim());
+  }
+
+  const summaryHi = rSum.data.content[0].text.trim();
+  const sectionContentsHi = parseLines(rSec.data.content[0].text, enData.sections.length);
+  const hlLines = parseLines(rHl.data.content[0].text, enData.highlights.length);
+  const qHiTexts = parseLines(rQHi.data.content[0].text, qData.questions.length);
+  const expHiTexts = parseLines(rExp.data.content[0].text, qData.questions.length);
+
+  // Parse highlight titles and bodies from combined lines
+  const hlTitlesHi = hlLines.map(l => l.split(':')[0].trim());
+  const hlBodiesHi = hlLines.map(l => l.includes(':') ? l.split(':').slice(1).join(':').trim() : l);
+
+  // Build final content
   const content = {
     date: getTodayLabel(),
     summary: enData.summary,
     summaryHi: summaryHi,
-    sections: enData.sections.map(s => ({
+    sections: enData.sections.map((s,i) => ({
       ...s,
       headingHi: sectionHiHeadings[s.tag] || s.heading,
-      contentHi: s.content // same English content — accurate better than wrong translation
+      contentHi: sectionContentsHi[i] || s.content
     })),
-    highlights: enData.highlights.map(h => ({
+    highlights: enData.highlights.map((h,i) => ({
       ...h,
-      titleHi: h.title,
-      bodyHi: h.body
+      titleHi: hlTitlesHi[i] || h.title,
+      bodyHi: hlBodiesHi[i] || h.body
     })),
     staticConnects: (enData.staticConnects || []).map(s => ({
       ...s,
@@ -163,11 +191,11 @@ async function generateContent(anthropicKey) {
       staticLinkHi: s.staticLink,
       subjectHi: subjectHiMap[s.subject] || s.subject
     })),
-    questions: qData.questions.map(q => ({
+    questions: qData.questions.map((q,i) => ({
       ...q,
-      qHi: q.q,
+      qHi: qHiTexts[i] || q.q,
       optionsHi: q.options,
-      explanationHi: q.explanation,
+      explanationHi: expHiTexts[i] || q.explanation,
       subjectHi: subjectHiMap[q.subject] || q.subject
     }))
   };
