@@ -336,23 +336,6 @@ function renderLoading(step = 0) {
     { en:'Translating to Hindi…', hi:'हिंदी में अनुवाद हो रहा है…' },
   ];
   const hi = lang === 'hi';
-  // STATIC CONNECT HTML
-  const staticHTML = (d.staticConnects || []).map(sc => {
-    const tc = tagColorMap[sc.subject] || 'tag-polity';
-    const newsText = hi ? (sc.newsHi || sc.news) : sc.news;
-    const linkText = hi ? (sc.staticLinkHi || sc.staticLink) : sc.staticLink;
-    const subjectLabel = hi ? (sc.subjectHi || sc.subject) : sc.subject;
-    const isHi = hi && sc.newsHi;
-    return `<div class="static-card">
-      <div class="static-top">
-        <span class="static-icon">${sc.icon||'🔗'}</span>
-        <span class="static-subject ${tc}">${subjectLabel}</span>
-      </div>
-      <div class="static-news${isHi?' devanagari':''}">📰 ${newsText}</div>
-      <div class="static-link${isHi?' devanagari':''}">🎯 ${linkText}</div>
-    </div>`;
-  }).join('');
-
   document.getElementById('app').innerHTML = `
     <div class="loading-card fade-up">
       <div class="spinner"></div>
@@ -431,6 +414,16 @@ function renderSummaryPage() {
       <div class="hl-title${isHi?' devanagari':''}">${title}</div>
       <div class="hl-body${isHi?' devanagari':''}">${body}</div>
     </div>`;
+  }).join('');
+
+  // STATIC CONNECT HTML
+  const staticHTML = (d.staticConnects || []).map(sc => {
+    const tc = tagColorMap[sc.subject] || 'tag-polity';
+    const newsText = hi ? (sc.newsHi || sc.news) : sc.news;
+    const linkText = hi ? (sc.staticLinkHi || sc.staticLink) : sc.staticLink;
+    const subjectLabel = hi ? (sc.subjectHi || sc.subject) : sc.subject;
+    const isHiSc = hi && sc.newsHi;
+    return '<div class="static-card"><div class="static-top"><span class="static-icon">'+(sc.icon||'🔗')+'</span><span class="static-subject '+tc+'">'+subjectLabel+'</span></div><div class="static-news'+(isHiSc?' devanagari':'')+'">📰 '+newsText+'</div><div class="static-link'+(isHiSc?' devanagari':'')+'">🎯 '+linkText+'</div></div>';
   }).join('');
 
   document.getElementById('app').innerHTML = `
