@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hindu Current Affairs — PrepSaathi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0d1b2a;--navy2:#1b2d42;--saffron:#e87722;--saffron2:#f59530;
+  --gold:#c9a84c;--gold2:#e8c97a;--white:#f8f5ef;--white2:#ede8df;
+  --green:#22723a;--green-bg:#e8f5ed;--red:#c0392b;--red-bg:#fdecea;
+  --muted:#7a8694;--border:#e8e0d4;--shadow:0 8px 32px rgba(13,27,42,0.12);
+  --hindu:#e41c1c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--white);font-family:'Source Sans 3',sans-serif;color:var(--navy);padding-top:112px;}
+
+/* LANG BAR */
+.lang-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--navy);padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,0.25);}
+.lang-brand{display:flex;align-items:center;gap:10px;color:var(--gold2);font-size:15px;font-weight:700;}
+.lang-switch{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:24px;padding:4px 6px;}
+.lang-btn{padding:4px 14px;border-radius:20px;border:none;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+.lang-btn.active{background:var(--hindu);color:white;}
+.lang-btn:not(.active){background:transparent;color:rgba(255,255,255,0.6);}
+
+/* NAVBAR */
+.site-header{position:fixed;top:48px;left:0;right:0;z-index:999;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 max(24px,4vw);height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,0.07);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--hindu),#c0392b);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.nav-logo-text strong{display:block;font-size:15px;color:var(--navy);font-weight:700;}
+.nav-logo-text small{font-size:11px;color:var(--muted);letter-spacing:1px;}
+.header-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);font-weight:600;}
+
+.container{max-width:900px;margin:0 auto;padding:32px 20px 60px;}
+
+/* LOADING */
+.loading-card{background:white;border-radius:14px;border:1.5px solid var(--border);padding:60px 32px;text-align:center;box-shadow:var(--shadow);}
+.spinner{width:48px;height:48px;border:4px solid var(--white2);border-top-color:var(--hindu);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-card h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:8px;}
+.loading-card p{color:var(--muted);font-size:14px;}
+.loading-steps{display:flex;flex-direction:column;gap:8px;margin-top:20px;text-align:left;max-width:320px;margin-left:auto;margin-right:auto;}
+.loading-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
+.loading-step.done{color:var(--green);}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--white2);flex-shrink:0;}
+.loading-step.done .step-dot{background:var(--green);}
+.loading-step.active .step-dot{background:var(--hindu);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* ERROR */
+.error-card{background:var(--red-bg);border:1.5px solid #f5c6c0;border-radius:14px;padding:32px;text-align:center;}
+.error-card h3{color:var(--red);font-size:18px;margin-bottom:8px;}
+.error-card p{color:#8b2020;font-size:14px;margin-bottom:20px;}
+.btn-retry{background:var(--red);color:white;border:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* NO CONTENT */
+.no-content-card{background:white;border-radius:14px;border:2px dashed var(--border);padding:60px 32px;text-align:center;box-shadow:var(--shadow);}
+.no-content-card h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:12px;}
+.no-content-card p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:24px;}
+.btn-admin{display:inline-flex;align-items:center;gap:8px;background:var(--hindu);color:white;padding:13px 28px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;}
+
+/* DATE BANNER */
+.date-banner{background:linear-gradient(135deg,#8b0000,var(--hindu));border-radius:14px;padding:24px 28px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;border-left:5px solid var(--gold);}
+.date-banner h2{font-family:'Playfair Display',serif;font-size:clamp(18px,3vw,26px);color:var(--white);margin-bottom:4px;}
+.date-banner p{font-size:13px;color:var(--gold2);}
+.date-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.date-pill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;}
+
+/* SECTION LABEL */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* SUMMARY */
+.summary-card{background:white;border-radius:14px;border:1.5px solid var(--border);padding:28px;margin-bottom:28px;box-shadow:var(--shadow);}
+.summary-text{font-size:15px;line-height:1.9;color:#2a3a4a;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.summary-text.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;line-height:2.2;}
+.source-note{font-size:11px;color:var(--muted);margin-top:16px;font-style:italic;}
+
+/* BREAKDOWN */
+.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.breakdown-item{background:var(--white);border-radius:10px;border:1.5px solid var(--border);padding:16px 18px;}
+.breakdown-item h4{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.item-text{font-size:13px;line-height:1.7;color:#3a4a5a;}
+.item-text.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:12.5px;line-height:2;}
+.tag-polity h4{color:#2c4cc0;}.tag-economy h4{color:#8b1a1a;}.tag-env h4{color:#1a6655;}
+.tag-ir h4{color:#8b4000;}.tag-science h4{color:#5a1ab5;}.tag-governance h4{color:#2a5a2a;}
+.tag-history h4{color:#8b4500;}.tag-geography h4{color:#1a6630;}.tag-culture h4{color:#6b1a6b;}
+
+/* HIGHLIGHTS */
+.highlights-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px;}
+.highlight-card{background:white;border-radius:12px;border:1.5px solid var(--border);padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
+.hl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.hl-tag{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;text-transform:uppercase;}
+.hl-tag.tag-polity{background:#e8eeff;color:#2c4cc0;}
+.hl-tag.tag-economy{background:#fce8e8;color:#8b1a1a;}
+.hl-tag.tag-env{background:#e0f4f0;color:#1a6655;}
+.hl-tag.tag-ir{background:#fff0e8;color:#8b4000;}
+.hl-tag.tag-science{background:#f0e8ff;color:#5a1ab5;}
+.hl-tag.tag-history{background:#fef0e0;color:#8b4500;}
+.hl-tag.tag-geography{background:#e0f5e8;color:#1a6630;}
+.hl-tag.tag-culture{background:#f5e8ff;color:#6b1a6b;}
+.hl-source{font-size:10px;font-weight:700;color:white;background:var(--hindu);padding:2px 7px;border-radius:4px;}
+.hl-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px;line-height:1.4;}
+.hl-title.devanagari{font-family:'Noto Sans Devanagari',sans-serif;}
+.hl-body{font-size:13px;color:#4a5a6a;line-height:1.6;}
+.hl-body.devanagari{font-family:'Noto Sans Devanagari',sans-serif;line-height:1.9;}
+
+/* STATIC CONNECT */
+.static-connect-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px;}
+.static-card{background:white;border-radius:12px;border:1.5px solid #e0d4f5;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border-left:4px solid #7c3aed;}
+.static-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.static-icon{font-size:18px;}
+.static-subject{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;text-transform:uppercase;}
+.static-subject.tag-polity{background:#e8eeff;color:#2c4cc0;}
+.static-subject.tag-economy{background:#fce8e8;color:#8b1a1a;}
+.static-subject.tag-env{background:#e0f4f0;color:#1a6655;}
+.static-subject.tag-ir{background:#fff0e8;color:#8b4000;}
+.static-subject.tag-science{background:#f0e8ff;color:#5a1ab5;}
+.static-subject.tag-history{background:#fef0e0;color:#8b4500;}
+.static-subject.tag-geography{background:#e0f5e8;color:#1a6630;}
+.static-subject.tag-culture{background:#f5e8ff;color:#6b1a6b;}
+.static-news{font-size:13px;color:#4a5a6a;line-height:1.6;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed #e0d4f5;}
+.static-link{font-size:13px;color:#5a3a8a;line-height:1.6;font-weight:600;}
+.static-news.devanagari,.static-link.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:12.5px;line-height:1.9;}
+
+/* QUIZ CTA */
+.quiz-cta-wrap{text-align:center;padding:32px 0 16px;}
+.btn-start-quiz{background:linear-gradient(135deg,var(--hindu),#c0392b);color:white;border:none;padding:18px 48px;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 6px 20px rgba(228,28,28,0.35);transition:all 0.2s;display:inline-flex;align-items:center;gap:10px;}
+.btn-start-quiz:hover{transform:translateY(-2px);}
+.quiz-cta-sub{margin-top:10px;font-size:13px;color:var(--muted);}
+
+/* QUIZ HEADER */
+.quiz-header{background:linear-gradient(135deg,#8b0000,var(--hindu));border-radius:14px 14px 0 0;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;border-left:5px solid var(--gold);}
+.quiz-header-text h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);}
+.quiz-header-text p{font-size:12px;color:var(--gold2);margin-top:2px;}
+.timer-box{background:rgba(255,255,255,0.1);border:2px solid var(--gold);border-radius:12px;padding:10px 20px;text-align:center;min-width:100px;}
+.timer-label{font-size:10px;color:var(--gold2);letter-spacing:1px;font-weight:700;margin-bottom:2px;}
+.timer-value{font-size:24px;font-weight:700;color:white;font-family:'Playfair Display',serif;letter-spacing:2px;}
+.timer-box.warning{border-color:#ff6b6b;animation:timerPulse 1s infinite;}
+.timer-box.warning .timer-value{color:#ff6b6b;}
+@keyframes timerPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+
+.quiz-body{background:white;border-radius:0 0 14px 14px;border:1.5px solid var(--border);border-top:none;box-shadow:var(--shadow);}
+.q-card{border-bottom:1px solid var(--border);padding:24px 28px;}
+.q-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.q-num{font-size:12px;font-weight:700;color:var(--muted);background:var(--white2);padding:3px 10px;border-radius:6px;}
+.q-subject{font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:6px;text-transform:uppercase;}
+.q-text{font-size:15px;line-height:1.75;color:var(--navy);margin-bottom:16px;font-weight:600;}
+.q-text.devanagari{font-family:'Noto Sans Devanagari',sans-serif;font-size:14px;line-height:2;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.opt-btn{display:flex;align-items:flex-start;gap:12px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;font-size:14px;text-align:left;width:100%;transition:all 0.15s;color:var(--navy);font-family:'Source Sans 3',sans-serif;}
+.opt-btn:hover:not(:disabled){background:#fff0f0;border-color:#e41c1c;}
+.opt-btn.selected{background:#fff0f0;border-color:#e41c1c;}
+.opt-btn.correct{background:var(--green-bg);border-color:var(--green);color:var(--green);}
+.opt-btn.wrong{background:var(--red-bg);border-color:var(--red);color:var(--red);}
+.opt-btn:disabled{cursor:default;}
+.opt-letter{font-weight:700;font-size:13px;min-width:20px;margin-top:1px;}
+.explanation{background:#fffbf0;border:1.5px solid #f0d98a;border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.7;color:#4a3a10;margin-top:10px;display:none;}
+.explanation.devanagari{font-family:'Noto Sans Devanagari',sans-serif;line-height:2;}
+.explanation.show{display:block;}
+
+/* SCORE */
+.score-banner{background:linear-gradient(135deg,#8b0000,var(--hindu));border-radius:12px;padding:28px;margin:24px 28px 28px;text-align:center;display:none;}
+.score-banner.visible{display:block;}
+.score-big{font-family:'Playfair Display',serif;font-size:52px;color:var(--gold2);line-height:1;margin-bottom:6px;}
+.score-sub{color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:12px;}
+.score-grade{font-size:18px;font-weight:700;color:white;margin-bottom:16px;}
+.btn-retake{background:var(--hindu);color:white;border:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin:4px;}
+
+/* SUBMIT */
+.submit-wrap{padding:20px 28px;border-top:1px solid var(--border);}
+.btn-submit{background:linear-gradient(135deg,var(--hindu),#c0392b);color:white;border:none;padding:14px 36px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;}
+.btn-submit:disabled{opacity:0.5;cursor:default;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp 0.4s ease forwards;}
+
+@media(max-width:600px){
+  .q-card,.summary-card,.quiz-header{padding:18px 16px;}
+  .highlights-grid,.breakdown-grid,.static-connect-grid{grid-template-columns:1fr;}
+  .score-banner{margin:16px;}
+  .submit-wrap{padding:16px;}
+  .btn-start-quiz{padding:15px 28px;font-size:15px;}
+  .quiz-header{flex-direction:column;gap:12px;}
+}
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <div class="lang-brand"><span>📰</span><span>PrepSaathi</span></div>
+  <div class="lang-switch">
+    <button class="lang-btn active" id="btnEn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btnHi" onclick="setLang('hi')">हिंदी</button>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">📰</div>
+    <div class="nav-logo-text">
+      <strong id="navTitle">The Hindu — Current Affairs</strong>
+      <small>UPSC Summary · Quiz · Static Connect</small>
+    </div>
+  </div>
+  <a href="index.html" class="header-back" id="backBtn">← Home</a>
+</header>
+
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let quizData = null;
+let userAnswers = {};
+let submitted = false;
+let quizMode = false;
+let timerInterval = null;
+let timerSeconds = 15 * 60;
+let lang = localStorage.getItem('prepsaathi_lang') || 'en';
+
+const tagColorMap = {
+  'Polity':'tag-polity','Economy':'tag-economy','Environment':'tag-env',
+  'IR':'tag-ir','Science':'tag-science','Governance':'tag-governance',
+  'History':'tag-history','Geography':'tag-geography','Art & Culture':'tag-culture'
+};
+
+const subjectHiMap = {
+  'Polity':'राजनीति','Economy':'अर्थव्यवस्था','Environment':'पर्यावरण',
+  'IR':'अंतर्राष्ट्रीय संबंध','Science':'विज्ञान','Governance':'शासन',
+  'History':'इतिहास','Geography':'भूगोल','Art & Culture':'कला और संस्कृति'
+};
+
+const sectionHiHeadings = {
+  'Polity':'राजनीति और शासन','Economy':'अर्थव्यवस्था और वित्त',
+  'IR':'अंतर्राष्ट्रीय संबंध','Environment':'पर्यावरण',
+  'Science':'विज्ञान और प्रौद्योगिकी','Geography':'भूगोल',
+  'History':'इतिहास','Art & Culture':'कला और संस्कृति'
+};
+
+// ── LANGUAGE ──────────────────────────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('prepsaathi_lang', l);
+  document.getElementById('btnEn').classList.toggle('active', l==='en');
+  document.getElementById('btnHi').classList.toggle('active', l==='hi');
+  document.getElementById('navTitle').textContent = l==='hi' ? 'द हिंदू — समसामयिक मामले' : 'The Hindu — Current Affairs';
+  document.getElementById('backBtn').innerHTML = l==='hi' ? '← होम' : '← Home';
+  if (!quizData) return;
+  if (quizMode && submitted) {
+    renderQuizPage();
+    setTimeout(() => {
+      quizData.questions.forEach((q, i) => {
+        const ua = userAnswers[i]; const ca = q.answer;
+        for (let j = 0; j < 4; j++) {
+          const b = document.getElementById('opt-'+i+'-'+j);
+          if (!b) continue;
+          b.disabled = true; b.classList.remove('selected');
+          if (j===ca) b.classList.add('correct');
+          else if (j===ua && ua!==ca) b.classList.add('wrong');
+        }
+        const exp = document.getElementById('exp-'+i);
+        if (exp) exp.classList.add('show');
+      });
+      const total = quizData.questions.length;
+      const correct = quizData.questions.filter((q,i) => userAnswers[i]===q.answer).length;
+      const pct = Math.round((correct/total)*100);
+      const hi = l==='hi';
+      const grade = pct>=80?'🏆 Excellent!':pct>=60?'🎯 Good!':pct>=40?'📚 Fair':'💪 Keep reading!';
+      const gradeHi = pct>=80?'🏆 उत्कृष्ट!':pct>=60?'🎯 अच्छा!':pct>=40?'📚 ठीक है':'💪 पढ़ते रहें!';
+      const banner = document.getElementById('scoreBanner');
+      if (banner) {
+        banner.innerHTML = '<div class="score-big">'+correct+'/'+total+'</div><div class="score-sub">'+pct+'% accuracy</div><div class="score-grade">'+(hi?gradeHi:grade)+'</div><button class="btn-retake" onclick="goToQuiz()">🔄 '+(hi?'दोबारा':'Try Again')+'</button><button class="btn-retake" onclick="backToSummary()" style="background:#8b0000">📰 '+(hi?'सारांश देखें':'View Summary')+'</button>';
+        banner.classList.add('visible');
+      }
+      const sb = document.getElementById('submitBtn'); if (sb) sb.disabled = true;
+      const tb = document.getElementById('timerBox'); if (tb) tb.style.display='none';
+    }, 50);
+  } else if (quizMode && !submitted) {
+    renderQuizPage();
+    setTimeout(() => {
+      Object.entries(userAnswers).forEach(([qi, oi]) => {
+        const b = document.getElementById('opt-'+qi+'-'+oi);
+        if (b) b.classList.add('selected');
+      });
+    }, 50);
+  } else {
+    renderSummaryPage();
+  }
+}
+setLang(lang);
+
+// ── TIMER ──────────────────────────────────────────────────────────────────────
+function startTimer() {
+  timerSeconds = 15 * 60; updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) { clearInterval(timerInterval); submitQuiz(true); }
+  }, 1000);
+}
+function stopTimer() { if (timerInterval) clearInterval(timerInterval); }
+function updateTimerDisplay() {
+  const el = document.getElementById('timerValue');
+  const box = document.getElementById('timerBox');
+  if (!el) return;
+  const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+  el.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  if (box && timerSeconds<=120) box.classList.add('warning');
+}
+
+// ── LOADING ────────────────────────────────────────────────────────────────────
+function renderLoading() {
+  const hi = lang==='hi';
+  document.getElementById('app').innerHTML = `
+    <div class="loading-card fade-up">
+      <div class="spinner"></div>
+      <h3>${hi ? 'द हिंदू से सामग्री लोड हो रही है…' : "Loading The Hindu content…"}</h3>
+      <p style="margin-top:8px">${hi ? 'आज का समसामयिक अफेयर्स प्राप्त हो रहा है।' : "Fetching today's current affairs from The Hindu."}</p>
+    </div>`;
+}
+
+function renderError(msg) {
+  const hi = lang==='hi';
+  document.getElementById('app').innerHTML = `
+    <div class="error-card fade-up">
+      <h3>⚠️ ${hi?'सामग्री लोड नहीं हो सकी':'Could not load content'}</h3>
+      <p>${msg}</p>
+      <button class="btn-retry" onclick="loadContent()">🔄 Try Again</button>
+    </div>`;
+}
+
+function renderNoContent() {
+  const hi = lang==='hi';
+  document.getElementById('app').innerHTML = `
+    <div class="no-content-card fade-up">
+      <h3>📰 ${hi ? 'आज का द हिंदू अभी उपलब्ध नहीं है' : "Today's Hindu Not Yet Available"}</h3>
+      <p>${hi ? 'एडमिन ने अभी तक आज का द हिंदू PDF अपलोड नहीं किया है। कृपया शाम 6 बजे के बाद पुनः देखें।' : "The admin hasn't uploaded today's The Hindu PDF yet. Please check back after 6 PM, or use the Daily Current Affairs page."}</p>
+      <a href="current-affairs.html" class="btn-admin" style="background:var(--saffron);margin-right:12px;">📋 ${hi?'सामान्य करेंट अफेयर्स':'General Current Affairs'}</a>
+      <a href="admin.html" class="btn-admin" style="margin-top:12px;">🔐 ${hi?'एडमिन पैनल':'Admin Panel'}</a>
+    </div>`;
+}
+
+// ── FETCH ──────────────────────────────────────────────────────────────────────
+async function loadContent() {
+  renderLoading();
+  try {
+    const res = await fetch('/api/current-affairs');
+    if (!res.ok) { const e = await res.json().catch(()=>({error:'Server error'})); renderError(e.error||'Server error'); return; }
+    const data = await res.json();
+    // Check if content is from The Hindu
+    if (!data || data.source !== 'The Hindu') {
+      renderNoContent();
+      return;
+    }
+    quizData = data;
+    renderSummaryPage();
+  } catch(err) {
+    renderError('Network error — please check your connection.');
+  }
+}
+
+// ── SUMMARY PAGE ───────────────────────────────────────────────────────────────
+function renderSummaryPage() {
+  quizMode = false;
+  const d = quizData;
+  const hi = lang==='hi';
+  const summary = hi ? (d.summaryHi||d.summary) : d.summary;
+
+  const breakdownHTML = (d.sections||[]).map(s => {
+    const tc = tagColorMap[s.tag]||'tag-polity';
+    const heading = hi ? (sectionHiHeadings[s.tag]||s.heading) : s.heading;
+    const sContent = hi ? (s.contentHi&&s.contentHi!==s.content?s.contentHi:s.content) : s.content;
+    return '<div class="breakdown-item '+tc+'"><h4>'+s.icon+' '+heading+'</h4><p class="item-text'+(hi?' devanagari':'')+'">'+sContent+'</p></div>';
+  }).join('');
+
+  const hlHTML = (d.highlights||[]).map(hl => {
+    const tc = tagColorMap[hl.tag]||'tag-polity';
+    const title = hi?(hl.titleHi||hl.title):hl.title;
+    const body = hi?(hl.bodyHi||hl.body):hl.body;
+    return '<div class="highlight-card"><div class="hl-top"><span class="hl-tag '+tc+'">'+hl.tag+'</span><span class="hl-source">The Hindu</span></div><div class="hl-title'+(hi?' devanagari':'')+'">'+title+'</div><div class="hl-body'+(hi?' devanagari':'')+'">'+body+'</div></div>';
+  }).join('');
+
+  const staticHTML = (d.staticConnects||[]).map(sc => {
+    const tc = tagColorMap[sc.subject]||'tag-polity';
+    const newsText = hi?(sc.newsHi||sc.news):sc.news;
+    const linkText = hi?(sc.staticLinkHi||sc.staticLink):sc.staticLink;
+    const subjectLabel = hi?(sc.subjectHi||sc.subject):sc.subject;
+    return '<div class="static-card"><div class="static-top"><span class="static-icon">'+(sc.icon||'🔗')+'</span><span class="static-subject '+tc+'">'+subjectLabel+'</span></div><div class="static-news'+(hi?' devanagari':'')+'">📰 '+newsText+'</div><div class="static-link'+(hi?' devanagari':'')+'">🎯 '+linkText+'</div></div>';
+  }).join('');
+
+  document.getElementById('app').innerHTML =
+    '<div class="date-banner fade-up"><div><h2>📰 '+(hi?'द हिंदू — आज के समसामयिक मामले':"The Hindu — Today's Current Affairs")+'</h2><p>'+d.date+'</p></div><div class="date-pills"><span class="date-pill">📰 The Hindu</span><span class="date-pill">🏛️ UPSC Relevant</span><span class="date-pill">🔗 Static Connect</span></div></div>'+
+    '<div class="section-label">'+(hi?'📝 आज का सारांश — द हिंदू से':'📝 Today\'s Summary — From The Hindu')+'</div>'+
+    '<div class="summary-card fade-up"><p class="summary-text'+(hi?' devanagari':'')+'">'+summary+'</p>'+
+    (breakdownHTML?'<div class="breakdown-grid">'+breakdownHTML+'</div>':'')+
+    '<p class="source-note">Source: The Hindu Newspaper · UPSC-relevant news extracted and analysed</p></div>'+
+    '<div class="section-label">'+(hi?'🔑 मुख्य बातें':'🔑 Key Highlights')+'</div>'+
+    '<div class="highlights-grid fade-up">'+hlHTML+'</div>'+
+    (staticHTML?'<div class="section-label">'+(hi?'🔗 स्टेटिक कनेक्ट':'🔗 Static Connect — News to UPSC Syllabus')+'</div><div class="static-connect-grid fade-up">'+staticHTML+'</div>':'')+
+    '<div class="quiz-cta-wrap fade-up">'+
+    '<button class="btn-start-quiz" onclick="goToQuiz()">❓ '+(hi?'आज का 10 प्रश्न क्विज़ दें':"Take Today's 10-Question Quiz")+'</button>'+
+    '<p class="quiz-cta-sub">'+(hi?'15 मिनट · UPSC प्रारंभिक पैटर्न · जमा के बाद व्याख्या':'15 min timer · UPSC Prelims pattern · Explanations after submission')+'</p></div>';
+}
+
+// ── QUIZ ───────────────────────────────────────────────────────────────────────
+function goToQuiz() {
+  userAnswers = {}; submitted = false;
+  renderQuizPage(); startTimer();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderQuizPage() {
+  quizMode = true;
+  const d = quizData; const hi = lang==='hi';
+  const qHTML = (d.questions||[]).map((q,i) => {
+    const tc = tagColorMap[q.subject]||'tag-polity';
+    const subjectLabel = hi?(subjectHiMap[q.subject]||q.subject):q.subject;
+    const hasHiQ = hi&&q.qHi&&q.qHi!==q.q;
+    const hasHiOpts = hi&&q.optionsHi&&q.optionsHi[0]!==q.options[0];
+    const qText = hasHiQ?q.qHi:q.q;
+    const opts = hasHiOpts?q.optionsHi:q.options;
+    const expText = (hi&&q.explanationHi&&q.explanationHi!==q.explanation)?q.explanationHi:q.explanation;
+    const optsHTML = opts.map((o,j) => {
+      const clean = String(o).replace(/^[A-D]\)\s*/i,'').trim();
+      return '<button class="opt-btn'+(hasHiQ?' devanagari':'')+'" id="opt-'+i+'-'+j+'" onclick="selectAnswer('+i+','+j+')"><span class="opt-letter">'+['A','B','C','D'][j]+'.</span><span>'+clean+'</span></button>';
+    }).join('');
+    return '<div class="q-card" id="qcard-'+i+'"><div class="q-top"><span class="q-num">Q.'+(i+1)+'</span><span class="q-subject '+tc+(hi?' devanagari':'')+'">'+subjectLabel+'</span></div><div class="q-text'+(hasHiQ?' devanagari':'')+'">'+qText+'</div><div class="options">'+optsHTML+'</div><div class="explanation'+(hi?' devanagari':'')+'" id="exp-'+i+'">📖 <strong>'+(hi?'व्याख्या':'Explanation')+':</strong> '+expText+'</div></div>';
+  }).join('');
+
+  document.getElementById('app').innerHTML =
+    '<div style="margin-bottom:16px"><button onclick="backToSummary()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit;">← '+(hi?'सारांश पर वापस जाएं':'Back to Summary')+'</button></div>'+
+    '<div class="quiz-header"><div class="quiz-header-text"><h3>❓ '+(hi?'आज का क्विज़ — द हिंदू':"Today's Quiz — The Hindu")+'</h3><p>'+(hi?'10 प्रश्न · UPSC प्रारंभिक पैटर्न':'10 Questions · UPSC Prelims Pattern')+'</p></div>'+
+    '<div class="timer-box" id="timerBox"><div class="timer-label">'+(hi?'समय शेष':'TIME LEFT')+'</div><div class="timer-value" id="timerValue">15:00</div></div></div>'+
+    '<div class="quiz-body">'+qHTML+
+    '<div class="score-banner" id="scoreBanner"></div>'+
+    '<div class="submit-wrap"><button class="btn-submit" id="submitBtn" onclick="submitQuiz(false)">✅ '+(hi?'जमा करें और परिणाम देखें':'Submit & See Results')+'</button></div></div>';
+}
+
+function backToSummary() {
+  stopTimer(); submitted = false; userAnswers = {};
+  renderSummaryPage(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectAnswer(qIdx, optIdx) {
+  if (submitted) return;
+  userAnswers[qIdx] = optIdx;
+  for (let j=0; j<4; j++) {
+    const b = document.getElementById('opt-'+qIdx+'-'+j);
+    if (b) b.classList.toggle('selected', j===optIdx);
+  }
+}
+
+function submitQuiz(autoSubmit=false) {
+  submitted = true; stopTimer();
+  const btn = document.getElementById('submitBtn'); if (btn) btn.disabled = true;
+  let correct = 0;
+  quizData.questions.forEach((q,i) => {
+    const ua = userAnswers[i]; const ca = q.answer;
+    for (let j=0; j<4; j++) {
+      const b = document.getElementById('opt-'+i+'-'+j);
+      if (!b) return;
+      b.disabled = true; b.classList.remove('selected');
+      if (j===ca) b.classList.add('correct');
+      else if (j===ua&&ua!==ca) b.classList.add('wrong');
+    }
+    const exp = document.getElementById('exp-'+i);
+    if (exp) exp.classList.add('show');
+    if (ua===ca) correct++;
+  });
+  const hi = lang==='hi';
+  const total = quizData.questions.length;
+  const pct = Math.round((correct/total)*100);
+  const grade = pct>=80?'🏆 Excellent — IAS Calibre!':pct>=60?'🎯 Good — Keep practising!':pct>=40?"📚 Fair — Review highlights":'💪 Keep reading daily!';
+  const gradeHi = pct>=80?'🏆 उत्कृष्ट!':pct>=60?'🎯 अच्छा!':pct>=40?'📚 ठीक है':'💪 रोज पढ़ें!';
+  const timeMsg = autoSubmit?'<br><small style="color:rgba(255,255,255,0.6)">⏰ '+(hi?'समय समाप्त':'Auto-submitted')+'</small>':'';
+  const banner = document.getElementById('scoreBanner');
+  banner.innerHTML = '<div class="score-big">'+correct+'/'+total+'</div><div class="score-sub">'+pct+'% accuracy · The Hindu Quiz'+timeMsg+'</div><div class="score-grade">'+(hi?gradeHi:grade)+'</div><button class="btn-retake" onclick="goToQuiz()">🔄 '+(hi?'दोबारा':'Try Again')+'</button><button class="btn-retake" onclick="backToSummary()" style="background:#8b0000">📰 '+(hi?'सारांश':'Summary')+'</button>';
+  banner.classList.add('visible');
+  setTimeout(()=>banner.scrollIntoView({behavior:'smooth',block:'center'}),200);
+}
+
+loadContent();
+</script>
+</body>
+</html>
