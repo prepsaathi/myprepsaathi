@@ -1579,5 +1579,22 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 </script>
+<div id="secretAdminTrigger" onclick="handleSecretClick()" style="position:fixed;bottom:0;right:0;width:30px;height:30px;cursor:default;z-index:9999;opacity:0;"></div>
+
+<script>
+// Secret admin access — click bottom-right corner 3 times fast
+let secretClicks = 0;
+let secretTimer = null;
+function handleSecretClick() {
+  secretClicks++;
+  clearTimeout(secretTimer);
+  secretTimer = setTimeout(() => { secretClicks = 0; }, 2000);
+  if (secretClicks >= 3) {
+    secretClicks = 0;
+    const pwd = prompt('Admin Access:');
+    if (pwd) window.location.href = 'admin.html?key=' + btoa(pwd);
+  }
+}
+</script>
 </body>
 </html>
