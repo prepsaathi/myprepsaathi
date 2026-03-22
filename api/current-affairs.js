@@ -93,12 +93,13 @@ function getTodayLabel() {
 const subjectHiMap = {
   'Polity':'राजनीति','Economy':'अर्थव्यवस्था','Environment':'पर्यावरण',
   'IR':'अंतर्राष्ट्रीय संबंध','Science':'विज्ञान','Governance':'शासन',
-  'History':'इतिहास','Geography':'भूगोल'
+  'History':'इतिहास','Geography':'भूगोल','Art & Culture':'कला और संस्कृति'
 };
 
 const sectionHiHeadings = {
   'Polity':'राजनीति और शासन','Economy':'अर्थव्यवस्था और वित्त',
-  'IR':'अंतर्राष्ट्रीय संबंध','Environment':'पर्यावरण','Science':'विज्ञान और प्रौद्योगिकी'
+  'IR':'अंतर्राष्ट्रीय संबंध','Environment':'पर्यावरण','Science':'विज्ञान और प्रौद्योगिकी',
+  'Geography':'भूगोल','History':'इतिहास','Art & Culture':'कला और संस्कृति'
 };
 
 // ── GENERATE CONTENT ────────────────────────────────────────────────────────
@@ -109,10 +110,10 @@ async function generateContent(anthropicKey) {
   const [r1, rQ] = await Promise.all([
     callClaude(anthropicKey,
 `You are a UPSC current affairs expert. Today: ${today}.
-Generate content based STRICTLY on official Indian government sources:
-PIB, AIR News, PRS Legislative Research, MoEF, RBI, MEA, official Ministry press releases.
+Generate content based on official Indian government sources: PIB, AIR News, PRS, MoEF, RBI, MEA, Ministry press releases.
+Also include Geography, History and Art & Culture static connects from today's news.
 Return ONLY this JSON (English only, no markdown):
-{"summary":"5 sentences on today UPSC news from PIB and AIR. Start: Today's current affairs covers","sections":[{"tag":"Polity","heading":"Polity & Governance","icon":"⚖️","content":"1 sentence from PIB on polity today."},{"tag":"Economy","heading":"Economy & Finance","icon":"📈","content":"1 sentence from RBI on economy today."},{"tag":"IR","heading":"International Relations","icon":"🌏","content":"1 sentence from MEA on IR today."},{"tag":"Environment","heading":"Environment","icon":"🌿","content":"1 sentence from MoEF on environment today."},{"tag":"Science","heading":"Science & Tech","icon":"🔬","content":"1 sentence from ISRO/DST on science today."}],"highlights":[{"title":"headline","body":"1 sentence.","tag":"Polity","source":"PIB"},{"title":"headline","body":"1 sentence.","tag":"Economy","source":"RBI"},{"title":"headline","body":"1 sentence.","tag":"IR","source":"MEA"},{"title":"headline","body":"1 sentence.","tag":"Environment","source":"MoEF"},{"title":"headline","body":"1 sentence.","tag":"Science","source":"PIB"}]}
+{"summary":"6 sentences covering today UPSC news across polity, economy, IR, environment, science, geography and culture. Start: Today's current affairs covers","sections":[{"tag":"Polity","heading":"Polity & Governance","icon":"⚖️","content":"1 sentence on polity/governance news from PIB today."},{"tag":"Economy","heading":"Economy & Finance","icon":"📈","content":"1 sentence on economy from RBI/Finance Ministry today."},{"tag":"IR","heading":"International Relations","icon":"🌏","content":"1 sentence on India foreign relations from MEA today."},{"tag":"Environment","heading":"Environment","icon":"🌿","content":"1 sentence on environment from MoEF today."},{"tag":"Science","heading":"Science & Tech","icon":"🔬","content":"1 sentence on science/space from ISRO/DST today."},{"tag":"Geography","heading":"Geography","icon":"🗺️","content":"1 sentence connecting today's news to geography — rivers, climate, regions, disasters, natural resources."},{"tag":"History","heading":"History","icon":"🏛️","content":"1 sentence connecting today's news to history — freedom struggle, ancient/medieval India, important events."},{"tag":"Art & Culture","heading":"Art & Culture","icon":"🎭","content":"1 sentence connecting today's news to art, culture, UNESCO, festivals, heritage sites, classical traditions."}],"highlights":[{"title":"headline","body":"1 sentence.","tag":"Polity","source":"PIB"},{"title":"headline","body":"1 sentence.","tag":"Economy","source":"RBI"},{"title":"headline","body":"1 sentence.","tag":"IR","source":"MEA"},{"title":"headline","body":"1 sentence.","tag":"Environment","source":"MoEF"},{"title":"headline","body":"1 sentence.","tag":"Science","source":"PIB"}],"staticConnects":[{"news":"1 sentence describing today's news event.","staticLink":"1 sentence explaining the UPSC static syllabus connection — which topic, which chapter, why relevant for exam.","subject":"Polity","icon":"⚖️"},{"news":"another news event.","staticLink":"static syllabus connection.","subject":"Geography","icon":"🗺️"},{"news":"another news event.","staticLink":"static syllabus connection.","subject":"History","icon":"🏛️"},{"news":"another news event.","staticLink":"static syllabus connection.","subject":"Art & Culture","icon":"🎭"},{"news":"another news event.","staticLink":"static syllabus connection.","subject":"Economy","icon":"📈"}]}
 JSON only.`, 1500),
 
     callClaude(anthropicKey,
@@ -156,6 +157,14 @@ Real UPSC questions only. JSON only.`, 2500)
     content.questions.map(q => translate(q.explanation))
   );
 
+  // Translate staticConnects
+  const staticNewsHi = await Promise.all(
+    (content.staticConnects || []).map(s => translate(s.news))
+  );
+  const staticLinkHi = await Promise.all(
+    (content.staticConnects || []).map(s => translate(s.staticLink))
+  );
+
   // Apply translations
   content.summaryHi = summaryHi;
 
@@ -174,9 +183,16 @@ Real UPSC questions only. JSON only.`, 2500)
   content.questions = content.questions.map((q, i) => ({
     ...q,
     qHi: questionTexts[i] || q.q,
-    optionsHi: q.options, // options stay in English (numbers/codes)
+    optionsHi: q.options,
     explanationHi: explanationTexts[i] || q.explanation,
     subjectHi: subjectHiMap[q.subject] || q.subject
+  }));
+
+  content.staticConnects = (content.staticConnects || []).map((s, i) => ({
+    ...s,
+    newsHi: staticNewsHi[i] || s.news,
+    staticLinkHi: staticLinkHi[i] || s.staticLink,
+    subjectHi: subjectHiMap[s.subject] || s.subject
   }));
 
   content.date = getTodayLabel();
