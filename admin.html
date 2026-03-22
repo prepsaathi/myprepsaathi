@@ -218,8 +218,16 @@ async function processFile(file){
     const extractedText = await extractTextFromPDF(file);
     
     // Limit text to ~15000 chars (enough for UPSC content, fits in API)
-    const text = extractedText.substring(0, 15000);
-    showProgress(true, `Extracted ${Math.round(extractedText.length/1000)}k chars — sending to Claude…`, 45);
+    // Clean extracted text — remove garbled/special chars
+  const cleanText = extractedText
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // remove control chars
+    .replace(/[^\x20-\x7E\n\r\t\u0900-\u097F\u0A00-\u0A7F]/g, ' ') // keep ASCII + Devanagari only
+    .replace(/\s+/g, ' ') // collapse multiple spaces
+    .replace(/( \n|\n ){2,}/g, '\n') // collapse multiple newlines
+    .trim();
+
+  const text = cleanText.substring(0, 15000);
+  showProgress(true, `Extracted ${Math.round(cleanText.length/1000)}k chars — sending to Claude…`, 45);
 
     const resp = await fetch('/api/upload-hindu', {
       method: 'POST',
